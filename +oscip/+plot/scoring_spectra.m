@@ -26,7 +26,13 @@ end
 if yLog
     set(gca, 'YScale', 'log')
 end
+
+
+if yLog
+ylabel('Log power')
+else
 ylabel('Power')
+end
 xlabel('Frequency (Hz)')
 
 legend(ScoringLabels)

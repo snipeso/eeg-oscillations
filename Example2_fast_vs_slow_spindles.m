@@ -24,8 +24,12 @@ MinRSquared = .95;
 
 % specific oscillation detection
 Band = [12 18];
-BandwidthThreshold = 2;
+BandwidthMax = 2;
+BandWidthMin = .5;
 PeakAmplitudeThreshold = .5;
+FrequencyResolution = .25; % this determines the smoothness of the curves, at the cost of frequency resolution
+DistributionAmplitudeMin = .01; % this just excludes stupid small peaks
+
 
 
 % locations
@@ -68,7 +72,7 @@ for FileIdx = 1:numel(Files)
         Spindles(FileIdx, :) = nan;
         continue
     end
-    [SlowSigma, FastSigma] = oscip.detect_custom_sigma(PeriodicPeaks, BandwidthThreshold);
+    [SlowSigma, FastSigma] = oscip.detect_custom_sigma(PeriodicPeaks, BandwidthMax);
     Spindles(FileIdx, 1) = SlowSigma(1);
     Spindles(FileIdx, 2) = FastSigma(1);
 end

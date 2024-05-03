@@ -1,4 +1,6 @@
-function [isPeak, MaxPeak] = check_peak_in_band(PeriodicPeaks, Band, nPeaks, BandwidthThreshold, PeakAmplitudeThreshold, DistributionAmplitudeThreshold, FrequencyResolution)
+function [isPeak, MaxPeak] = check_peak_in_band(PeriodicPeaks, Band, nPeaks, ...
+    BandwidthMax, PeakAmplitudeThreshold, ...
+    DistributionBandwidthMin, DistributionAmplitudeMin, FrequencyResolution)
 %  [isPeak, MaxPeak] = check_peak_in_band(PeriodicPeaks, Band, nPeaks, BandwidthThreshold, PeakAmplitudeThreshold, DistributionAmplitudeThreshold, FrequencyResolution)
 % checks if there was a periodic peak within a specified band that means
 % all the thresholds.
@@ -19,14 +21,15 @@ arguments
     PeriodicPeaks
     Band
     nPeaks = 2;
-    BandwidthThreshold = 2;
+    BandwidthMax = 4;
     PeakAmplitudeThreshold = 0;
-    DistributionAmplitudeThreshold = .01;
+    DistributionBandwidthMin = .5;
+    DistributionAmplitudeMin = .01;
     FrequencyResolution = .25;
 end
 
-Peaks = oscip.find_mode_peroidicpeaks(PeriodicPeaks, BandwidthThreshold, ...
-    PeakAmplitudeThreshold, DistributionAmplitudeThreshold, FrequencyResolution);
+Peaks = oscip.find_mode_peroidicpeaks(PeriodicPeaks, BandwidthMax, ...
+    PeakAmplitudeThreshold, DistributionBandwidthMin, DistributionAmplitudeMin, FrequencyResolution);
 
 MaxPeak = oscip.select_max_peak(Peaks, Band, nPeaks);
 
