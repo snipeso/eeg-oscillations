@@ -25,5 +25,6 @@ Each file contains:
 - `EEG`: an EEGLAB structure, with data saved in a channel x time matrix (EEG.data), sample rate (EEG.srate), and channel information (EEG.chanlocs).
 - `Scoring`: an array with values from -3 to 1, indicating sleep stages for 20 s epochs
 - `EpochLength`: the epoch length of the scoring (20 s)
-- `ScoringIndexes`: the range of possible values inside Scoring.
-- `ScoringLabels`: cell array of the stages associated with each scoring index
+- `ScoringIndexes`: the range of possible values inside Scoring ([-3 -2 -1 0 1])
+- `ScoringLabels`: cell array of the stages associated with each scoring index ({'N3', 'N2', 'N1', 'W', 'R'})
+
