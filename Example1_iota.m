@@ -1,5 +1,5 @@
 % Example script: determine if there is a iota oscillation during either
-% wake or sleep.
+% wake or sleep. Starts from raw or minimally processed data.
 clear
 close all
 clc
