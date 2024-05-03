@@ -10,13 +10,27 @@ clc
 % choose what to do
 PlotIndividuals = true;
 
-% analysis parameters
+%%% analysis parameters
+
+% power
 WelchWindowLength = 4; % in seconds
 WelchOverlap = .5; % 50% of the welch windows will overlap
+
+% fooof
 FooofFrequencyRange = [3 40]; % frequencies over which to fit the model
 SmoothSpan = 3;
 MaxError = .15;
 MinRSquared = .95;
+
+% specific oscillation detection
+Band = [25 40];
+BandwidthThreshold = 4;
+PeakAmplitudeThreshold = .5;
+
+
+% plot parameters
+ScatterSizeScaling = 50;
+Alpha = .1;
 
 % locations
 CD = extractBefore(mfilename('fullpath'), 'Example'); % finds folder this script is saved in
@@ -29,6 +43,7 @@ DataFolder = fullfile(CD, 'ExampleData');
 Files = oscip.list_filenames(DataFolder);
 
 %%% identify main oscillations in each recording
+HasIota = table();
 for FileIdx = 1:numel(Files)
     load(fullfile(DataFolder, Files(FileIdx)), 'EEG', ...
         'EpochLength', 'Scoring', 'ScoringIndexes', 'ScoringLabels')
@@ -45,20 +60,25 @@ for FileIdx = 1:numel(Files)
     [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, WhitenedPower, Errors, RSquared] ...
         = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
 
-    % identify most frequent peaks
+    % identify iota
+    [isPeak, MaxPeak] = oscip.check_peak_in_band(PeriodicPeaks, Band, 1, BandwidthThreshold, PeakAmplitudeThreshold);
+
+    % save to table
+    HasIota.File(FileIdx) = Files(FileIdx);
+    HasIota.HasIota(FileIdx) = isPeak;
+    HasIota.IotaFrequency(FileIdx) = MaxPeak(1);
+    HasIota.IotaAmplitude(FileIdx) = MaxPeak(2);
 
 
     % plot
-if PlotIndividuals
-    Title = replace(replace(Files(FileIdx), '.mat', ''), '_', ' ');
-    oscip.plot.temporal_overview(squeeze(mean(WhitenedPower,1)), ...
-        FooofFrequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Slopes, [], [], Title)
+    if PlotIndividuals
+        Title = replace(replace(Files(FileIdx), '.mat', ''), '_', ' ');
+        oscip.plot.temporal_overview(squeeze(mean(WhitenedPower,1)), ...
+            FooofFrequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Slopes, [], [], Title)
 
-    figure
-    oscip.plot.periodic_peaks(PeriodicPeaks, Scoring, ScoringIndexes, ScoringLabels, 10, .1)
-    title(Title)
-end
-
-    % save to table
+        oscip.plot.frequency_overview(SmoothPower, Frequencies, PeriodicPeaks, ...
+            Scoring, ScoringIndexes, ScoringLabels, ScatterSizeScaling, Alpha)
+        title(Title)
+    end
 end
 

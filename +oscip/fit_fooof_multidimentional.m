@@ -60,14 +60,33 @@ switch numel(Dims)
         for ChannelIdx = 1:Dims(1)
             Dimentions = Dims;
             nEpochs = Dimentions(2);
-            parfor EpochIdx = 1:nEpochs
-                [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
-                    ~, Peaks, WhitenedPower(ChannelIdx, EpochIdx, :), ...
-                    Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
-                    = oscip.fit_fooof(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
-                    FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters);
 
-                PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
+            installedParallelToolbox = license('test','distrib_computing_toolbox');
+
+            if installedParallelToolbox
+
+                parfor EpochIdx = 1:nEpochs
+                    [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
+                        ~, Peaks, WhitenedPower(ChannelIdx, EpochIdx, :), ...
+                        Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
+                        = oscip.fit_fooof(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
+                        FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters);
+
+                    PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
+                end
+
+            else
+                warning('This could be slow. if you have the option, install the parallel computing toolbox.')
+
+                for EpochIdx = 1:nEpochs
+                    [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
+                        ~, Peaks, WhitenedPower(ChannelIdx, EpochIdx, :), ...
+                        Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
+                        = oscip.fit_fooof(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
+                        FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters);
+
+                    PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
+                end
             end
             disp(['finished ch', num2str(ChannelIdx)])
         end
@@ -83,4 +102,3 @@ switch numel(Dims)
 
         warning('Power is empty')
 end
-
