@@ -35,7 +35,7 @@ if ~isempty(MaxPeak) && ~any(isnan(MaxPeak))
 
     % identify average power and bandwidth for the chosen peak frequency
     Range = MaxPeak(1)+[-MaxPeak(3), MaxPeak(3)]/2;
-    AveragePeaks = average_peaks_in_range(PeriodicPeaks, Range);
+    AveragePeaks = oscip.average_peaks_in_range(PeriodicPeaks, Range);
     MaxPeak(2) = AveragePeaks(2);
     MaxPeak(3) = AveragePeaks(3);
 else

@@ -54,6 +54,3 @@ Analysis/surfmesh.mat
 !docs/*.jpg
 
 .cycy_cache_dont_add_to_git
-
-*.mat
-.mat
