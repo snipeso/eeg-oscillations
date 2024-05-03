@@ -46,10 +46,14 @@ for FileIdx = 1:numel(Files)
         = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
 
     % identify most frequent peaks
-A=1;
+
 
     % plot
-
+if PlotIndividuals
+    Title = replace(replace(Files(FileIdx), '.mat', ''), '_', ' ');
+    oscip.plot.temporal_overview(squeeze(mean(WhitenedPower,1)), ...
+        FooofFrequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Slopes, [], [], Title)
+end
 
     % save to table
 end
