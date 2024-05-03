@@ -8,6 +8,7 @@ function [Power, Frequencies] = compute_power(Data, SampleRate, WindowLength, Ov
 % Overlap is a ratio from 0 to 1.
 % e.g.:  [Power, Frequencies] = compute_power(Data, fs, 4, 0.5);
 % Power is a Channel x Frequency matrix.
+%
 % Code by Sophia Snipes, 2024, for eeg-oscillations.
 arguments
     Data
@@ -17,8 +18,8 @@ arguments
 end
 
 % set up defaults if calculation doesn't work
- [Frequencies, nFrequencies, WindowPoints] = oscip.utils.expected_frequencies(WindowLength, SampleRate);
- BlankPower = nan(size(Data, 1), nFrequencies);
+[Frequencies, nFrequencies, WindowPoints] = oscip.utils.expected_frequencies(WindowLength, SampleRate);
+BlankPower = nan(size(Data, 1), nFrequencies);
 
 
 % remove any NaN values in time

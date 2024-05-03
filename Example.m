@@ -1,5 +1,5 @@
 % Example script: determine if there is a iota oscillation during either
-% wake or NREM sleep
+% wake or sleep.
 clear
 close all
 clc
@@ -14,7 +14,9 @@ PlotIndividuals = true;
 WelchWindowLength = 4; % in seconds
 WelchOverlap = .5; % 50% of the welch windows will overlap
 FooofFrequencyRange = [3 40]; % frequencies over which to fit the model
-
+SmoothSpan = 3;
+MaxError = .15;
+MinRSquared = .95;
 
 % locations
 CD = extractBefore(mfilename('fullpath'), 'Example'); % finds folder this script is saved in
@@ -37,10 +39,14 @@ for FileIdx = 1:numel(Files)
     [EpochPower, Frequencies] = oscip.compute_power_on_epochs(Data, ...
         SampleRate, EpochLength, WelchWindowLength, WelchOverlap);
 
+    SmoothPower = oscip.smooth_spectrum(EpochPower, Frequencies, SmoothSpan); % better for fooof if the spectra are smooth
+
     % run FOOOF
+    [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, WhitenedPower, Errors, RSquared] ...
+        = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
 
     % identify most frequent peaks
-
+A=1;
 
     % plot
 

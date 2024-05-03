@@ -1,0 +1,86 @@
+function [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, WhitenedPower, Errors, RSquared] ...
+    = fit_fooof_multidimentional(Power, Frequencies, FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters)
+% [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, WhitenedPower, Errors, RSquared] ...
+%   = fit_fooof_multidimentional(Power, Frequencies, FittingFrequencyRange, MaxError, MinRSquared, AdditionalParameters)
+%
+% Applies fooof fitting to Power that can be either Channel x Frequency or
+% Channel x Epoch x Frequency
+%
+% Code by Sophia Snipes, 2024, for eeg-oscillations.
+arguments
+    Power
+    Frequencies
+    FooofFrequencyRange = [3 40];
+    MaxError = .15;
+    MinRSquared = .95;
+    AdditionalParameters = struct();
+end
+
+% make sure frequency is last dimention
+Power = oscip.utils.standardize_power_dimentions(Power, Frequencies);
+
+% default frequencies
+FooofFrequencies = oscip.utils.expected_fooof_frequencies(Frequencies, FooofFrequencyRange);
+
+Dims = size(Power);
+
+switch numel(Dims)
+
+    case 2
+        % default outputs
+        WhitenedPower = nan(Dims(1), numel(FooofFrequencies));
+        Slopes = nan(Dims(1));
+        Intercepts = Slopes;
+        Errors = Slopes;
+        RSquared = Slopes;
+        PeriodicPeaks = nan(Dims(1), 3);
+
+        % run fooof
+        for ChannelIdx = 1:Dims(1)
+            [Slopes(ChannelIdx), Intercepts(ChannelIdx), ...
+                FooofFrequencies, Peaks, WhitenedPower(ChannelIdx, :), ...
+                Errors(ChannelIdx), RSquared(ChannelIdx)] ...
+                = oscip.fit_fooof(squeeze(Power(ChannelIdx, :)), Frequencies, ...
+                FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters);
+
+            PeriodicPeaks(ChannelIdx, :) = oscip.select_max_peak(Peaks);
+            disp(['finished ch', num2str(ChannelIdx)])
+        end
+
+    case 3
+        % default outputs
+        WhitenedPower = nan(Dims(1), Dims(2), numel(FooofFrequencies));
+        Slopes =  nan(Dims(1), Dims(2));
+        Intercepts = Slopes;
+        Errors = Slopes;
+        RSquared = Slopes;
+        PeriodicPeaks = nan(Dims(1), Dims(2), 3);
+
+        % run fooof
+        for ChannelIdx = 1:Dims(1)
+            Dimentions = Dims;
+            nEpochs = Dimentions(2);
+            parfor EpochIdx = 1:nEpochs
+                [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
+                    ~, Peaks, WhitenedPower(ChannelIdx, EpochIdx, :), ...
+                    Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
+                    = oscip.fit_fooof(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
+                    FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters);
+
+                PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
+            end
+            disp(['finished ch', num2str(ChannelIdx)])
+        end
+
+    otherwise
+        % default outputs
+        WhitenedPower = [];
+        Slopes =  [];
+        Intercepts = Slopes;
+        Errors = Slopes;
+        RSquared = Slopes;
+        PeriodicPeaks = [];
+
+        warning('Power is empty')
+end
+
