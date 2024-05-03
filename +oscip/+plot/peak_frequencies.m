@@ -18,3 +18,4 @@ plot(SpectralPeaks(ParticipantIdx, :)', repmat(ParticipantIdx, 1, size(SpectralP
 end
 xlabel('Frequency (Hz)')
 set(gca, 'ytick', [], 'YColor', 'none')
+ylim([0.5, size(SpectralPeaks, 1)+.5])
