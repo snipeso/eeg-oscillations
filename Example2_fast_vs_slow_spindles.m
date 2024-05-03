@@ -70,7 +70,7 @@ for FileIdx = 1:numel(Files)
     end
     [SlowSigma, FastSigma] = oscip.detect_custom_sigma(PeriodicPeaks, BandwidthThreshold);
     Spindles(FileIdx, 1) = SlowSigma(1);
-    Spindles(FileIdx, 2) = SlowSigma(1);
+    Spindles(FileIdx, 2) = SlowSigma(2);
 end
 
 figure
