@@ -53,6 +53,10 @@ if PlotIndividuals
     Title = replace(replace(Files(FileIdx), '.mat', ''), '_', ' ');
     oscip.plot.temporal_overview(squeeze(mean(WhitenedPower,1)), ...
         FooofFrequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Slopes, [], [], Title)
+
+    figure
+    oscip.plot.periodic_peaks(PeriodicPeaks, Scoring, ScoringIndexes, ScoringLabels, 10, .1)
+    title(Title)
 end
 
     % save to table

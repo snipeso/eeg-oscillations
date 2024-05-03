@@ -1,5 +1,5 @@
-# Quickspec
-This a little set of scripts 
+# eeg-oscillations
+This a little toolbox to detect what are the main oscillations present in EEG recordings. It does so by finding periodic bumps in the power spectrum emerging from the aperiodic signal. These scripts work for a single spectrum per recording, but work best when providing many spectra, e.g. for different channels and/or different epochs. This can be run directly on raw data.
 
 
 ## Requirements
@@ -19,7 +19,7 @@ The only other repository needed is FOOOF. Below are the instructions for instal
 
 
 ## Example data
-This repo comes with 4 example files from 2 participants, one wake (~2h watching TV) and one sleep (4 h). Data is at 200 Hz srate. Wake data was filtered from .5 to 40 Hz, sleep data was only notch filtered at 50 Hz. Wake data was average referenced, sleep data was referenced to the mastoids. These differences are not pertinent to this analysis.
+This repo comes with 4 example files from 2 participants, one wake (~2h watching TV) and one sleep (4 h). Data is at 200 Hz sampling rate. Wake data was filtered from .5 to 40 Hz, sleep data was only notch filtered at 50 Hz. Wake data was average referenced, sleep data was referenced to the mastoids. These differences are not pertinent to this analysis.
 
 Each file contains:
 - `EEG`: an EEGLAB structure, with data saved in a channel x time matrix (EEG.data), sample rate (EEG.srate), and channel information (EEG.chanlocs).
