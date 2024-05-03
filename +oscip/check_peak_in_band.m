@@ -28,23 +28,16 @@ end
 Peaks = oscip.find_mode_peroidicpeaks(PeriodicPeaks, BandwidthThreshold, ...
     PeakAmplitudeThreshold, DistributionAmplitudeThreshold, FrequencyResolution);
 
-MaxPeak = select_max_peak(Peaks, Band, nPeaks);
+MaxPeak = oscip.select_max_peak(Peaks, Band, nPeaks);
 
 if ~isempty(MaxPeak) && ~any(isnan(MaxPeak))
     isPeak = true;
 
-    F= PeriodicPeaks(:, :, 1);
-    F = F(:);
-
-    P = PeriodicPeaks(:, :, 2);
-    P = P(:);
-    BW = PeriodicPeaks(:, :, 3);
-    BW = BW(:);
-
     % identify average power and bandwidth for the chosen peak frequency
     Range = MaxPeak(1)+[-MaxPeak(3), MaxPeak(3)]/2;
-    MaxPeak(2) = mean(P(F>=Range(1)&F<=Range(2)));
-    MaxPeak(3) = mean(BW(F>=Range(1)&F<=Range(2)));
+    AveragePeaks = average_peaks_in_range(PeriodicPeaks, Range);
+    MaxPeak(2) = AveragePeaks(2);
+    MaxPeak(3) = AveragePeaks(3);
 else
     isPeak = false;
     MaxPeak = nan(1, 3);

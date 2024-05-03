@@ -36,6 +36,10 @@ Alpha = .1;
 CD = extractBefore(mfilename('fullpath'), 'Example'); % finds folder this script is saved in
 DataFolder = fullfile(CD, 'ExampleData');
 
+% stages
+StageLabels = {'W', 'R', 'NR'};
+StageIndexes = {0, 1, [-2, -3]};
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% run
@@ -60,15 +64,26 @@ for FileIdx = 1:numel(Files)
     [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, WhitenedPower, Errors, RSquared] ...
         = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
 
-    % identify iota
-    [isPeak, MaxPeak] = oscip.check_peak_in_band(PeriodicPeaks, Band, 1, BandwidthThreshold, PeakAmplitudeThreshold);
+    % identify iota for each stage
+    for StageIdx = 1:numel(StageLabels)
+        StageEpochs = ismember(Scoring, StageIndexes{StageIdx});
+        Epochs = PeriodicPeaks(:, StageEpochs, :);
+        if isempty(Epochs)
+            HasIota.([StageLabels{StageIdx}, '_Iota'])(FileIdx) = nan;
+            continue
+        end
+        [isPeak, MaxPeak] = oscip.check_peak_in_band(Epochs, ...
+            Band, 1, BandwidthThreshold, PeakAmplitudeThreshold);
 
-    % save to table
-    HasIota.File(FileIdx) = Files(FileIdx);
-    HasIota.HasIota(FileIdx) = isPeak;
-    HasIota.IotaFrequency(FileIdx) = MaxPeak(1);
-    HasIota.IotaAmplitude(FileIdx) = MaxPeak(2);
+        HasIota.File(FileIdx) = Files(FileIdx);
 
+        % save to table
+        if isPeak
+            HasIota.([StageLabels{StageIdx}, '_Iota'])(FileIdx) = MaxPeak(1);
+        else
+            HasIota.([StageLabels{StageIdx}, '_Iota'])(FileIdx) = nan;
+        end
+    end
 
     % plot
     if PlotIndividuals
@@ -82,3 +97,5 @@ for FileIdx = 1:numel(Files)
     end
 end
 
+
+disp(HasIota)
