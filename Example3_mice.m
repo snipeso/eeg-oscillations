@@ -1,5 +1,4 @@
-% Example script: determine if there is a iota oscillation during either
-% wake or sleep. Starts from raw or minimally processed data.
+% Runs the code on animal data (from A. Osorio-Forero). This repo does not include the data, you'll need to have your own. Sorry :/
 clear
 close all
 clc
@@ -30,7 +29,6 @@ PeakAmplitudeThreshold = .5;
 FrequencyResolution = .25; % this determines the smoothness of the curves, at the cost of frequency resolution
 DistributionAmplitudeMin = .01; % this just excludes stupid small peaks
 
-
 % plot parameters
 ScatterSizeScaling = 50;
 Alpha = .1;
@@ -40,11 +38,13 @@ Alpha = .1;
 % ChannelsToKeep = 1:4;
 DataFolder = 'D:\Data\AlejoMouseSD';
 ChannelsToKeep = [1 2 5 6];
+ChannelsToPlot = [1:2];
 
 % stages
 StageLabels = {'W', 'R', 'NR'};
 StageIndexes = {0, 1, -1};
-EpochLength = 8;
+EpochLength = 8; % Can be as low as 4, or as high as you want. Should be multiple of 4.
+    NewSampleRate = 200;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% run
@@ -52,10 +52,8 @@ EpochLength = 8;
 Files = oscip.list_filenames(DataFolder);
 
 %%% identify main oscillations in each recording
-HasIota = table();
 for FileIdx = 1:numel(Files)
     load(fullfile(DataFolder, Files(FileIdx)), 'traces', 'b', 'traceName')
-    SampleRate = 200;
     Data = traces(ChannelsToKeep, :);
     traceName = traceName(ChannelsToKeep);
     EEG = struct();
@@ -67,22 +65,23 @@ for FileIdx = 1:numel(Files)
     EEG.xmin = 0;
     EEG.trials = 1;
     EEG.pnts = size(traces, 2);
-    EEG.nbchan = 4;
+    EEG.nbchan = size(Data, 1);
     EEG.event = [];
     EEG.setname = '';
     EEG.icasphere = '';
     EEG.icaweights = '';
     EEG.icawinv = '';
 
-
+    % downsample to decent values
     Data = pop_resample(EEG, 200);
     Data = Data.data;
 
     % calculate power
     [EpochPower, Frequencies] = oscip.compute_power_on_epochs(Data, ...
-        SampleRate, EpochLength, WelchWindowLength, WelchOverlap);
+        NewSampleRate, EpochLength, WelchWindowLength, WelchOverlap);
 
-    
+    % select most common score for each epoch (when new epoch is larger
+    % than old)
     [Scoring, ScoringIndexes, ScoringLabels] = oscip.convert_animal_scoring(b, size(EpochPower, 2), EpochLength, 4);
 
     SmoothPower = oscip.smooth_spectrum(EpochPower, Frequencies, SmoothSpan); % better for fooof if the spectra are smooth
@@ -90,28 +89,6 @@ for FileIdx = 1:numel(Files)
     % run FOOOF
     [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, WhitenedPower, Errors, RSquared] ...
         = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
-
-    % identify iota for each stage
-    for StageIdx = 1:numel(StageLabels)
-        StageEpochs = ismember(Scoring, StageIndexes{StageIdx});
-        Epochs = PeriodicPeaks(:, StageEpochs, :);
-        if isempty(Epochs)
-            HasIota.([StageLabels{StageIdx}, '_Iota'])(FileIdx) = nan;
-            continue
-        end
-        [isPeak, MaxPeak] = oscip.check_peak_in_band(Epochs, ...
-            Band, 1, BandwidthMax, PeakAmplitudeThreshold, BandwidthMin, DistributionAmplitudeMin, FrequencyResolution);
-
-        HasIota.File(FileIdx) = Files(FileIdx);
-
-        % save to table
-        if isPeak
-            HasIota.([StageLabels{StageIdx}, '_Iota'])(FileIdx) = MaxPeak(1);
-        else
-            HasIota.([StageLabels{StageIdx}, '_Iota'])(FileIdx) = nan;
-        end
-    end
-
     
     % plot
     if PlotIndividuals
@@ -119,8 +96,7 @@ for FileIdx = 1:numel(Files)
         oscip.plot.temporal_overview(squeeze(mean(WhitenedPower,1)), ...
             FooofFrequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Slopes, [], [], Title)
 
-        Channels = [1:2];
-        oscip.plot.frequency_overview(SmoothPower(Channels, :, :), Frequencies, PeriodicPeaks(Channels, :, :), ...
+        oscip.plot.frequency_overview(SmoothPower(ChannelsToPlot, :, :), Frequencies, PeriodicPeaks(ChannelsToPlot, :, :), ...
             Scoring, ScoringIndexes, ScoringLabels, ScatterSizeScaling, Alpha, true, true)
         title(Title)
 
@@ -133,6 +109,3 @@ for FileIdx = 1:numel(Files)
         end
     end
 end
-
-
-disp(HasIota)
