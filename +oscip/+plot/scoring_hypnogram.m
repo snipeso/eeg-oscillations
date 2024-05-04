@@ -10,6 +10,9 @@ axis tight
 box off
 xlabel('Time (h)')
 
+
+if numel(ScoringIndexes) > 1
 yticks(ScoringIndexes)
 yticklabels(ScoringLabels)
+end
 ylabel('')
