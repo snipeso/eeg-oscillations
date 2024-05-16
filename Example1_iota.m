@@ -24,11 +24,12 @@ MinRSquared = .95;
 
 % specific oscillation detection
 Band = [25 37]; % some participants were just at the edge of 35 Hz, but 38 Hz theres a weird artefact
-BandwidthMax = 4; % broader peaks are not oscillations
-BandwidthMin = .5; % Hz; narrow peaks are more often than not noise
-PeakAmplitudeThreshold = .5;
-FrequencyResolution = .25; % this determines the smoothness of the curves, at the cost of frequency resolution
-DistributionAmplitudeMin = .01; % this just excludes stupid small peaks
+
+
+PeakDetectionSettings = oscip.default_settings();
+PeakDetectionSettings.PeakBandwidthMax = 4; % broader peaks are not oscillations
+PeakDetectionSettings.PeakBandwidthMin = .5; % Hz; narrow peaks are more often than not noise
+PeakDetectionSettings.PeakAmplitudeMin = .5;
 
 
 % plot parameters
@@ -75,8 +76,7 @@ for FileIdx = 1:numel(Files)
             HasIota.([StageLabels{StageIdx}, '_Iota'])(FileIdx) = nan;
             continue
         end
-        [isPeak, MaxPeak] = oscip.check_peak_in_band(Epochs, ...
-            Band, 1, BandwidthMax, PeakAmplitudeThreshold, BandwidthMin, DistributionAmplitudeMin, FrequencyResolution);
+        [isPeak, MaxPeak] = oscip.check_peak_in_band(Epochs, Band, 1, PeakDetectionSettings);
 
         HasIota.File(FileIdx) = Files(FileIdx);
 

@@ -13,7 +13,7 @@ PlotIndividuals = true;
 %%% analysis parameters
 
 % power
-WelchWindowLength = 4; % in seconds
+WelchWindowLength = 8; % in seconds
 WelchOverlap = .5; % 50% of the welch windows will overlap
 
 % fooof
@@ -23,13 +23,10 @@ MaxError = .15;
 MinRSquared = .95;
 
 % specific oscillation detection
-Band = [12 18];
-BandwidthMax = 2;
-BandWidthMin = .5;
-PeakAmplitudeThreshold = .5;
-FrequencyResolution = .25; % this determines the smoothness of the curves, at the cost of frequency resolution
-DistributionAmplitudeMin = .01; % this just excludes stupid small peaks
+Settings = oscip.default_settings(); % check inside here to see what the defaults are
+% Settings.PeakBandwidthMax = 2; % and change like this any of the defaults you don't like
 
+SpindleBand = [9 17];
 
 
 % locations
@@ -63,7 +60,7 @@ for FileIdx = 1:numel(Files)
 
     % run FOOOF
     [~, ~, FooofFrequencies, PeriodicPeaks, WhitenedPower, ~, ~] ...
-        = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
+        = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange);
 
     % identify iota for each stage
     StageEpochs = ismember(Scoring, NREM);
@@ -72,7 +69,7 @@ for FileIdx = 1:numel(Files)
         Spindles(FileIdx, :) = nan;
         continue
     end
-    [SlowSigma, FastSigma] = oscip.detect_custom_sigma(PeriodicPeaks, BandwidthMax);
+    [SlowSigma, FastSigma] = oscip.detect_custom_sigma(Epochs);
     Spindles(FileIdx, 1) = SlowSigma(1);
     Spindles(FileIdx, 2) = FastSigma(1);
 end

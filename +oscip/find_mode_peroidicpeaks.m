@@ -1,13 +1,11 @@
-function Peaks = find_mode_peroidicpeaks(PeriodicPeaks, BandwidthMax, ...
-    PeakAmplitudeThreshold, DistributionBandwidthMin, DistributionAmplitudeMin, ...
-    FrequencyResolution, MinPeakDistance)
+function Peaks = find_mode_peroidicpeaks(PeriodicPeaks, Settings)
 % From a whole bunch of periodic peaks, it fits a smooth distribution,
 % finds the peaks in this distribution, and identifies those as the main
 % frequencies in that signal.
 % PeriodicPeaks is a channel x epoch x 3 matrix.
 % BandWidthThreshold is the maximum bandwidth to consider. By having a
 % maximum, it avoids considering periodic peaks that come from two
-% neighboring frequencies that largely overlap. 
+% neighboring frequencies that largely overlap.
 % FrequencyResolution is for identifying the resolution of the peaks.
 % MinPeakDistance is the minimum frequency difference between peaks.
 % Peaks is a N x 3 matrix, with the first column indicating the center
@@ -16,12 +14,7 @@ function Peaks = find_mode_peroidicpeaks(PeriodicPeaks, BandwidthMax, ...
 % Code by Sophia Snipes, 2024, for eeg-oscillations.
 arguments
     PeriodicPeaks
-    BandwidthMax = 4;
-    PeakAmplitudeThreshold = 0;
-    DistributionBandwidthMin = .5;
-    DistributionAmplitudeMin = .01;
-    FrequencyResolution = .25; % Hx
-    MinPeakDistance = 1; % Hz
+    Settings = oscip.default_settings();
 end
 
 % pool channels and epochs
@@ -29,25 +22,34 @@ PeakFrequencies = reshape(PeriodicPeaks(:, :, 1), [], 1);
 Bandwidth = reshape(PeriodicPeaks(:, :, 3), [], 1);
 Power  = reshape(PeriodicPeaks(:, :, 2), [], 1);
 
+Frequencies = min(PeakFrequencies):Settings.DistributionFrequencyResolution:max(PeakFrequencies);
+
+% select only peaks within given parameters
+PeakFrequencies = PeakFrequencies(...
+    Bandwidth >= Settings.PeakBandwidthMin & ...
+    Bandwidth <= Settings.PeakBandwidthMax &...
+    Power >= Settings.PeakAmplitudeMin);
+
 % fit smooth distribution of histogram of peak frequencies
-Frequencies = min(PeakFrequencies):FrequencyResolution:max(PeakFrequencies);
-
-
-%%
-pdca = fitdist(PeakFrequencies(Bandwidth<=BandwidthMax & Power>PeakAmplitudeThreshold), 'Kernel', 'Kernel','normal', 'Bandwidth', FrequencyResolution*2);
+pdca = fitdist(PeakFrequencies, 'Kernel', 'Kernel', 'normal', 'Bandwidth', Settings.DistributionFrequencyResolution*2);
 DistributionPeakFrequencies = pdf(pdca, Frequencies);
-figure % DEBUG
-findpeaks(DistributionPeakFrequencies, Frequencies, ...
-    'MinPeakDistance', MinPeakDistance, 'Annotate', 'extents', ...
-    'MinPeakHeight', DistributionAmplitudeMin, 'MaxPeakWidth', BandwidthMax)
-%%
+
 % find peaks in the histogram
 [pks, locs, w, ~] = findpeaks(DistributionPeakFrequencies, Frequencies, ...
-    'MinPeakDistance', MinPeakDistance, ...
-    'MinPeakHeight', DistributionAmplitudeMin, 'MinPeakProminence', DistributionAmplitudeMin, ...
-    'MinPeakWidth',DistributionBandwidthMin, 'MaxPeakWidth', BandwidthMax);
+    'MinPeakDistance', Settings.DistributionMinPeakDistance, ...
+    'MinPeakHeight', Settings.DistributionAmplitudeMin, 'MinPeakProminence', Settings.DistributionAmplitudeMin, ...
+    'MinPeakWidth', Settings.DistributionBandwidthMin, 'MaxPeakWidth', Settings.DistributionBandwidthMax);
 
 % these are the new peaks
-% Peaks = [locs', pks', w', p'] % debug
-Peaks = [locs', pks', w']; 
+Peaks = [locs', pks', w'];
+
+if strcmpi(Settings.Mode, 'debug')
+    figure
+    findpeaks(DistributionPeakFrequencies, Frequencies, ...
+        'MinPeakDistance', Settings.DistributionMinPeakDistance, ...
+        'MinPeakHeight', Settings.DistributionAmplitudeMin, 'MinPeakProminence', Settings.DistributionAmplitudeMin, ...
+        'MinPeakWidth', Settings.DistributionBandwidthMin, 'MaxPeakWidth', Settings.DistributionBandwidthMax)
+
+    disp([locs', pks', w']) % debug
+end
 end

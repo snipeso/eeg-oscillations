@@ -1,21 +1,19 @@
-function [SlowSigma, FastSigma] = detect_custom_sigma(PeriodicPeaks, BandwidthMax, PeakAmplitudeThreshold, ...
-    DistributionBandwidthMin, DistributionAmplitudeThreshold, FrequencyResolution, Band)
-% detects slow and fast sigma peak for each participant
+function [SlowSigma, FastSigma] = detect_custom_sigma(PeriodicPeaks, Band, FrequencySplit, Settings)
+% [SlowSigma, FastSigma] = detect_custom_sigma(PeriodicPeaks, Band, FrequencySplit, Settings)
+% detects slow and fast sigma peak for each participant. PeriodicPeaks is a
+% Channel x Epoch x 3 matrix, Band is the range within which to detect
+% spindles (default = [9 18] Hz), FrequencySplit is where to default seperate slow and fast
+% spindles (default = 12 Hz).
 arguments
     PeriodicPeaks
-    BandwidthMax = 2;
-    PeakAmplitudeThreshold = .1;
-    DistributionBandwidthMin = .5;
-    DistributionAmplitudeThreshold = .01;
-    FrequencyResolution = .1;
     Band = [9 18]; % Hz
+    FrequencySplit = 12; % frequency above which it conventionally counts as fast spindles
+    Settings = oscip.default_settings();
 end
 
 nPeaks = 2;
-FrequencySplit = 12; % frequency above which it conventionally counts as fast spindles
 
-Peaks = oscip.find_mode_peroidicpeaks(PeriodicPeaks, BandwidthMax, ...
-    PeakAmplitudeThreshold, DistributionBandwidthMin, DistributionAmplitudeThreshold, FrequencyResolution);
+Peaks = oscip.find_mode_peroidicpeaks(PeriodicPeaks, Settings);
 
 MaxPeaks = oscip.select_max_peak(Peaks, Band, nPeaks);
 

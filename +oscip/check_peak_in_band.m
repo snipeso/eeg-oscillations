@@ -1,7 +1,5 @@
-function [isPeak, MaxPeak] = check_peak_in_band(PeriodicPeaks, Band, nPeaks, ...
-    BandwidthMax, PeakAmplitudeThreshold, ...
-    DistributionBandwidthMin, DistributionAmplitudeMin, FrequencyResolution)
-%  [isPeak, MaxPeak] = check_peak_in_band(PeriodicPeaks, Band, nPeaks, BandwidthThreshold, PeakAmplitudeThreshold, DistributionAmplitudeThreshold, FrequencyResolution)
+function [isPeak, MaxPeak] = check_peak_in_band(PeriodicPeaks, Band, nPeaks, Settings)
+%  [isPeak, MaxPeak] = check_peak_in_band(PeriodicPeaks, Band, nPeaks, Settings)
 % checks if there was a periodic peak within a specified band that means
 % all the thresholds.
 % Outputs:
@@ -11,25 +9,16 @@ function [isPeak, MaxPeak] = check_peak_in_band(PeriodicPeaks, Band, nPeaks, ...
 % Inputs:
 % PeriodicPeaks is Channel x Epoch x 3 matrix.
 % Band is a 1 x 2 matrix (e.g. [4 8]).
-% BandPeaks is the number of peaks you want to find in the band. Normally
+% nPeaks is the number of peaks you want to find in the band. Normally
 % just 1, but if looking at sigma, better 2.
-% BandWidthThreshold is a single value from 1 to 12 (or maximum available
-% in fooof).
-% FrequencyResolution is self-explanatory. Should relate to the frequency
-% resolution of the power analysis.
 arguments
     PeriodicPeaks
     Band
     nPeaks = 2;
-    BandwidthMax = 4;
-    PeakAmplitudeThreshold = 0;
-    DistributionBandwidthMin = .5;
-    DistributionAmplitudeMin = .01;
-    FrequencyResolution = .25;
+    Settings = oscip.default_settings();
 end
 
-Peaks = oscip.find_mode_peroidicpeaks(PeriodicPeaks, BandwidthMax, ...
-    PeakAmplitudeThreshold, DistributionBandwidthMin, DistributionAmplitudeMin, FrequencyResolution);
+Peaks = oscip.find_mode_peroidicpeaks(PeriodicPeaks, Settings);
 
 MaxPeak = oscip.select_max_peak(Peaks, Band, nPeaks);
 
