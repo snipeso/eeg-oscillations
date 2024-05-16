@@ -33,8 +33,7 @@ SpindleBand = [9 17];
 CD = extractBefore(mfilename('fullpath'), 'Example'); % finds folder this script is saved in
 DataFolder = fullfile(CD, 'ExampleData');
 
-% stages
-StageLabels = {'W', 'R', 'NR'};
+% stages to look for spindles
 NREM = [-2, -3];
 
 
@@ -62,7 +61,7 @@ for FileIdx = 1:numel(Files)
     [~, ~, FooofFrequencies, PeriodicPeaks, WhitenedPower, ~, ~] ...
         = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange);
 
-    % identify iota for each stage
+    % select only NREM
     StageEpochs = ismember(Scoring, NREM);
     Epochs = PeriodicPeaks(:, StageEpochs, :);
     if isempty(Epochs)
