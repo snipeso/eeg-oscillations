@@ -13,7 +13,7 @@ PlotIndividuals = true;
 %%% analysis parameters
 
 % power
-WelchWindowLength = 4; % in seconds
+WelchWindowLength = 8; % in seconds
 WelchOverlap = .5; % 50% of the welch windows will overlap
 
 % fooof
@@ -52,7 +52,7 @@ Files = oscip.list_filenames(DataFolder);
 
 %%% identify main oscillations in each recording
 HasIota = table();
-for FileIdx = 1:numel(Files)
+for FileIdx = 3:numel(Files)
     load(fullfile(DataFolder, Files(FileIdx)), 'EEG', ...
         'EpochLength', 'Scoring', 'ScoringIndexes', 'ScoringLabels')
     SampleRate = EEG.srate;
@@ -87,7 +87,7 @@ for FileIdx = 1:numel(Files)
             HasIota.([StageLabels{StageIdx}, '_Iota'])(FileIdx) = nan;
         end
     end
-
+%%
     % plot
     if PlotIndividuals
         Title = replace(replace(Files(FileIdx), '.mat', ''), '_', ' ');

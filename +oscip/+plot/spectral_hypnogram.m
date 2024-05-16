@@ -1,6 +1,13 @@
 function spectral_hypnogram(Power, Frequencies, Time, CLims, YLims)
  % spectral_hypnogram(Power, Frequencies, Time, CLims, YLims)
  % plots a time x frequency graph
+ arguments
+     Power
+     Frequencies
+     Time
+     CLims = [];
+     YLims = [min(Frequencies), max(Frequencies)];
+ end
 
 Power = Power'; % flip so its F x T
 
