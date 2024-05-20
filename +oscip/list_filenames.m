@@ -6,3 +6,5 @@ Folder = deblank(string(ls(Folder)));
 
 Folder(strcmp(Folder, ".")) = [];
 Folder(strcmp(Folder, "..")) = [];
+
+Folder(~contains(Folder, '.')) = [];

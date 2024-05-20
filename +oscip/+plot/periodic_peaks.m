@@ -16,7 +16,7 @@ arguments
     ScoringLabels = "w";
     ScatterSizeScaling = 2;
     Alpha = .05;
-    Colors = oscip.plot.get_stage_colors(numel(ScoringIndexes));
+    Colors = oscip.plot.get_stage_colors(ScoringIndexes);
 end
 
 hold on

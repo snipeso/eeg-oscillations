@@ -10,7 +10,7 @@ arguments
     yLog = true;
 end
 
-Colors = oscip.plot.get_stage_colors(numel(ScoringIndexes));
+Colors = oscip.plot.get_stage_colors(ScoringIndexes);
 
 hold on
 for StageIdx = 1:numel(ScoringIndexes)
