@@ -24,19 +24,19 @@ Settings = oscip.default_settings(); % check inside here to see what the default
 % Data = EEG.data;
 % EpochLength = epochl;
 
-% % epileptic kid, great iota
-% load('D:\Data\ElenaEpilepsy\raw\PIota\EPISL_MU_09_allData_cut.mat', 'pat')
-% Data = pat.data;
-% SampleRate = pat.fs;
-% EpochLength = 20;
-% vissymb = repmat('0', 1, round(size(Data, 2)*EpochLength/60/60));
-% 
-% ScoringWhole = nan(1, numel(vissymb));
-% ScoringWhole(vissymb=='0') = 0;
-% ScoringWhole(vissymb=='1') = -1;
-% ScoringWhole(vissymb=='2') = -2;
-% ScoringWhole(vissymb=='3') = -3;
-% ScoringWhole(vissymb=='r') = 1;
+% epileptic kid, great iota
+load('D:\Data\ElenaEpilepsy\raw\PIota\EPISL_MU_09_allData_cut.mat', 'pat')
+Data = pat.data;
+SampleRate = pat.fs;
+EpochLength = 20;
+vissymb = repmat('0', 1, round(size(Data, 2)*EpochLength/60/60));
+
+ScoringWhole = nan(1, numel(vissymb));
+ScoringWhole(vissymb=='0') = 0;
+ScoringWhole(vissymb=='1') = -1;
+ScoringWhole(vissymb=='2') = -2;
+ScoringWhole(vissymb=='3') = -3;
+ScoringWhole(vissymb=='r') = 1;
 
 
 

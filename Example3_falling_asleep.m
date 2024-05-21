@@ -12,20 +12,20 @@ PlotIndividuals = true;
 %%% analysis parameters
 
 % power
-WelchWindowLength = 2; % in seconds
-WelchOverlap = .75; % 50% of the welch windows will overlap
+WelchWindowLength = 8; % in seconds
+WelchOverlap = .5; % 50% of the welch windows will overlap
 
 % fooof
 FooofFrequencyRange = [3 40]; % frequencies over which to fit the model
 SmoothSpan = 3;
-MaxError = .15;
-MinRSquared = .95;
-Refresh = true;
+MaxError = .18;
+MinRSquared = .96;
+Refresh = false;
 
 % plot parameters
 ScatterSizeScaling = 20;
 Alpha = .1;
-NewEpochLength = 10;
+NewEpochLength = 20;
 OldEpochLength = 20;
 
 % locations
@@ -37,7 +37,7 @@ end
 
 
 % time to keep
-TimeToKeep = [0.0001 60*60*1]; % in seconds
+TimeToKeep = [0.0001 60*60*2]; % in seconds
 ScoringIndexes = -3:1;
 ScoringLabels = {'N3', 'N2', 'N1', 'W', 'R'};
 
@@ -84,7 +84,7 @@ for FileIdx = 1:numel(Files)
             'FooofFrequencies', 'PeriodicPeaks', 'WhitenedPower', 'Errors','RSquared')
     end
 
-    %%
+    
     % plot
     if PlotIndividuals
         Title = replace(replace(File, '.mat', ''), '_', ' ');
@@ -93,10 +93,9 @@ for FileIdx = 1:numel(Files)
             FooofFrequencies, NewEpochLength, zeros(size(WhitenedPower, 2)), ScoringIndexes, ScoringLabels, Slopes, [], [], Title)
         set(gcf, 'InvertHardcopy', 'off', 'Color', 'w')
         print(fullfile(Destination, [FigureTitle, '_time']), '-dtiff', '-r1000')
-
-        oscip.plot.peaks_by_slopes(Slopes(1:3, :), WhitenedPower(1:3, :, :), FooofFrequencies, {EEG.chanlocs(1:3).labels})
+      
+        oscip.plot.peaks_by_slopes(PeriodicPeaks, Slopes, NewEpochLength, Title, 50, .1, flip(chART.external.colorcet('I3')))
         set(gcf, 'InvertHardcopy', 'off', 'Color', 'w')
         print(fullfile(Destination, [FigureTitle, '_slopes']), '-dtiff', '-r1000')
-
     end
 end
