@@ -1,6 +1,8 @@
 # eeg-oscillations
 This a little toolbox to detect what are the main oscillations present in EEG recordings. It does so by finding periodic bumps in the power spectrum emerging from the aperiodic signal. These scripts work for a single spectrum per recording, but work best when providing many spectra, e.g. for different channels and/or different epochs. This can be run directly on raw data.
 
+##
+
 
 ## Requirements
 The only other repository needed is FOOOF. Below are the instructions for installing the toolbox, but maybe follow first the ones provided by the FOOOF repository directly.
