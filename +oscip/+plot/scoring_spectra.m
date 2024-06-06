@@ -5,7 +5,7 @@ arguments
     Frequencies
     Scoring = zeros(1, size(Power, 1));
     ScoringIndexes = 0;
-    ScoringLabels = "w"; 
+    ScoringLabels = "w";
     xLog = false;
     yLog = true;
 end
@@ -14,7 +14,12 @@ Colors = oscip.plot.get_stage_colors(ScoringIndexes);
 
 hold on
 for StageIdx = 1:numel(ScoringIndexes)
-    Data = mean(Power(Scoring==ScoringIndexes(StageIdx), :), 1, 'omitnan');
+
+    if numel(Scoring) > 1
+        Data = mean(Power(Scoring==ScoringIndexes(StageIdx), :), 1, 'omitnan');
+    else
+        Data = Power;
+    end
     plot(Frequencies, Data, 'LineWidth', 2, 'Color',Colors(StageIdx, :))
 end
 xlim([min(Frequencies), max(Frequencies)])
@@ -29,9 +34,9 @@ end
 
 
 if yLog
-ylabel('Log power')
+    ylabel('Log power')
 else
-ylabel('Power')
+    ylabel('Power')
 end
 xlabel('Frequency (Hz)')
 

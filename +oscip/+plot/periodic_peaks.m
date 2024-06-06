@@ -23,14 +23,21 @@ hold on
 for StageIdx = 1:numel(ScoringLabels)
 
     % identify relevant epochs
+    if Scoring > 1
     Sc = Scoring==ScoringIndexes(StageIdx);
     BW = PeriodicPeaks(:, Sc, 3);
     F = PeriodicPeaks(:, Sc, 1);
     P = PeriodicPeaks(:, Sc, 2);
+    else
+    BW = PeriodicPeaks(:, 3);
+    F = PeriodicPeaks(:, 1);
+    P = PeriodicPeaks(:, 2);        
+    end
 
     BW = BW(:);
     F = F(:);
     P = P(:);
+    P = mat2gray(P)+.00001;
 
     scatter(F, BW, P*ScatterSizeScaling, 'filled', 'MarkerFaceAlpha', Alpha, ...
         'MarkerFaceColor', Colors(StageIdx, :), 'HandleVisibility','off', ...
