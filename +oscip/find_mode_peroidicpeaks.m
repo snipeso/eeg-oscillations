@@ -30,15 +30,27 @@ PeakFrequencies = PeakFrequencies(...
     Bandwidth <= Settings.PeakBandwidthMax &...
     Power >= Settings.PeakAmplitudeMin);
 
+if isempty(PeakFrequencies)
+    Peaks = [];
+    return
+end
+
 % fit smooth distribution of histogram of peak frequencies
 pdca = fitdist(PeakFrequencies, 'Kernel', 'Kernel', 'normal', 'Bandwidth', Settings.DistributionFrequencyResolution*2);
+
 DistributionPeakFrequencies = pdf(pdca, Frequencies);
 
 % find peaks in the histogram
+try
 [pks, locs, w, ~] = findpeaks(DistributionPeakFrequencies, Frequencies, ...
     'MinPeakDistance', Settings.DistributionMinPeakDistance, ...
     'MinPeakHeight', Settings.DistributionAmplitudeMin, 'MinPeakProminence', Settings.DistributionAmplitudeMin, ...
     'MinPeakWidth', Settings.DistributionBandwidthMin, 'MaxPeakWidth', Settings.DistributionBandwidthMax);
+catch
+    warning('using try/catch on findpeaks')
+    Peaks = [];
+    return
+end
 
 % these are the new peaks
 Peaks = [locs', pks', w'];

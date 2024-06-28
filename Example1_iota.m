@@ -87,7 +87,7 @@ for FileIdx = 3:numel(Files)
             HasIota.([StageLabels{StageIdx}, '_Iota'])(FileIdx) = nan;
         end
     end
-%%
+
     % plot
     if PlotIndividuals
         Title = replace(replace(Files(FileIdx), '.mat', ''), '_', ' ');

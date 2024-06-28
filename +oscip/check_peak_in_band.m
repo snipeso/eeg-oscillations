@@ -18,6 +18,12 @@ arguments
     Settings = oscip.default_settings();
 end
 
+if all(isnan(PeriodicPeaks(:)))
+    isPeak = false;
+    MaxPeak = nan(1, 3);
+    return
+end
+
 Peaks = oscip.find_mode_peroidicpeaks(PeriodicPeaks, Settings);
 
 MaxPeak = oscip.select_max_peak(Peaks, Band, nPeaks);

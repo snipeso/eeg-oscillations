@@ -14,8 +14,9 @@ arguments
     Scoring = zeros(size(PeriodicPeaks, 2), 1);
     ScoringIndexes = 0;
     ScoringLabels = "w";
-    ScatterSizeScaling = 2;
-    Alpha = .05;
+    ScatterSizeScaling = 20;
+    % Alpha = .05;
+     Alpha = .2;
     Colors = oscip.plot.get_stage_colors(ScoringIndexes);
 end
 
@@ -23,7 +24,7 @@ hold on
 for StageIdx = 1:numel(ScoringLabels)
 
     % identify relevant epochs
-    if Scoring > 1
+    if numel(Scoring) > 1
     Sc = Scoring==ScoringIndexes(StageIdx);
     BW = PeriodicPeaks(:, Sc, 3);
     F = PeriodicPeaks(:, Sc, 1);
@@ -48,7 +49,7 @@ end
 % legend(ScoringLabels)
 legend(ScoringLabels)
 
-ylim([1 12])
+ylim([.5 12])
 ylabel('Bandwidth (Hz)')
 set(legend, 'ItemTokenSize', [10 10], 'location', 'northwest')
 
