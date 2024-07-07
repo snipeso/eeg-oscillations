@@ -1,4 +1,4 @@
-function [Slope, Intercept, FooofFrequencies, PeriodicPeaks, WhitenedPower, Error, RSquared] ...
+function [Slope, Intercept, FooofFrequencies, PeriodicPeaks, PeriodicPower, Error, RSquared] ...
     = fit_fooof(Power, Frequencies, FittingFrequencyRange, MaxError, MinRSquared, AdditionalParameters)
 % FooofModel = fit_fooof(Power, Frequencies, FittingFrequencyRange, AdditionalParameters)
 % Fits the fooof model to determine spectral parameters. This is script is little
@@ -20,7 +20,7 @@ end
 Slope = nan;
 Intercept = nan;
 FooofFrequencies = oscip.utils.expected_fooof_frequencies(Frequencies, FittingFrequencyRange);
-WhitenedPower = nan(1, numel(FooofFrequencies));
+PeriodicPower = nan(1, numel(FooofFrequencies));
 Error = 1; % if the model doesn't get fit, this will max out how wrong the fit was
 RSquared = 0;
 PeriodicPeaks = [];
@@ -51,7 +51,7 @@ try % since it can be finicky, better to use a try/catch statement
     Intercept = FooofModel.aperiodic_params(1);
     Slope = FooofModel.aperiodic_params(2);
     PeriodicPeaks = FooofModel.peak_params;
-    WhitenedPower = FooofModel.power_spectrum-FooofModel.ap_fit;
+    PeriodicPower = FooofModel.power_spectrum-FooofModel.ap_fit;
 catch
     warning('couldnt fit fooof')
 end

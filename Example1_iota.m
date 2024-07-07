@@ -65,7 +65,7 @@ for FileIdx = 3:numel(Files)
     SmoothPower = oscip.smooth_spectrum(EpochPower, Frequencies, SmoothSpan); % better for fooof if the spectra are smooth
 
     % run FOOOF
-    [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, WhitenedPower, Errors, RSquared] ...
+    [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
         = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
 
     % identify iota for each stage
@@ -91,7 +91,7 @@ for FileIdx = 3:numel(Files)
     % plot
     if PlotIndividuals
         Title = replace(replace(Files(FileIdx), '.mat', ''), '_', ' ');
-        oscip.plot.temporal_overview(squeeze(mean(WhitenedPower,1)), ...
+        oscip.plot.temporal_overview(squeeze(mean(PeriodicPower,1)), ...
             FooofFrequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Slopes, [], [], Title)
 
         oscip.plot.frequency_overview(SmoothPower, Frequencies, PeriodicPeaks, ...

@@ -61,7 +61,7 @@ SmoothPower = oscip.smooth_spectrum(EpochPower, Frequencies, SmoothSpan); % bett
 
 %%
 % run FOOOF
-[Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, WhitenedPower, Errors, RSquared] ...
+[Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
     = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
 
 %% plot
@@ -72,10 +72,10 @@ Scoring = ScoringWhole(1:size(EpochPower, 2));
 ScoringIndexes = -3:1:1;
 ScoringLabels = {'N3', 'N2', 'N1', 'W', 'R'};
 
-oscip.plot.temporal_overview(squeeze(mean(WhitenedPower,1, 'omitnan')), ...
+oscip.plot.temporal_overview(squeeze(mean(PeriodicPower,1, 'omitnan')), ...
     FooofFrequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Slopes, [], [])
 
-oscip.plot.frequency_overview(WhitenedPower, FooofFrequencies, PeriodicPeaks, ...
+oscip.plot.frequency_overview(PeriodicPower, FooofFrequencies, PeriodicPeaks, ...
     Scoring, ScoringIndexes, ScoringLabels, 2, .1, false, false)
 
 %%
@@ -98,7 +98,7 @@ figure
 if ~isnan(SlowSigma(1))
     Band = dsearchn(FooofFrequencies',  SlowSigma(1) + [-SlowSigma(3)/2; SlowSigma(3)/2]);
 subplot(1, 2, 1)
-TopoData = mean(mean(WhitenedPower(:, StageEpochs, Band(1):Band(2)), 2, 'omitnan'),3, 'omitnan');
+TopoData = mean(mean(PeriodicPower(:, StageEpochs, Band(1):Band(2)), 2, 'omitnan'),3, 'omitnan');
 chART.plot.eeglab_topoplot(TopoData, Chanlocs)
 title(num2str(SlowSigma(1), '%.1f'))
 end
@@ -106,7 +106,7 @@ end
 if ~isnan(FastSigma(1))
        Band = dsearchn(FooofFrequencies',  FastSigma(1) + [-FastSigma(3)/2; FastSigma(3)/2]);
 subplot(1, 2, 2)
-TopoData = mean(mean(WhitenedPower(:, StageEpochs, Band(1):Band(2)), 2, 'omitnan'),3, 'omitnan');
+TopoData = mean(mean(PeriodicPower(:, StageEpochs, Band(1):Band(2)), 2, 'omitnan'),3, 'omitnan');
 chART.plot.eeglab_topoplot(TopoData, Chanlocs)
 title(num2str(FastSigma(1), '%.1f'))
 end
@@ -120,18 +120,18 @@ StageEpochs = ismember(Scoring, 1);
 Epochs = PeriodicPeaks(:, StageEpochs, :);
 [isPeak, MaxPeak] = oscip.check_peak_in_band(Epochs, IotaBand, 1);
 
-figure;plot(FooofFrequencies, squeeze(mean(WhitenedPower(:, StageEpochs, :), 2, 'omitnan'))')
+figure;plot(FooofFrequencies, squeeze(mean(PeriodicPower(:, StageEpochs, :), 2, 'omitnan'))')
 
 figure('Units','centimeters', 'position', [0 0 25 10])
 subplot(1, 3, 1)
-TopoData = mean(WhitenedPower(:, StageEpochs, dsearchn(FooofFrequencies', MaxPeak(1))), 2, 'omitnan');
+TopoData = mean(PeriodicPower(:, StageEpochs, dsearchn(FooofFrequencies', MaxPeak(1))), 2, 'omitnan');
 chART.plot.eeglab_topoplot(TopoData, Chanlocs)
 title(['REM iota: ', num2str(MaxPeak(1), '%.1f') ' Hz'])
 colorbar
 
 subplot(1, 3, 2)
 ControlFreq = 123;
-TopoData = mean(WhitenedPower(:, StageEpochs, ControlFreq), 2, 'omitnan');
+TopoData = mean(PeriodicPower(:, StageEpochs, ControlFreq), 2, 'omitnan');
 chART.plot.eeglab_topoplot(TopoData, Chanlocs)
 title(['ControlFreq: ', num2str(FooofFrequencies(ControlFreq), '%.1f') ' Hz'])
 colorbar
@@ -143,12 +143,12 @@ Epochs = PeriodicPeaks(:, StageEpochs, :);
 [isPeak, MaxPeak] = oscip.check_peak_in_band(Epochs, IotaBand, 1);
 
 subplot(1, 3, 3)
-TopoData = mean(WhitenedPower(:, StageEpochs, dsearchn(FooofFrequencies', MaxPeak(1))), 2, 'omitnan');
+TopoData = mean(PeriodicPower(:, StageEpochs, dsearchn(FooofFrequencies', MaxPeak(1))), 2, 'omitnan');
 chART.plot.eeglab_topoplot(TopoData, Chanlocs)
 title(['Wake iota: ', num2str(MaxPeak(1), '%.1f') ' Hz'])
 colorbar
 
-% TopoData = mean(WhitenedPower(:, StageEpochs, 50), 2, 'omitnan');
+% TopoData = mean(PeriodicPower(:, StageEpochs, 50), 2, 'omitnan');
 % chART.plot.eeglab_topoplot(TopoData, Chanlocs)
 % title(['Wake iota: ', num2str(MaxPeak(1), '%.1f') ' Hz'])
 % colorbar

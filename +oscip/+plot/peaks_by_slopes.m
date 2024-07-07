@@ -49,13 +49,13 @@ set(gca, 'Position', [Ax2.Position([1, 2]), Ax1_new.Position(3), Ax2.Position(4)
 box off
 linkaxes([Ax1, Ax2], 'x')
 
-% function peaks_by_slopes(Slopes, WhitenedPower, FooofFrequencies, ChannelLabels)
+% function peaks_by_slopes(Slopes, PeriodicPower, FooofFrequencies, ChannelLabels)
 %
 % NChannels = size(Slopes, 1);
 % figure('Units','centimeters', 'Position', [0 0 10*NChannels, 10])
 % for ChannelIdx = 1:NChannels
 %
-%     WP = squeeze(WhitenedPower(ChannelIdx, :, :));
+%     WP = squeeze(PeriodicPower(ChannelIdx, :, :));
 %     NotNan = ~isnan(WP(:, 1));
 %     WP = WP(NotNan, :);
 %

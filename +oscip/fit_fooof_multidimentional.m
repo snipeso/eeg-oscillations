@@ -1,6 +1,6 @@
-function [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, WhitenedPower, Errors, RSquared] ...
+function [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
     = fit_fooof_multidimentional(Power, Frequencies, FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters)
-% [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, WhitenedPower, Errors, RSquared] ...
+% [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
 %   = fit_fooof_multidimentional(Power, Frequencies, FittingFrequencyRange, MaxError, MinRSquared, AdditionalParameters)
 %
 % Applies fooof fitting to Power that can be either Channel x Frequency or
@@ -28,7 +28,7 @@ switch numel(Dims)
 
     case 2
         % default outputs
-        WhitenedPower = nan(Dims(1), numel(FooofFrequencies));
+        PeriodicPower = nan(Dims(1), numel(FooofFrequencies));
         Slopes = nan(Dims(1));
         Intercepts = Slopes;
         Errors = Slopes;
@@ -38,7 +38,7 @@ switch numel(Dims)
         % run fooof
         for ChannelIdx = 1:Dims(1)
             [Slopes(ChannelIdx), Intercepts(ChannelIdx), ...
-                FooofFrequencies, Peaks, WhitenedPower(ChannelIdx, :), ...
+                FooofFrequencies, Peaks, PeriodicPower(ChannelIdx, :), ...
                 Errors(ChannelIdx), RSquared(ChannelIdx)] ...
                 = oscip.fit_fooof(squeeze(Power(ChannelIdx, :)), Frequencies, ...
                 FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters);
@@ -49,7 +49,7 @@ switch numel(Dims)
 
     case 3
         % default outputs
-        WhitenedPower = nan(Dims(1), Dims(2), numel(FooofFrequencies));
+        PeriodicPower = nan(Dims(1), Dims(2), numel(FooofFrequencies));
         Slopes =  nan(Dims(1), Dims(2));
         Intercepts = Slopes;
         Errors = Slopes;
@@ -63,10 +63,10 @@ switch numel(Dims)
 
             installedParallelToolbox = license('test','distrib_computing_toolbox');
 
-            if installedParallelToolbox
+            if false & installedParallelToolbox
                 parfor EpochIdx = 1:nEpochs
                     [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
-                        ~, Peaks, WhitenedPower(ChannelIdx, EpochIdx, :), ...
+                        ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
                         Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
                         = oscip.fit_fooof(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
                         FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters);
@@ -79,7 +79,7 @@ switch numel(Dims)
 
                 for EpochIdx = 1:nEpochs
                     [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
-                        ~, Peaks, WhitenedPower(ChannelIdx, EpochIdx, :), ...
+                        ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
                         Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
                         = oscip.fit_fooof(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
                         FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters);
@@ -92,7 +92,7 @@ switch numel(Dims)
 
     otherwise
         % default outputs
-        WhitenedPower = [];
+        PeriodicPower = [];
         Slopes =  [];
         Intercepts = Slopes;
         Errors = Slopes;
