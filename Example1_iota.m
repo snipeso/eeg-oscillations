@@ -29,7 +29,7 @@ Band = [25 37]; % some participants were just at the edge of 35 Hz, but 38 Hz th
 PeakDetectionSettings = oscip.default_settings();
 PeakDetectionSettings.PeakBandwidthMax = 4; % broader peaks are not oscillations
 PeakDetectionSettings.PeakBandwidthMin = .5; % Hz; narrow peaks are more often than not noise
-PeakDetectionSettings.PeakAmplitudeMin = .5;
+% PeakDetectionSettings.PeakAmplitudeMin = .5;
 
 
 % plot parameters

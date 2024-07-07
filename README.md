@@ -1,11 +1,39 @@
 # eeg-oscillations
 This a little toolbox to detect what are the main oscillations present in EEG recordings. It does so by finding periodic bumps in the power spectrum emerging from the aperiodic signal. These scripts work for a single spectrum per recording, but work best when providing many spectra, e.g. for different channels and/or different epochs. This can be run directly on raw data.
 
-##
+## How to run
+1. set up FOOOF for matlab (see below)
+2. Make sure the folder containing +oscip is added to the matlab path 
+3. Run one of the three example scripts 
+
+
+### How to detect iota
+Try first the example script [Example1](./Example1_iota.m). Below are the minimum steps necessary:
+
+1. Detect power: `[Power, Frequencies] = oscip.compute_power_on_epochs(Data, SampleRate, EpochLength)`. Data needs to be a Channel x Time matrix. It can even be completely unpreprocessed, although it helps if it has been preprocessed. A good epoch length is 20 or 30 (seconds). If you don't want epochs, you can run `[Power, Frequencies] = oscip.compute_power(Data, SampleRate)`, but then you really need the data preprocessed. You can also calculate power on your own if you prefer, but later results may vary.
+2. Smooth power: `Power = oscip.smooth_spectrum(Power, Frequencies, 2)`. This helps avoid spurious peaks that emerge from spectra calculated over too-short epochs. 
+3. Run FOOOF on all the data: `[~, ~, FooofFrequencies, PeriodicPeaks, PeriodicPower] = oscip.fit_fooof_multidimentional(Power, Frequencies, [3 40])`. This loops through channels and epochs, and expects power to be Channel x Epoch x Frequency or Channel x Frequency. If you only have one spectrum, you can just run `[~, ~, FooofFrequencies, PeriodicPeaks, PeriodicPower] = oscip.fit_fooof(Power, Frequencies, [3 40])`.
+
+If you ran the multidimentional function, PeriodicPeaks is a Channel x Epoch x 3 matrix, with the third dimention containing peak frequency, peak amplitude, and peak bandwidth for the periodic peak with the largest amplitude for a given channel&epoch. If you ran just `fit_fooof`, then periodic peaks is a P x 3 matrix, with every peak detected in the spectrum listed.
+
+To detect whether iota is present in the spectrum, especially if its in a multidipentioanl PeriodicPeaks matrix, run the following:
+
+```
+Band = [25 35];
+nPeaks = 1;
+PeakDetectionSettings = oscip.default_settings();
+PeakDetectionSettings.PeakBandwidthMax = 4; % broader peaks are not oscillations
+PeakDetectionSettings.PeakBandwidthMin = .5; % Hz; narrow peaks are more often than not noise
+
+[isPeak, MaxPeak] = oscip.check_peak_in_band(PeriodicPeaks, Band, nPeaks, PeakDetectionSettings);
+```
+
+
+## Available functions
 
 
 ## Requirements
-The only other repository needed is FOOOF. Below are the instructions for installing the toolbox, but maybe follow first the ones provided by the FOOOF repository directly.
+The only other repository needed is FOOOF. Below are the instructions for installing the FOOOF code for MATLAB, but maybe follow first the instructions provided by the FOOOF repository directly.
 
 ### to run fooof scripts on windows
 
