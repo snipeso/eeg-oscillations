@@ -63,7 +63,7 @@ switch numel(Dims)
 
             installedParallelToolbox = license('test','distrib_computing_toolbox');
 
-            if false & installedParallelToolbox
+            if installedParallelToolbox
                 parfor EpochIdx = 1:nEpochs
                     [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
                         ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
