@@ -24,6 +24,9 @@ FooofFrequencies = oscip.utils.expected_fooof_frequencies(Frequencies, FooofFreq
 
 Dims = size(Power);
 
+nEpochs = Dims(2);
+nChannels = Dims(1);
+
 switch numel(Dims)
 
     case 2
@@ -56,14 +59,14 @@ switch numel(Dims)
         RSquared = Slopes;
         PeriodicPeaks = nan(Dims(1), Dims(2), 3);
 
+        % check if there's parallel processing available
+        installedParallelToolbox = license('test','distrib_computing_toolbox');
+
         % run fooof
-        for ChannelIdx = 1:Dims(1)
-            Dimentions = Dims;
-            nEpochs = Dimentions(2);
+        if installedParallelToolbox && Dims(2) > 50 && Dims(2) > Dims(1)
 
-            installedParallelToolbox = license('test','distrib_computing_toolbox');
-
-            if installedParallelToolbox
+            % if epochs more than channels
+            for ChannelIdx = 1:nChannels
                 parfor EpochIdx = 1:nEpochs
                     [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
                         ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
@@ -73,11 +76,12 @@ switch numel(Dims)
 
                     PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
                 end
+            end
+        elseif installedParallelToolbox && Dims(1) > 50 && Dims(1) >= Dims(2)
 
-            else
-                warning('This could be slow. if you have the option, install the parallel computing toolbox.')
-
-                for EpochIdx = 1:nEpochs
+            % if channels more than epochs
+            for EpochIdx = 1:nEpochs
+                parfor ChannelIdx = 1:nChannels
                     [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
                         ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
                         Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
@@ -87,7 +91,23 @@ switch numel(Dims)
                     PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
                 end
             end
-            disp(['finished ch', num2str(ChannelIdx)])
+
+        else
+            warning('This could be slow. if you have the option, install the parallel computing toolbox.')
+
+            for ChannelIdx = 1:nChannels
+                for EpochIdx = 1:nEpochs
+                    [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
+                        ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
+                        Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
+                        = oscip.fit_fooof(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
+                        FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters);
+
+                    PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
+                end
+                disp(['finished ch', num2str(ChannelIdx)])
+            end
+
         end
 
     otherwise
