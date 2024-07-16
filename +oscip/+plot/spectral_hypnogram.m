@@ -17,6 +17,8 @@ xlabel('Time (h)')
 
 if ~isempty(CLims)
     clim(CLims)
+else
+clim(quantile(Power(:), [0 .999]));
 end
 
 set(gca, 'YDir', 'normal')

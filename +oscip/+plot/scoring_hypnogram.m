@@ -10,6 +10,8 @@ axis tight
 box off
 xlabel('Time (h)')
 
-yticks(ScoringIndexes)
-yticklabels(ScoringLabels)
+[Sorted, Order] = sort(ScoringIndexes);
+
+yticks(Sorted)
+yticklabels(ScoringLabels(Order))
 ylabel('')

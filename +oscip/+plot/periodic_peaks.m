@@ -26,6 +26,11 @@ for StageIdx = 1:numel(ScoringLabels)
     % identify relevant epochs
     if numel(Scoring) > 1
     Sc = Scoring==ScoringIndexes(StageIdx);
+    
+    if nnz(Sc) < 1
+        continue
+    end
+
     BW = PeriodicPeaks(:, Sc, 3);
     F = PeriodicPeaks(:, Sc, 1);
     P = PeriodicPeaks(:, Sc, 2);
@@ -35,19 +40,20 @@ for StageIdx = 1:numel(ScoringLabels)
     P = PeriodicPeaks(:, 2);        
     end
 
+   
     BW = BW(:);
     F = F(:);
     P = P(:);
     P = mat2gray(P)+.00001;
 
+
     scatter(F, BW, P*ScatterSizeScaling, 'filled', 'MarkerFaceAlpha', Alpha, ...
         'MarkerFaceColor', Colors(StageIdx, :), 'HandleVisibility','off', ...
         'DisplayName',ScoringLabels{StageIdx});
-    scatter(0, 0, nan, 'MarkerFaceColor', Colors(StageIdx, :), 'MarkerEdgeColor','none');
+    scatter(0, 0, nan, 'MarkerFaceColor', Colors(StageIdx, :), 'MarkerEdgeColor','none', 'DisplayName', ScoringLabels{StageIdx});
 end
 
-% legend(ScoringLabels)
-legend(ScoringLabels)
+legend
 
 ylim([.5 12])
 ylabel('Bandwidth (Hz)')
