@@ -8,8 +8,10 @@ if isempty(PeriodicPeaks)
     return
 end
 
-PeriodicPeaksMin = PeriodicPeaks(:, 1)-PeriodicPeaks(:, 3)./2;
-PeriodicPeaksMax = PeriodicPeaks(:, 1)+PeriodicPeaks(:, 3)./2;
+Bandwidth = (PeriodicPeaks(:, 3)./2);
+
+PeriodicPeaksMin = PeriodicPeaks(:, 1)-Bandwidth;
+PeriodicPeaksMax = PeriodicPeaks(:, 1)+Bandwidth;
 
 Remove = PeriodicPeaksMin<FittingFrequencyRange(1) | ...
     PeriodicPeaksMax > FittingFrequencyRange(2);
