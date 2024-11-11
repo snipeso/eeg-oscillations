@@ -68,6 +68,8 @@ switch numel(Dims)
             % if epochs more than channels
             for ChannelIdx = 1:nChannels
                 parfor EpochIdx = 1:nEpochs
+                  % for EpochIdx = 1:nEpochs
+                  %     disp('debug')
                     [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
                         ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
                         Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
@@ -76,6 +78,7 @@ switch numel(Dims)
 
                     PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
                 end
+                disp(['Finished ', num2str(ChannelIdx)])
             end
         elseif installedParallelToolbox && Dims(1) > 50 && Dims(1) >= Dims(2)
 

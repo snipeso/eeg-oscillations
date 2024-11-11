@@ -15,7 +15,7 @@ sScoring(b=='t') = -1;
 
 
 NewScoring = nan(1, NEpochs);
-Starts = 1:NewEpochLength/OldEpochLength:numel(b);
+Starts = 1:round(NewEpochLength/OldEpochLength):numel(b);
 Ends = unique([Starts(2:end)-1, numel(b)]);
 
 for EpochIdx = 1:NEpochs

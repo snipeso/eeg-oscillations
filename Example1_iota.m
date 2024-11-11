@@ -53,6 +53,7 @@ Files = oscip.list_filenames(DataFolder);
 %%% identify main oscillations in each recording
 HasIota = table();
 for FileIdx = 3:numel(Files)
+    tic
     load(fullfile(DataFolder, Files(FileIdx)), 'EEG', ...
         'EpochLength', 'Scoring', 'ScoringIndexes', 'ScoringLabels')
     SampleRate = EEG.srate;
@@ -96,6 +97,7 @@ for FileIdx = 3:numel(Files)
 
         oscip.plot.frequency_overview(SmoothPower, Frequencies, PeriodicPeaks, ...
             Scoring, ScoringIndexes, ScoringLabels, ScatterSizeScaling, Alpha)
+        toc
         title(Title)
     end
 end

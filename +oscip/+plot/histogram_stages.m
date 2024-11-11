@@ -4,7 +4,7 @@ Colors = oscip.plot.get_stage_colors(ScoringIndexes);
 
 hold on
 for StageIdx = 1:numel(ScoringIndexes)
-    Data = mean(Feature(Scoring==ScoringIndexes(StageIdx)), 1, 'omitnan');
+    Data = mean(Feature(:, Scoring==ScoringIndexes(StageIdx)), 1, 'omitnan');
     histogram(Data, 'FaceColor', Colors(StageIdx, :), 'FaceAlpha', .4, 'EdgeColor','none', 'Normalization','pdf')
 end
 
