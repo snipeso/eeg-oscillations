@@ -21,6 +21,9 @@ if numel(size(Power)) == 2
 end
 
 figure('Units','centimeters', 'Position',[0 0 20 10], 'Color','w')
+if all(isnan(Power))
+    return
+end
 
 subplot(1, 2, 1)
 oscip.plot.scoring_spectra(squeeze(mean(Power, 1, 'omitnan')), Frequencies, ...

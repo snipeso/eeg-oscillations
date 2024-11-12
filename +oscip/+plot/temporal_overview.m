@@ -32,6 +32,10 @@ Time = linspace(0, nEpochs*EpochLength/60/60, nEpochs);
 
 figure('Units','centimeters', 'Position',[0 0 20 10], 'Color','w')
 
+if all(isnan(Power))
+    return
+end
+
 %%% plot power
 subplot(3, 1, 1:2)
 oscip.plot.spectral_hypnogram(Power, Frequencies, Time, CLims, YLims)
