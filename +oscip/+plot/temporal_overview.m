@@ -17,7 +17,7 @@ arguments
     Power
     Frequencies
     EpochLength
-    Scoring = nan(1, size(Power, 2));
+    Scoring = nan(1, size(Power, 1));
     ScoringIndexes = 0;
     ScoringLabels = 'w';
     Slopes = [];
