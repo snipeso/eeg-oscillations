@@ -38,6 +38,7 @@ end
 
 %%% plot power
 subplot(3, 1, 1:2)
+
 oscip.plot.spectral_hypnogram(Power, Frequencies, Time, CLims, YLims)
 xlabel('')
 A1 = gca;

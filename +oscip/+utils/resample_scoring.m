@@ -4,6 +4,11 @@ function NewScoring = resample_scoring(OldScoring, OldEpochLength, NewEpochLengt
 % assign a score to each timepoint in the recording
 ScoringInTime = oscip.utils.scoring2time(OldScoring, OldEpochLength, SampleRate, NPoints);
 
+if isempty(NewEpochLength)
+    NewScoring = ScoringInTime;
+    return
+end
+
 % new epoch start and end times
 Starts = unique([1:NewEpochLength:numel(ScoringInTime), numel(ScoringInTime)]);
 Ends = Starts(2:end)-1;
