@@ -14,6 +14,8 @@ xLog = false;
 yLog = true;
 end
 
+
+
 if numel(size(Power)) == 2
     Power = permute(Power, [1 3 2]);
     PeriodicPeaks = permute(PeriodicPeaks, [1, 3, 2]);
@@ -28,6 +30,12 @@ end
 subplot(1, 2, 1)
 oscip.plot.scoring_spectra(squeeze(mean(Power, 1, 'omitnan')), Frequencies, ...
     Scoring, ScoringIndexes, ScoringLabels, xLog, yLog)
+
+
+if not(any(not(isnan(PeriodicPeaks(:)))))
+    return
+end
+
 xlim([min(Frequencies) max(PeriodicPeaks(:, :, 1), [], 'all')])
 
 
