@@ -49,12 +49,22 @@ subplot(3, 1, 3)
 hold on
 A2 = gca;
 
+% plot day/night patches
+if size(Scoring, 1)==2 % if a second vector is provided with day/night info
+    Daylight = nan(1, nEpochs);
+    Daylight(Scoring(2, :)==1) = min(ScoringIndexes)-1;
+  plot(Time, Daylight, 'Color', [1 1 .8], 'LineWidth',20)
+end
+
+
+% plot slopes
 if ~isempty(Slopes)
     Alpha = 1/size(Slopes, 1);
     plot(Time, -Slopes, 'Color', [.2 .2 .2 Alpha])
     ylabel('Slope (a.u.)')
 end
 
-oscip.plot.scoring_hypnogram(Scoring, Time, ScoringIndexes, ScoringLabels)
+% plot scoring
+oscip.plot.scoring_hypnogram(Scoring(1, :), Time, ScoringIndexes, ScoringLabels)
 linkaxes([A1, A2], 'x')
 end

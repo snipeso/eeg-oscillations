@@ -10,7 +10,7 @@ if isempty(NewEpochLength)
 end
 
 % new epoch start and end times
-Starts = unique([1:NewEpochLength:numel(ScoringInTime), numel(ScoringInTime)]);
+Starts = unique([1:NewEpochLength*SampleRate:numel(ScoringInTime), numel(ScoringInTime)]);
 Ends = Starts(2:end)-1;
 Starts = Starts(1:end-1);
 
