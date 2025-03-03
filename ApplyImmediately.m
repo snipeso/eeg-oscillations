@@ -1,4 +1,26 @@
+clear
+clc
+close all
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Select a file:
+
+% SET the path of the file
+
+EEGFilepath = 'D:\Code\MyToolboxes\eeg-oscillations\ExampleData\P09_Sleep_NightPre.mat';
+
+load(EEGFilepath, 'EEG', 'Scoring', 'ScoringIndexes', 'ScoringLabels', 'EpochLength') % load in the data however you have it
+
+% EEG should be a EEGLAB structure. Needs to have fields .srate for the
+% sample rate and .data with a channel x time matrix. Plotting the
+% topographies requires a .chanlocs.
+
+%%% Write in manually if not loaded in from file
+
+% EpochLength = 30; 
+% Scoring = []; % leave empty if you don't have scoring data. Otherwise, should be an array of numbers indicating different stages for each epoch
+% ScoringIndexes = []; % all the numbers in the Scoring array, in order
+% ScoringLabels = {}; % the label to assign to each number
 
 % power
 WelchWindowLength = 2; % in seconds
@@ -10,16 +32,12 @@ SmoothSpan = 3;
 MaxError = .15;
 MinRSquared = .95;
 
-% specific oscillation detection
-Settings = oscip.default_settings(); % check inside here to see what the defaults are
-
-
 Data = EEG.data;
-
 SampleRate = EEG.srate;
-EpochLength = 10;
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Run FOOOF on epochs
 
 % calculate power
 [EpochPower, Frequencies] = oscip.compute_power_on_epochs(Data, ...
@@ -32,16 +50,24 @@ SmoothPower = oscip.smooth_spectrum(EpochPower, Frequencies, SmoothSpan); % bett
 [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
     = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
 
-%% plot
 
-% close all
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Plot
+
+
+%% plot periodic activity and slopes in time
+
+if isempty (Scoring)
 Scoring = zeros(1, size(Slopes, 2));
 ScoringIndexes = -3:1:1;
 ScoringLabels = {'N3', 'N2', 'N1', 'W', 'R'};
+end
 
 oscip.plot.temporal_overview(squeeze(mean(PeriodicPower,1, 'omitnan')), ...
     FooofFrequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Slopes, [], [])
+
+%% plot all periodic peak frequencies by sleep stage
 
 oscip.plot.frequency_overview(PeriodicPower, FooofFrequencies, PeriodicPeaks, ...
     Scoring, ScoringIndexes, ScoringLabels, 2, .1, false, false)
