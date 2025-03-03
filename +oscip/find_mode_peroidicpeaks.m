@@ -55,6 +55,8 @@ end
 % these are the new peaks
 Peaks = [locs', pks', w'];
 
+% TODO: minimum number of points to keep a peak
+
 if strcmpi(Settings.Mode, 'debug')
     figure
     findpeaks(DistributionPeakFrequencies, Frequencies, ...

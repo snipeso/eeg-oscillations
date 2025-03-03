@@ -36,7 +36,7 @@ PeakDetectionSettings.PeakBandwidthMin = .5; % Hz; narrow peaks are more often t
 The only other repository needed is FOOOF. Below are the instructions for installing the FOOOF code for MATLAB, but maybe follow first the instructions provided by the FOOOF repository directly.
 The code runs a lot faster if you have the Matlab Parallel processing toolbox.
 
-The example script [ApplyImmediately.m](./ApplyImmediately.m) has some plots that rely on EEGLAB and my plotting toolbox [chART](https://github.com/snipeso/chart). 
+The example script [ApplyImmediately.m](./Example0_ApplyImmediately.m) has some plots that rely on EEGLAB and my plotting toolbox [chART](https://github.com/snipeso/chart). 
 
 
 ### to run fooof scripts on windows

@@ -1,5 +1,5 @@
 function frequency_overview(Power, Frequencies, PeriodicPeaks, Scoring, ScoringIndexes, ScoringLabels, ScatterSizeScaling, Alpha, xLog, yLog)
-% frequency_overview(Power, Frequencies, PeriodicPeaks, Scoring, ScoringIndexes, ScoringLabels, ScatterSizeScaling, Alpha)
+% frequency_overview(Power, Frequencies, PeriodicPeaks, Scoring, ScoringIndexes, ScoringLabels, ScatterSizeScaling, Alpha, xLog, yLog)
 % Power is a channel x epoch x frequency matrix.
 arguments
 Power
