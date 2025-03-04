@@ -91,5 +91,10 @@ xlim([.5 4.5])
 [BandByStage, PeakDetectionSettings] = oscip.peaks_by_stage(PeriodicPeaks, Scoring);
 
 
+%%
+
+Bands = BandByStage(BandByStage.Stages==1, :);
+
+oscip.plot.band_timecourse(PeriodicPower, FooofFrequencies, EpochLength, Bands,10, Scoring, ScoringIndexes, ScoringLabels);
 
 
