@@ -49,9 +49,14 @@ end
 model = oscip.sputils.init_model_params(params);
 
 % Store input data in the model
-model.freqs = freqs;
-model.power_spectrum = log10(power_spectrum);
-model.freq_range = [min(freqs), max(freqs)];
+if isempty(model.freq_range)
+    model.freq_range = [min(freqs), max(freqs)];
+end
+% range = dsearchn(freqs', [model.freq_range(1); model.freq_range(2)]);
+range = [find(freqs>=model.freq_range(1), 1, 'first'), find(freqs<=model.freq_range(2), 1, 'last')];
+model.freqs = freqs(range(1):range(2));
+model.power_spectrum = log10(power_spectrum(range(1):range(2)));
+
 model.freq_res = freqs(2) - freqs(1);
 
 % Check for issues with frequency resolution vs. peak width limits

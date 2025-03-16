@@ -62,6 +62,10 @@ if isfield(params, 'debug')
     model.debug = params.debug;
 end
 
+if isfield(params, 'freq_range')
+    model.freq_range = params.freq_range;
+end
+
 % Set internal settings
 model.gauss_std_limits = model.peak_width_limits / 2; % Convert to gaussian std limits
 model.ap_percentile_thresh = 0.025; % Percentile for selecting points for aperiodic fit

@@ -2,7 +2,6 @@ function FooofModel = specparam_matlab(Frequencies, Power, FittingFrequencyRange
 
 
 settings = oscip.sputils.check_settings(AdditionalParameters);
+settings.freq_range = FittingFrequencyRange;
 
-
-FooofModelOrig = oscip.specparam(Power', double(Frequencies), settings);
-
+FooofModel = oscip.specparam(Power', double(Frequencies), settings);
