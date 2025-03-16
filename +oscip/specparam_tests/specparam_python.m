@@ -108,32 +108,32 @@ try
     SpecModel.freq_res = double(fm.freq_res);
     
     % Extract aperiodic parameters
-    SpecModel.aperiodic_params_ = convert_pyarray_to_matlab(fm.aperiodic_params_);
+    SpecModel.aperiodic_params = convert_pyarray_to_matlab(fm.aperiodic_params);
     SpecModel.aperiodic_mode = char(fm.aperiodic_mode);
     
     % Extract modeled spectrum
-    SpecModel.modeled_spectrum_ = convert_pyarray_to_matlab(fm.modeled_spectrum_);
+    SpecModel.modeled_spectrum = convert_pyarray_to_matlab(fm.modeled_spectrum);
     
     % Extract peak parameters
-    if ~isempty(fm.peak_params_)
-        SpecModel.peak_params_ = convert_pyarray_to_matlab(fm.peak_params_);
+    if ~isempty(fm.peak_params)
+        SpecModel.peak_params = convert_pyarray_to_matlab(fm.peak_params);
     else
-        SpecModel.peak_params_ = [];
+        SpecModel.peak_params = [];
     end
     
     % Extract gaussian parameters
-    if ~isempty(fm.gaussian_params_)
-        SpecModel.gaussian_params_ = convert_pyarray_to_matlab(fm.gaussian_params_);
+    if ~isempty(fm.gaussian_params)
+        SpecModel.gaussian_params = convert_pyarray_to_matlab(fm.gaussian_params);
     else
-        SpecModel.gaussian_params_ = [];
+        SpecModel.gaussian_params = [];
     end
     
     % Extract number of peaks found
     SpecModel.n_peaks_ = double(fm.n_peaks_);
     
     % Extract error metrics
-    SpecModel.r_squared_ = double(fm.r_squared_);
-    SpecModel.error_ = double(fm.error_);
+    SpecModel.r_squared = double(fm.r_squared);
+    SpecModel.error = double(fm.error_);
     
     % Extract internal components for plotting
     SpecModel.ap_fit = convert_pyarray_to_matlab(py.getattr(fm, '_ap_fit'));
@@ -145,15 +145,15 @@ try
     
 catch ME
     % Set default/empty fields for error case
-    SpecModel.aperiodic_params_ = [NaN, NaN];
-    SpecModel.gaussian_params_ = [];
-    SpecModel.peak_params_ = [];
-    SpecModel.r_squared_ = NaN;
-    SpecModel.error_ = NaN;
-    SpecModel.modeled_spectrum_ = [];
+    SpecModel.aperiodic_params = [NaN, NaN];
+    SpecModel.gaussian_params = [];
+    SpecModel.peak_params = [];
+    SpecModel.r_squared = NaN;
+    SpecModel.error = NaN;
+    SpecModel.modeled_spectrum = [];
     SpecModel.fit_error = true;
-    SpecModel.error_msg = ['Python error: ', ME.message];
-    SpecModel.error_details = struct(...
+    SpecModel.errormsg = ['Python error: ', ME.message];
+    SpecModel.errordetails = struct(...
         'message', ME.message, ...
         'identifier', ME.identifier, ...
         'stack', ME.stack ...

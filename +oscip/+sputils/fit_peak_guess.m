@@ -24,7 +24,7 @@ freqs = model.freqs;
 if isfield(model, 'spectrum_flat')
     spectrum_flat = model.spectrum_flat;
 else
-    spectrum_flat = model.power_spectrum - oscip.sputils.gen_aperiodic(freqs, model.aperiodic_params_, model.aperiodic_mode);
+    spectrum_flat = model.power_spectrum - oscip.sputils.gen_aperiodic(freqs, model.aperiodic_params, model.aperiodic_mode);
 end
 
 % If there are no peaks to fit, return empty array

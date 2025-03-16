@@ -17,22 +17,22 @@ function peak_params = create_peak_params(model)
 
 
 
-if isempty(model.gaussian_params_)
+if isempty(model.gaussian_params)
     peak_params = [];
     return;
 end
 
 % Initialize output
-peak_params = zeros(size(model.gaussian_params_));
+peak_params = zeros(size(model.gaussian_params));
 
-for i = 1:size(model.gaussian_params_, 1)
+for i = 1:size(model.gaussian_params, 1)
     % Find the index closest to the center frequency
-    [~, ind] = min(abs(model.freqs - model.gaussian_params_(i, 1)));
+    [~, ind] = min(abs(model.freqs - model.gaussian_params(i, 1)));
     
     % Get center frequency, power, and bandwidth
-    peak_params(i, 1) = model.gaussian_params_(i, 1); % CF
-    peak_params(i, 2) = model.modeled_spectrum_(ind) - model.ap_fit(ind); % Power
-    peak_params(i, 3) = model.gaussian_params_(i, 3) * 2; % BW (2 * std)
+    peak_params(i, 1) = model.gaussian_params(i, 1); % CF
+    peak_params(i, 2) = model.modeled_spectrum(ind) - model.ap_fit(ind); % Power
+    peak_params(i, 3) = model.gaussian_params(i, 3) * 2; % BW (2 * std)
 end
 
 end

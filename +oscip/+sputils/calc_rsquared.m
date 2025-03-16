@@ -17,13 +17,13 @@ function model = calc_rsquared(model)
 
 
 
-if isempty(model.modeled_spectrum_)
-    model.r_squared_ = NaN;
+if isempty(model.modeled_spectrum)
+    model.r_squared = NaN;
     return;
 end
 
 % Calculate R^2
-r_val = corrcoef(model.power_spectrum, model.modeled_spectrum_);
-model.r_squared_ = r_val(1, 2) ^ 2;
+r_val = corrcoef(model.power_spectrum, model.modeled_spectrum);
+model.r_squared = r_val(1, 2) ^ 2;
 
 end

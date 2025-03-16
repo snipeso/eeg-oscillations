@@ -53,20 +53,20 @@ model = specparam(power_spectrum, freqs, params);
 % Check if model fitting was successful
 if isfield(model, 'fit_error') && model.fit_error
     fprintf('\n=== Model Fitting Failed ===\n');
-    fprintf('Error message: %s\n', model.error_msg);
+    fprintf('Error message: %s\n', model.errormsg);
     
     % Display specific recommendations based on the error
     fprintf('\nTroubleshooting tips:\n');
     if isfield(model, 'error_details')
-        fprintf('- Error identifier: %s\n', model.error_details.identifier);
+        fprintf('- Error identifier: %s\n', model.errordetails.identifier);
         
         % Recommend solutions based on error type
-        if contains(model.error_msg, 'NaN') || contains(model.error_msg, 'Inf')
+        if contains(model.errormsg, 'NaN') || contains(model.errormsg, 'Inf')
             fprintf('- Check your input data for NaN or Inf values\n');
             fprintf('- Try preprocessing your data to remove artifacts\n');
-        elseif contains(model.error_msg, 'dimension')
+        elseif contains(model.errormsg, 'dimension')
             fprintf('- Ensure your frequency and power spectrum arrays have matching dimensions\n');
-        elseif contains(model.error_msg, 'convergence') || contains(model.error_msg, 'fminsearch')
+        elseif contains(model.errormsg, 'convergence') || contains(model.errormsg, 'fminsearch')
             fprintf('- Try different initial parameters\n');
             fprintf('- Consider changing aperiodic_mode (fixed vs. knee)\n');
             fprintf('- Adjust peak detection thresholds\n');
@@ -85,19 +85,19 @@ else
     % Print model information for successful fit
     fprintf('\n=== Model Results ===\n');
     fprintf('Aperiodic Parameters (offset, exponent): [%.2f, %.2f]\n', ...
-        model.aperiodic_params_(1), model.aperiodic_params_(2));
-    fprintf('Number of peaks found: %d\n', size(model.peak_params_, 1));
-    fprintf('R-squared: %.4f\n', model.r_squared_);
-    fprintf('Error: %.4f\n', model.error_);
+        model.aperiodic_params(1), model.aperiodic_params(2));
+    fprintf('Number of peaks found: %d\n', size(model.peak_params, 1));
+    fprintf('R-squared: %.4f\n', model.r_squared);
+    fprintf('Error: %.4f\n', model.error);
 end
 
 % Print peak information
-if ~isempty(model.peak_params_)
+if ~isempty(model.peak_params)
     fprintf('\n=== Peak Parameters ===\n');
     fprintf('CF (Hz)   PW (log10)   BW (Hz)\n');
-    for i = 1:size(model.peak_params_, 1)
+    for i = 1:size(model.peak_params, 1)
         fprintf('%.2f      %.2f        %.2f\n', ...
-            model.peak_params_(i, 1), model.peak_params_(i, 2), model.peak_params_(i, 3));
+            model.peak_params(i, 1), model.peak_params(i, 2), model.peak_params(i, 3));
     end
 end
 
@@ -112,7 +112,7 @@ hold on;
 
 % Add model fit if available
 if ~isfield(model, 'fit_error') || ~model.fit_error
-    semilogy(freqs, 10.^model.modeled_spectrum_, 'r--', 'LineWidth', 2);
+    semilogy(freqs, 10.^model.modeled_spectrum, 'r--', 'LineWidth', 2);
     title('Power Spectrum: Original vs. Model');
     legend('Original Spectrum', 'Model Fit');
 else
@@ -133,12 +133,12 @@ if ~isfield(model, 'fit_error') || ~model.fit_error
     plot(freqs, model.ap_fit, 'g--', 'LineWidth', 2);
     
     % Extract and plot individual peaks if available
-    if ~isempty(model.gaussian_params_)
+    if ~isempty(model.gaussian_params)
         peak_fit = zeros(size(freqs));
-        for i = 1:size(model.gaussian_params_, 1)
-            center = model.gaussian_params_(i, 1);
-            height = model.gaussian_params_(i, 2);
-            std = model.gaussian_params_(i, 3);
+        for i = 1:size(model.gaussian_params, 1)
+            center = model.gaussian_params(i, 1);
+            height = model.gaussian_params(i, 2);
+            std = model.gaussian_params(i, 3);
             
             peak = height * exp(-(freqs - center).^2 / (2 * std^2));
             peak_fit = peak_fit + peak;
@@ -148,7 +148,7 @@ if ~isfield(model, 'fit_error') || ~model.fit_error
         end
     end
     
-    plot(freqs, model.modeled_spectrum_, 'c--', 'LineWidth', 2);
+    plot(freqs, model.modeled_spectrum, 'c--', 'LineWidth', 2);
     title('Model Components');
     legend('Original Spectrum', 'Aperiodic Component', 'Full Model');
 else

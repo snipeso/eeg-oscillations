@@ -18,38 +18,38 @@ function model = fit_model(model)
 
 try
     % Fit initial aperiodic component
-    model.aperiodic_params_ = oscip.sputils.robust_ap_fit(model);
-    ap_fit = oscip.sputils.gen_aperiodic(model.freqs, model.aperiodic_params_, model.aperiodic_mode);
+    model.aperiodic_params = oscip.sputils.robust_ap_fit(model);
+    ap_fit = oscip.sputils.gen_aperiodic(model.freqs, model.aperiodic_params, model.aperiodic_mode);
     
     % Flatten the power spectrum using the initial aperiodic fit
     model.spectrum_flat = model.power_spectrum - ap_fit;
     
     % Find peaks and fit with gaussians
-    model.gaussian_params_ = oscip.sputils.fit_peaks(model);
+    model.gaussian_params = oscip.sputils.fit_peaks(model);
     
     % Calculate the peak fit
-    peak_fit = oscip.sputils.gen_periodic(model.freqs, model.gaussian_params_);
+    peak_fit = oscip.sputils.gen_periodic(model.freqs, model.gaussian_params);
     
     % Create peak-removed (but not flattened) power spectrum
     spectrum_peak_rm = model.power_spectrum - peak_fit;
     
     % Run final aperiodic fit on peak-removed power spectrum
-    model.aperiodic_params_ = oscip.sputils.simple_ap_fit(model, spectrum_peak_rm);
-    ap_fit = oscip.sputils.gen_aperiodic(model.freqs, model.aperiodic_params_, model.aperiodic_mode);
+    model.aperiodic_params = oscip.sputils.simple_ap_fit(model, spectrum_peak_rm);
+    ap_fit = oscip.sputils.gen_aperiodic(model.freqs, model.aperiodic_params, model.aperiodic_mode);
     
     % Recreate the flattened spectrum based on updated aperiodic fit
     % Store the flattened spectrum for potential use by other functions
     model.spectrum_flat = model.power_spectrum - ap_fit;
     
     % Create full model fit
-    model.modeled_spectrum_ = peak_fit + ap_fit;
+    model.modeled_spectrum = peak_fit + ap_fit;
     
     % Store component fits for plotting
     model.ap_fit = ap_fit;
     model.peak_fit = peak_fit;
     
     % Calculate peak parameters from gaussian parameters
-    model.peak_params_ = oscip.sputils.create_peak_params(model);
+    model.peak_params = oscip.sputils.create_peak_params(model);
     
     % Calculate R^2 and error
     model = oscip.sputils.calc_rsquared(model);
@@ -57,17 +57,17 @@ try
     
 catch ME
     % Clear any interim model results that may have run
-    model.aperiodic_params_ = NaN(1, 2 + strcmp(model.aperiodic_mode, 'knee'));
-    model.gaussian_params_ = [];
-    model.peak_params_ = [];
-    model.r_squared_ = NaN;
-    model.error_ = NaN;
-    model.modeled_spectrum_ = [];
+    model.aperiodic_params = NaN(1, 2 + strcmp(model.aperiodic_mode, 'knee'));
+    model.gaussian_params = [];
+    model.peak_params = [];
+    model.r_squared = NaN;
+    model.error = NaN;
+    model.modeled_spectrum = [];
     model.fit_error = true;
-    model.error_msg = ME.message;
+    model.errormsg = ME.message;
     
     % Store diagnostic information
-    model.error_details = struct(...
+    model.errordetails = struct(...
         'message', ME.message, ...
         'identifier', ME.identifier, ...
         'stack', ME.stack ...

@@ -68,42 +68,42 @@ if python_available
     
     % Compare aperiodic parameters
     fprintf('\nAperiodic Parameters:\n');
-    fprintf('MATLAB: [%.4f, %.4f]\n', matlab_model.aperiodic_params_(1), matlab_model.aperiodic_params_(2));
-    fprintf('Python: [%.4f, %.4f]\n', python_model.aperiodic_params_(1), python_model.aperiodic_params_(2));
+    fprintf('MATLAB: [%.4f, %.4f]\n', matlab_model.aperiodic_params(1), matlab_model.aperiodic_params(2));
+    fprintf('Python: [%.4f, %.4f]\n', python_model.aperiodic_params(1), python_model.aperiodic_params(2));
     
     % Compare number of peaks found
     fprintf('\nNumber of peaks found:\n');
-    fprintf('MATLAB: %d\n', size(matlab_model.peak_params_, 1));
-    fprintf('Python: %d\n', size(python_model.peak_params_, 1));
+    fprintf('MATLAB: %d\n', size(matlab_model.peak_params, 1));
+    fprintf('Python: %d\n', size(python_model.peak_params, 1));
     
     % Compare goodness of fit
     fprintf('\nR-squared:\n');
-    fprintf('MATLAB: %.6f\n', matlab_model.r_squared_);
-    fprintf('Python: %.6f\n', python_model.r_squared_);
+    fprintf('MATLAB: %.6f\n', matlab_model.r_squared);
+    fprintf('Python: %.6f\n', python_model.r_squared);
     
     fprintf('\nError:\n');
-    fprintf('MATLAB: %.6f\n', matlab_model.error_);
-    fprintf('Python: %.6f\n', python_model.error_);
+    fprintf('MATLAB: %.6f\n', matlab_model.error);
+    fprintf('Python: %.6f\n', python_model.error);
     
     % Compare peak parameters
-    if ~isempty(matlab_model.peak_params_) && ~isempty(python_model.peak_params_)
+    if ~isempty(matlab_model.peak_params) && ~isempty(python_model.peak_params)
         fprintf('\nPeak Parameters:\n');
         fprintf('%-12s %-12s %-12s\n', 'CF (Hz)', 'PW (log10)', 'BW (Hz)');
         
         fprintf('\nMATLAB Peaks:\n');
-        for i = 1:size(matlab_model.peak_params_, 1)
+        for i = 1:size(matlab_model.peak_params, 1)
             fprintf('%-12.4f %-12.4f %-12.4f\n', ...
-                matlab_model.peak_params_(i, 1), ...
-                matlab_model.peak_params_(i, 2), ...
-                matlab_model.peak_params_(i, 3));
+                matlab_model.peak_params(i, 1), ...
+                matlab_model.peak_params(i, 2), ...
+                matlab_model.peak_params(i, 3));
         end
         
         fprintf('\nPython Peaks:\n');
-        for i = 1:size(python_model.peak_params_, 1)
+        for i = 1:size(python_model.peak_params, 1)
             fprintf('%-12.4f %-12.4f %-12.4f\n', ...
-                python_model.peak_params_(i, 1), ...
-                python_model.peak_params_(i, 2), ...
-                python_model.peak_params_(i, 3));
+                python_model.peak_params(i, 1), ...
+                python_model.peak_params(i, 2), ...
+                python_model.peak_params(i, 3));
         end
         
         % Compare peak frequencies to expected values
@@ -112,32 +112,32 @@ if python_available
         
         fprintf('MATLAB matches:\n');
         for i = 1:length(expected_freqs)
-            [min_diff, idx] = min(abs(matlab_model.peak_params_(:, 1) - expected_freqs(i)));
+            [min_diff, idx] = min(abs(matlab_model.peak_params(:, 1) - expected_freqs(i)));
             if min_diff < 1.0  % Consider it a match if within 1 Hz
                 fprintf('Expected: %.1f Hz, Found: %.4f Hz, Difference: %.4f Hz\n', ...
-                    expected_freqs(i), matlab_model.peak_params_(idx, 1), min_diff);
+                    expected_freqs(i), matlab_model.peak_params(idx, 1), min_diff);
             else
                 fprintf('Expected: %.1f Hz, Not found (closest is %.4f Hz, diff: %.4f Hz)\n', ...
-                    expected_freqs(i), matlab_model.peak_params_(idx, 1), min_diff);
+                    expected_freqs(i), matlab_model.peak_params(idx, 1), min_diff);
             end
         end
         
         fprintf('\nPython matches:\n');
         for i = 1:length(expected_freqs)
-            [min_diff, idx] = min(abs(python_model.peak_params_(:, 1) - expected_freqs(i)));
+            [min_diff, idx] = min(abs(python_model.peak_params(:, 1) - expected_freqs(i)));
             if min_diff < 1.0  % Consider it a match if within 1 Hz
                 fprintf('Expected: %.1f Hz, Found: %.4f Hz, Difference: %.4f Hz\n', ...
-                    expected_freqs(i), python_model.peak_params_(idx, 1), min_diff);
+                    expected_freqs(i), python_model.peak_params(idx, 1), min_diff);
             else
                 fprintf('Expected: %.1f Hz, Not found (closest is %.4f Hz, diff: %.4f Hz)\n', ...
-                    expected_freqs(i), python_model.peak_params_(idx, 1), min_diff);
+                    expected_freqs(i), python_model.peak_params(idx, 1), min_diff);
             end
         end
     end
     
     % Calculate model spectrum differences
-    if ~isempty(matlab_model.modeled_spectrum_) && ~isempty(python_model.modeled_spectrum_)
-        model_diff = matlab_model.modeled_spectrum_ - python_model.modeled_spectrum_;
+    if ~isempty(matlab_model.modeled_spectrum) && ~isempty(python_model.modeled_spectrum)
+        model_diff = matlab_model.modeled_spectrum - python_model.modeled_spectrum;
         mean_diff = mean(abs(model_diff));
         max_diff = max(abs(model_diff));
         
@@ -153,8 +153,8 @@ if python_available
     subplot(2, 2, 1);
     semilogy(freqs, power_spectrum, 'k-', 'LineWidth', 2);
     hold on;
-    semilogy(freqs, 10.^matlab_model.modeled_spectrum_, 'r--', 'LineWidth', 2);
-    semilogy(freqs, 10.^python_model.modeled_spectrum_, 'b:', 'LineWidth', 2);
+    semilogy(freqs, 10.^matlab_model.modeled_spectrum, 'r--', 'LineWidth', 2);
+    semilogy(freqs, 10.^python_model.modeled_spectrum, 'b:', 'LineWidth', 2);
     title('Power Spectrum: Original vs. Models');
     legend('Original', 'MATLAB Fit', 'Python Fit');
     xlabel('Frequency (Hz)');
@@ -165,8 +165,8 @@ if python_available
     subplot(2, 2, 2);
     plot(freqs, log10(power_spectrum), 'k-', 'LineWidth', 2);
     hold on;
-    plot(freqs, matlab_model.modeled_spectrum_, 'r--', 'LineWidth', 2);
-    plot(freqs, python_model.modeled_spectrum_, 'b:', 'LineWidth', 2);
+    plot(freqs, matlab_model.modeled_spectrum, 'r--', 'LineWidth', 2);
+    plot(freqs, python_model.modeled_spectrum, 'b:', 'LineWidth', 2);
     title('Log Power Spectrum: Original vs. Models');
     legend('Original', 'MATLAB Fit', 'Python Fit');
     xlabel('Frequency (Hz)');
@@ -186,7 +186,7 @@ if python_available
     
     % Plot differences
     subplot(2, 2, 4);
-    plot(freqs, matlab_model.modeled_spectrum_ - python_model.modeled_spectrum_, 'k-', 'LineWidth', 2);
+    plot(freqs, matlab_model.modeled_spectrum - python_model.modeled_spectrum, 'k-', 'LineWidth', 2);
     title('Model Difference (MATLAB - Python)');
     xlabel('Frequency (Hz)');
     ylabel('Difference (Log10 Power)');
@@ -202,7 +202,7 @@ else
     subplot(2, 1, 1);
     semilogy(freqs, power_spectrum, 'b-', 'LineWidth', 2);
     hold on;
-    semilogy(freqs, 10.^matlab_model.modeled_spectrum_, 'r--', 'LineWidth', 2);
+    semilogy(freqs, 10.^matlab_model.modeled_spectrum, 'r--', 'LineWidth', 2);
     title('Power Spectrum: Original vs. MATLAB Model');
     legend('Original', 'MATLAB Fit');
     xlabel('Frequency (Hz)');
@@ -213,7 +213,7 @@ else
     plot(freqs, log10(power_spectrum), 'b-', 'LineWidth', 2);
     hold on;
     plot(freqs, matlab_model.ap_fit, 'g--', 'LineWidth', 2);
-    plot(freqs, matlab_model.modeled_spectrum_, 'r--', 'LineWidth', 2);
+    plot(freqs, matlab_model.modeled_spectrum, 'r--', 'LineWidth', 2);
     title('Model Components (MATLAB)');
     legend('Original', 'Aperiodic Component', 'Full Model');
     xlabel('Frequency (Hz)');

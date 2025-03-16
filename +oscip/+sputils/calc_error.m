@@ -17,12 +17,12 @@ function model = calc_error(model)
 
 
 
-if isempty(model.modeled_spectrum_)
-    model.error_ = NaN;
+if isempty(model.modeled_spectrum)
+    model.error = NaN;
     return;
 end
 
 % Calculate MSE
-model.error_ = mean((model.power_spectrum - model.modeled_spectrum_).^2);
+model.error = mean((model.power_spectrum - model.modeled_spectrum).^2);
 
 end

@@ -119,30 +119,30 @@ params.verbose = 0;
 model = specparam(power_spectrum, freqs, params);
 
 % Check if the model fit the data
-if model.r_squared_ > 0.9
-    fprintf('✓ Test 4: Basic model fit achieves good R² (%.4f)\n', model.r_squared_);
+if model.r_squared > 0.9
+    fprintf('✓ Test 4: Basic model fit achieves good R² (%.4f)\n', model.r_squared);
     tests_passed = tests_passed + 1;
 else
-    fprintf('✗ Test 4: Basic model fit failed with poor R² (%.4f)\n', model.r_squared_);
+    fprintf('✗ Test 4: Basic model fit failed with poor R² (%.4f)\n', model.r_squared);
 end
 
 %% ===== Test 5: Aperiodic Parameter Recovery =====
 tests_run = tests_run + 1;
 
 % Test if the model recovered the aperiodic parameters correctly
-ap_offset_error = abs(model.aperiodic_params_(1) - ap_params(1));
-ap_exponent_error = abs(model.aperiodic_params_(2) - ap_params(2));
+ap_offset_error = abs(model.aperiodic_params(1) - ap_params(1));
+ap_exponent_error = abs(model.aperiodic_params(2) - ap_params(2));
 
 if ap_offset_error < 0.5 && ap_exponent_error < 0.5
     fprintf('✓ Test 5: Aperiodic parameters recovered within tolerance\n');
     fprintf('    Expected: [%.2f, %.2f], Got: [%.2f, %.2f], Error: [%.2f, %.2f]\n', ...
-        ap_params(1), ap_params(2), model.aperiodic_params_(1), model.aperiodic_params_(2), ...
+        ap_params(1), ap_params(2), model.aperiodic_params(1), model.aperiodic_params(2), ...
         ap_offset_error, ap_exponent_error);
     tests_passed = tests_passed + 1;
 else
     fprintf('✗ Test 5: Aperiodic parameter recovery failed\n');
     fprintf('    Expected: [%.2f, %.2f], Got: [%.2f, %.2f], Error: [%.2f, %.2f]\n', ...
-        ap_params(1), ap_params(2), model.aperiodic_params_(1), model.aperiodic_params_(2), ...
+        ap_params(1), ap_params(2), model.aperiodic_params(1), model.aperiodic_params(2), ...
         ap_offset_error, ap_exponent_error);
 end
 
@@ -151,7 +151,7 @@ tests_run = tests_run + 1;
 
 % Test if the model found the correct number of peaks
 expected_n_peaks = length(gauss_params) / 3;
-found_n_peaks = size(model.peak_params_, 1);
+found_n_peaks = size(model.peak_params, 1);
 
 if found_n_peaks == expected_n_peaks
     fprintf('✓ Test 6: Correct number of peaks detected (%d)\n', found_n_peaks);
@@ -170,7 +170,7 @@ for i = 1:length(gauss_params) / 3
     expected_cf = gauss_params((i-1)*3 + 1);
     
     % Find the closest peak in the results
-    [min_diff, idx] = min(abs(model.peak_params_(:, 1) - expected_cf));
+    [min_diff, idx] = min(abs(model.peak_params(:, 1) - expected_cf));
     peak_errors(i) = min_diff;
 end
 
@@ -206,7 +206,7 @@ params_knee.verbose = 0;
 model_knee = specparam(power_spectrum_knee, freqs, params_knee);
 
 % Check if the model has 3 aperiodic parameters (offset, knee, exponent)
-if length(model_knee.aperiodic_params_) == 3
+if length(model_knee.aperiodic_params) == 3
     fprintf('✓ Test 8: Knee mode detected and fit correctly\n');
     tests_passed = tests_passed + 1;
 else
@@ -239,14 +239,14 @@ try
     python_model = specparam_python(power_spectrum, freqs, params);
     
     % Compare results
-    r2_diff = abs(model.r_squared_ - python_model.r_squared_);
-    ap_diff = mean(abs(model.aperiodic_params_ - python_model.aperiodic_params_));
+    r2_diff = abs(model.r_squared - python_model.r_squared);
+    ap_diff = mean(abs(model.aperiodic_params - python_model.aperiodic_params));
     
     % Get peak frequency differences
     peak_freq_diffs = [];
-    for i = 1:size(model.peak_params_, 1)
-        if ~isempty(python_model.peak_params_)
-            [min_diff, ~] = min(abs(model.peak_params_(i, 1) - python_model.peak_params_(:, 1)));
+    for i = 1:size(model.peak_params, 1)
+        if ~isempty(python_model.peak_params)
+            [min_diff, ~] = min(abs(model.peak_params(i, 1) - python_model.peak_params(:, 1)));
             peak_freq_diffs = [peak_freq_diffs, min_diff];
         end
     end
