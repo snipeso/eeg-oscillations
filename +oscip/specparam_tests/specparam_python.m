@@ -133,7 +133,7 @@ try
     
     % Extract error metrics
     SpecModel.r_squared = double(fm.r_squared);
-    SpecModel.error = double(fm.error_);
+    SpecModel.error = double(fm.error);
     
     % Extract internal components for plotting
     SpecModel.ap_fit = convert_pyarray_to_matlab(py.getattr(fm, '_ap_fit'));
