@@ -8,6 +8,14 @@ function model = init_model_params(params)
 % OUTPUTS:
 %   model : struct
 %       Initialized model structure with default settings
+%
+% This MATLAB implementation is based on the original FOOOF project:
+% https://github.com/fooof-tools/fooof
+% Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+% Translated to MATLAB by Claude Sonnet 3.7, corrected by Sophia Snipes,
+% 2025.
+
+
 
 % Create struct with default values
 model = struct(...

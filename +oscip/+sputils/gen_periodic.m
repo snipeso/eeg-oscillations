@@ -12,6 +12,14 @@ function pe_vals = gen_periodic(freqs, gaussian_params)
 % OUTPUTS:
 %   pe_vals : 1d array
 %       Values for periodic component at the input frequencies
+%
+% This MATLAB implementation is based on the original FOOOF project:
+% https://github.com/fooof-tools/fooof
+% Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+% Translated to MATLAB by Claude Sonnet 3.7, corrected by Sophia Snipes,
+% 2025.
+
+
 
 % Initialize output
 pe_vals = zeros(size(freqs));

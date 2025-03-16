@@ -8,6 +8,14 @@ function gaussian_params = fit_peaks(model)
 % OUTPUTS:
 %   gaussian_params : nx3 array
 %       Parameters for gaussian fits, each row as [center, height, width]
+%
+% This MATLAB implementation is based on the original FOOOF project:
+% https://github.com/fooof-tools/fooof
+% Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+% Translated to MATLAB by Claude Sonnet 3.7, corrected by Sophia Snipes,
+% 2025.
+
+
 
 freqs = model.freqs;
 flat_iter = model.spectrum_flat; % Use the flattened spectrum stored in the model

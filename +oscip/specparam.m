@@ -31,6 +31,14 @@ function SpecModel = specparam(power_spectrum, freqs, params)
 %
 % WARNING: frequency and power values inputs must be in linear space.
 %          Passing in logged frequencies and/or power spectra will produce incorrect results.
+%
+% This MATLAB implementation is based on the original FOOOF project:
+% https://github.com/fooof-tools/fooof
+% Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+% Translated to MATLAB by Claude Sonnet 3.7, corrected by Sophia Snipes,
+% 2025.
+
+
 
 % Set default parameters if not provided
 if nargin < 3 || isempty(params)
