@@ -35,7 +35,7 @@ height = 0.5;
 width = 2;
 
 % Calculate Gaussian
-gauss_data = sputils.gaussian_function(freqs, [center, height, width]);
+gauss_data = oscip.sputils.gaussian_function(freqs, [center, height, width]);
 
 % Test the peak location and height
 [max_val, max_idx] = max(gauss_data);
@@ -57,7 +57,7 @@ offset = 1;
 exponent = 1.5;
 
 % Calculate aperiodic component
-ap_data_log = sputils.gen_aperiodic(freqs, [offset, exponent], 'fixed');
+ap_data_log = oscip.sputils.gen_aperiodic(freqs, [offset, exponent], 'fixed');
 ap_data = 10.^ap_data_log;
 
 % Test the generated values using a reference calculation at specific frequencies
@@ -85,11 +85,11 @@ ap_params = [1, 1.5];
 gauss_params = [10, 0.5, 2, 20, 0.3, 4];
 
 % Calculate aperiodic component
-ap_log = sputils.gen_aperiodic(freqs, ap_params, 'fixed');
+ap_log = oscip.sputils.gen_aperiodic(freqs, ap_params, 'fixed');
 aperiodic = 10.^ap_log;
 
 % Calculate peaks
-peaks = sputils.gen_periodic(freqs, gauss_params);
+peaks = oscip.sputils.gen_periodic(freqs, gauss_params);
 
 % Calculate full power spectrum
 power_spectrum = aperiodic .* (1 + peaks);
@@ -190,7 +190,7 @@ tests_run = tests_run + 1;
 ap_params_knee = [1, 10, 1.5];  % offset, knee, exponent
 
 % Calculate aperiodic component with knee
-ap_knee_log = sputils.gen_aperiodic(freqs, ap_params_knee, 'knee');
+ap_knee_log = oscip.sputils.gen_aperiodic(freqs, ap_params_knee, 'knee');
 aperiodic_knee = 10.^ap_knee_log;
 
 % Calculate full power spectrum with the same peaks

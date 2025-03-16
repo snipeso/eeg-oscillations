@@ -21,8 +21,8 @@ freqs = model.freqs;
 power_spectrum = model.power_spectrum;
 
 % Do a quick, initial aperiodic fit
-popt = sputils.simple_ap_fit(model, power_spectrum);
-initial_fit = sputils.gen_aperiodic(freqs, popt, model.aperiodic_mode);
+popt = oscip.sputils.simple_ap_fit(model, power_spectrum);
+initial_fit = oscip.sputils.gen_aperiodic(freqs, popt, model.aperiodic_mode);
 
 % Flatten power_spectrum based on initial aperiodic fit
 flatspec = power_spectrum - initial_fit;
@@ -41,7 +41,7 @@ if length(freqs_ignore) > 2
     % Second aperiodic fit - using results of first fit as guess parameters
     model_ignore = model;
     model_ignore.freqs = freqs_ignore;
-    aperiodic_params = sputils.simple_ap_fit(model_ignore, spectrum_ignore);
+    aperiodic_params = oscip.sputils.simple_ap_fit(model_ignore, spectrum_ignore);
 else
     % If too few points for robust fit, fall back to simple fit
     aperiodic_params = popt;

@@ -81,7 +81,7 @@ while size(guess, 1) < model.max_n_peaks
     guess = [guess; guess_freq, guess_height, guess_std];
     
     % Subtract this guess gaussian from the data
-    peak_gauss = sputils.gaussian_function(freqs, [guess_freq, guess_height, guess_std]);
+    peak_gauss = oscip.sputils.gaussian_function(freqs, [guess_freq, guess_height, guess_std]);
     flat_iter = flat_iter - peak_gauss;
 end
 
@@ -91,7 +91,7 @@ guess = drop_peak_overlap(model, guess);
 
 % If there are peak guesses, fit the peaks and sort results
 if ~isempty(guess)
-    gaussian_params = sputils.fit_peak_guess(model, guess);
+    gaussian_params = oscip.sputils.fit_peak_guess(model, guess);
     [~, sort_inds] = sort(gaussian_params(:, 1)); % Sort by center frequency
     gaussian_params = gaussian_params(sort_inds, :);
 else

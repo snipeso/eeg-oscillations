@@ -18,24 +18,24 @@ function model = fit_model(model)
 
 try
     % Fit initial aperiodic component
-    model.aperiodic_params_ = sputils.robust_ap_fit(model);
-    ap_fit = sputils.gen_aperiodic(model.freqs, model.aperiodic_params_, model.aperiodic_mode);
+    model.aperiodic_params_ = oscip.sputils.robust_ap_fit(model);
+    ap_fit = oscip.sputils.gen_aperiodic(model.freqs, model.aperiodic_params_, model.aperiodic_mode);
     
     % Flatten the power spectrum using the initial aperiodic fit
     model.spectrum_flat = model.power_spectrum - ap_fit;
     
     % Find peaks and fit with gaussians
-    model.gaussian_params_ = sputils.fit_peaks(model);
+    model.gaussian_params_ = oscip.sputils.fit_peaks(model);
     
     % Calculate the peak fit
-    peak_fit = sputils.gen_periodic(model.freqs, model.gaussian_params_);
+    peak_fit = oscip.sputils.gen_periodic(model.freqs, model.gaussian_params_);
     
     % Create peak-removed (but not flattened) power spectrum
     spectrum_peak_rm = model.power_spectrum - peak_fit;
     
     % Run final aperiodic fit on peak-removed power spectrum
-    model.aperiodic_params_ = sputils.simple_ap_fit(model, spectrum_peak_rm);
-    ap_fit = sputils.gen_aperiodic(model.freqs, model.aperiodic_params_, model.aperiodic_mode);
+    model.aperiodic_params_ = oscip.sputils.simple_ap_fit(model, spectrum_peak_rm);
+    ap_fit = oscip.sputils.gen_aperiodic(model.freqs, model.aperiodic_params_, model.aperiodic_mode);
     
     % Recreate the flattened spectrum based on updated aperiodic fit
     % Store the flattened spectrum for potential use by other functions
@@ -49,11 +49,11 @@ try
     model.peak_fit = peak_fit;
     
     % Calculate peak parameters from gaussian parameters
-    model.peak_params_ = sputils.create_peak_params(model);
+    model.peak_params_ = oscip.sputils.create_peak_params(model);
     
     % Calculate R^2 and error
-    model = sputils.calc_rsquared(model);
-    model = sputils.calc_error(model);
+    model = oscip.sputils.calc_rsquared(model);
+    model = oscip.sputils.calc_error(model);
     
 catch ME
     % Clear any interim model results that may have run

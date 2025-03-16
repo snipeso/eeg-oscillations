@@ -46,7 +46,7 @@ if nargin < 3 || isempty(params)
 end
 
 % Initialize model parameters with defaults
-model = sputils.init_model_params(params);
+model = oscip.sputils.init_model_params(params);
 
 % Store input data in the model
 model.freqs = freqs;
@@ -63,7 +63,7 @@ if model.verbose && 1.5 * model.freq_res >= model.peak_width_limits(1)
 end
 
 % Run model fit
-model = sputils.fit_model(model);
+model = oscip.sputils.fit_model(model);
 
 % Return the finished model
 SpecModel = model;
