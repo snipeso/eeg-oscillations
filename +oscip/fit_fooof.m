@@ -37,8 +37,8 @@ end
 
 try % since it can be finicky, better to use a try/catch statement
     % run fooof
-    % FooofModel = fooof(Frequencies, Power, FittingFrequencyRange, AdditionalParameters, true); % old function that uses python wrapper
-    FooofModel = oscip.specparam_matlab(Frequencies, Power, FittingFrequencyRange, AdditionalParameters);
+    FooofModel = fooof(Frequencies, Power, FittingFrequencyRange, AdditionalParameters, true); % old function that uses python wrapper, maintained for preserving the original code of the iota paper
+    % FooofModel = oscip.specparam_matlab(Frequencies, Power, FittingFrequencyRange, AdditionalParameters); % new function
     Error = FooofModel.error;
     RSquared = FooofModel.r_squared;
 
