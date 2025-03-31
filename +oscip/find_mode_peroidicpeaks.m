@@ -17,35 +17,20 @@ arguments
     Settings = oscip.default_settings();
 end
 
-% pool channels and epochs
-PeakFrequencies = reshape(PeriodicPeaks(:, :, 1), [], 1);
-Bandwidth = reshape(PeriodicPeaks(:, :, 3), [], 1);
-Power  = reshape(PeriodicPeaks(:, :, 2), [], 1);
+FrequencyRange = 'minmax';
 
-Frequencies = min(PeakFrequencies):Settings.DistributionFrequencyResolution:max(PeakFrequencies);
-
-% select only peaks within given parameters
-PeakFrequencies = PeakFrequencies(...
-    Bandwidth >= Settings.PeakBandwidthMin & ...
-    Bandwidth <= Settings.PeakBandwidthMax &...
-    Power >= Settings.PeakAmplitudeMin);
-
-if isempty(PeakFrequencies)
+[DistributionPeakFrequencies, Frequencies] = oscip.utils.peaks_distribution(PeriodicPeaks, FrequencyRange, Settings);
+if isempty(DistributionPeakFrequencies)
     Peaks = [];
     return
 end
 
-% fit smooth distribution of histogram of peak frequencies
-pdca = fitdist(PeakFrequencies, 'Kernel', 'Kernel', 'normal', 'Bandwidth', Settings.DistributionFrequencyResolution*2);
-
-DistributionPeakFrequencies = pdf(pdca, Frequencies);
-
 % find peaks in the histogram
 try
-[pks, locs, w, ~] = findpeaks(DistributionPeakFrequencies, Frequencies, ...
-    'MinPeakDistance', Settings.DistributionMinPeakDistance, ...
-    'MinPeakHeight', Settings.DistributionAmplitudeMin, 'MinPeakProminence', Settings.DistributionAmplitudeMin, ...
-    'MinPeakWidth', Settings.DistributionBandwidthMin, 'MaxPeakWidth', Settings.DistributionBandwidthMax);
+    [pks, locs, w, ~] = findpeaks(DistributionPeakFrequencies, Frequencies, ...
+        'MinPeakDistance', Settings.DistributionMinPeakDistance, ...
+        'MinPeakHeight', Settings.DistributionAmplitudeMin, 'MinPeakProminence', Settings.DistributionAmplitudeMin, ...
+        'MinPeakWidth', Settings.DistributionBandwidthMin, 'MaxPeakWidth', Settings.DistributionBandwidthMax);
 catch
     warning('using try/catch on findpeaks')
     Peaks = [];
