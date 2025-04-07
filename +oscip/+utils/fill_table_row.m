@@ -17,8 +17,8 @@ for StageIdx = 1:numel(ScoringLabels)
         Band = BandLabels{BandIdx};
         if strcmp(MeasureLabel, 'Peak')
             Table.([Stage, '_', MeasureLabel, 'Frequency_', Band]) = Data(StageIdx, BandIdx, 1);
-            Table.([Stage, '_', MeasureLabel, 'Amplitude_', Band]) = Data(StageIdx, BandIdx, 1);
-            Table.([Stage, '_', MeasureLabel, 'Bandwidth_', Band]) = Data(StageIdx, BandIdx, 1);
+            Table.([Stage, '_', MeasureLabel, 'Amplitude_', Band]) = Data(StageIdx, BandIdx, 2);
+            Table.([Stage, '_', MeasureLabel, 'Bandwidth_', Band]) = Data(StageIdx, BandIdx, 3);
         else
             Table.([Stage, '_', MeasureLabel, '_', Band]) = Data(StageIdx, BandIdx);
         end
