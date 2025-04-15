@@ -22,7 +22,7 @@ arguments
     Intercepts
     RSquared
     Errors
-    RangeSlopes = [0 4];
+    RangeSlopes = [0 4.5];
     RangeIntercepts = [0 5];
     MinRSquared = .98;
     MaxError = .1;
