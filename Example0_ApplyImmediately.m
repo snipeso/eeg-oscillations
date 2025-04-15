@@ -23,7 +23,7 @@ load(EEGFilepath, 'EEG', 'Scoring', 'ScoringIndexes', 'ScoringLabels', 'EpochLen
 % ScoringLabels = {}; % the label to assign to each number
 
 % power
-WelchWindowLength = 2; % in seconds
+WelchWindowLength = 4; % in seconds
 WelchOverlap = .5; % 50% of the welch windows will overlap
 
 % fooof
@@ -96,5 +96,15 @@ xlim([.5 4.5])
 Bands = BandByStage(BandByStage.Stages==1, :);
 
 oscip.plot.band_timecourse(PeriodicPower, FooofFrequencies, EpochLength, Bands,10, Scoring, ScoringIndexes, ScoringLabels);
+
+
+%%
+
+A = tic;
+
+[Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
+    = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
+
+disp(['time to analyze: ', num2str(toc(A)/60)])
 
 

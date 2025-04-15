@@ -37,7 +37,8 @@ end
 
 try % since it can be finicky, better to use a try/catch statement
     % run fooof
-    FooofModel = fooof(Frequencies, Power, FittingFrequencyRange, AdditionalParameters, true);
+    % FooofModel = fooof(Frequencies, Power, FittingFrequencyRange, AdditionalParameters, true); % old function that uses python wrapper
+    FooofModel = oscip.specparam_matlab(Frequencies, Power, FittingFrequencyRange, AdditionalParameters);
     Error = FooofModel.error;
     RSquared = FooofModel.r_squared;
 
