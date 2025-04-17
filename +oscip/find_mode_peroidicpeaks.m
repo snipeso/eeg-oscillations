@@ -55,7 +55,8 @@ end
 % these are the new peaks
 Peaks = [locs', pks', w'];
 
-% TODO: minimum number of points to keep a peak
+% remove peaks that were based on too few datapoints
+Peaks = oscip.utils.check_if_enough_peaks(Peaks, PeriodicPeaks, Settings);
 
 if strcmpi(Settings.Mode, 'debug')
     figure
