@@ -7,7 +7,7 @@ close all
 
 % SET the path of the file
 
-EEGFilepath = 'D:\Code\MyToolboxes\eeg-oscillations\ExampleData\P09_Sleep_NightPre.mat';
+EEGFilepath = 'C:\Users\lucie\Documents\Code\eeg_oscillation_analysis\eeg-oscillations\ExampleData\P09_Sleep_NightPre.mat';
 
 load(EEGFilepath, 'EEG', 'Scoring', 'ScoringIndexes', 'ScoringLabels', 'EpochLength') % load in the data however you have it
 

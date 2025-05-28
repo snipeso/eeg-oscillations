@@ -8,6 +8,9 @@ Power = oscip.utils.standardize_power_dimentions(Power, Frequencies);
 Dims = size(Power);
 
 SmoothPower = nan(Dims);
+
+disp('smoothing power spectra')
+
 switch numel(Dims)
     case 2 % Ch x E
         for ChannelIdx = 1:Dims(1)

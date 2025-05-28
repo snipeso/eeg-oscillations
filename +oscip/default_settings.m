@@ -21,3 +21,5 @@ Settings.DistributionAmplitudeMin = .01; % it's a psd, so values are between 0 a
 Settings.DistributionMinPeakDistance = .5; % Hz, peaks closer than this won't be considered
 
 Settings.DistributionFrequencyResolution = .1; % Hz
+Settings.DistributionSmoothFactor = .2; % Hz
+Settings.MinPeaksInPeak = 50; % min number of peaks between the half-prominence of 

@@ -8,6 +8,8 @@ Power = oscip.utils.standardize_power_dimentions(Power, Frequencies);
 Dims = size(Power);
 
 SmoothPower = nan(Dims);
+disp('Running moving median smoother')
+
 switch numel(Dims)
     case 2 % Ch x E
         for ChannelIdx = 1:Dims(1)
@@ -15,12 +17,18 @@ switch numel(Dims)
                 Power(ChannelIdx, :), Frequencies, SmoothSpan);
         end
     case 3 % Ch x E x F
+
         for ChannelIdx = 1:Dims(1)
             for EpochIdx = 1:Dims(2)
+                Data =  squeeze(Power(ChannelIdx, EpochIdx, :));
+                if all(isnan(Data))
+                    continue
+                end
                 SmoothPower(ChannelIdx, EpochIdx, :) = smooth_single_spectrum(...
-                    squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, SmoothSpan);
+                   Data, Frequencies, SmoothSpan);
             end
         end
+      
     otherwise
         error('Incorrect dimentions for Power matrix')
 end
@@ -36,6 +44,6 @@ function SmoothPower = smooth_single_spectrum(Power, Frequencies, SmoothSpan)
 
 FreqRes = Frequencies(2)-Frequencies(1);
 SmoothPoints = round(SmoothSpan/FreqRes);
-SmoothPower = smooth(Power, SmoothPoints, 'lowess');
+% SmoothPower = smooth(Power, SmoothPoints, 'lowess');
 SmoothPower = movmedian(Power, SmoothPoints);
 end

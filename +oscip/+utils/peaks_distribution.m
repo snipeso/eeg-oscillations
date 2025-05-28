@@ -32,5 +32,6 @@ if isempty(PeakFrequencies)
 end
 
 % fit smooth distribution of histogram of peak frequencies
-pdca = fitdist(PeakFrequencies, 'Kernel', 'Kernel', 'normal', 'Bandwidth', Settings.DistributionFrequencyResolution*2);
+% pdca = fitdist(PeakFrequencies, 'Kernel', 'Kernel', 'normal', 'Bandwidth', Settings.DistributionFrequencyResolution*2);
+pdca = fitdist(PeakFrequencies, 'Kernel', 'Kernel', 'normal', 'Bandwidth', Settings.DistributionSmoothFactor);
 Distribution = pdf(pdca, Frequencies);
