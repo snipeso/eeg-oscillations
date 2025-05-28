@@ -1,5 +1,5 @@
 function [Slope, Intercept, FooofFrequencies, PeriodicPeaks, PeriodicPower, Error, RSquared] ...
-    = fit_fooof(Power, Frequencies, FittingFrequencyRange, MaxError, MinRSquared, AdditionalParameters)
+    = fit_fooof_matlab(Power, Frequencies, FittingFrequencyRange, MaxError, MinRSquared, AdditionalParameters)
 % FooofModel = fit_fooof(Power, Frequencies, FittingFrequencyRange, AdditionalParameters)
 % Fits the fooof model to determine spectral parameters. This is script is little
 % more than an error-catcher, and instead of outputing a struct like fooof
@@ -37,7 +37,7 @@ end
 
 try % since it can be finicky, better to use a try/catch statement
     % run fooof
-    FooofModel = fooof(Frequencies, Power, FittingFrequencyRange, AdditionalParameters, true); % old function that uses python wrapper, maintained for preserving the original code of the iota paper
+    FooofModel = oscip.specparam_matlab(Frequencies, Power, FittingFrequencyRange, AdditionalParameters); % new function
     Error = FooofModel.error;
     RSquared = FooofModel.r_squared;
 
