@@ -12,6 +12,10 @@ for BandIdx = 1:nBands
         subplot(nStages, nBands, subplotIdx); 
 
         Topo = squeeze(mean(Data(:, :, StageIdx, BandIdx), 1, 'omitnan'));
+
+        if all(isnan(Topo))
+            continue
+        end
         oscip.plot.eeglab_topoplot(Topo, Chanlocs, [], quantile(Topo, [.01, 1]), '', 'Linear')
 
         if StageIdx==1
