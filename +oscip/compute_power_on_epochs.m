@@ -43,7 +43,7 @@ for EpochIdx = 1:nEpochs
 
     elseif any(isnan(EpochData(:)))
         % go channel by channel to skip channels with any nans
-        parfor ChannelIdx = 1:nChannels
+        for ChannelIdx = 1:nChannels
             D = Data;
             S = Starts;
             E = Ends;
@@ -54,6 +54,7 @@ for EpochIdx = 1:nEpochs
             [Power, ~] = oscip.compute_power(Epoch, SampleRate, WelchWindowLength, WelchOverlap);
             EpochPower(ChannelIdx, EpochIdx, :) = Power;
         end
+        disp(['Power epoch ', num2str(EpochIdx) '/', num2str(nEpochs)])
     else
         % doing all the channels together is much faster, so do it
         % when possible
