@@ -1,4 +1,4 @@
-function ResizedScoring = fix_off_by_one_scoring(Scoring, nDataEpochs, MinimumDiscrepancy)
+function [ResizedScoring, nExtra] = fix_off_by_one_scoring(Scoring, nDataEpochs, MinimumDiscrepancy)
 arguments
     Scoring
     nDataEpochs
@@ -31,4 +31,5 @@ else
     ResizedScoring(1:nScoringEpochs) = Scoring;
 end
 
+nExtra = numel(ResizedScoring)-nScoringEpochs;
 
