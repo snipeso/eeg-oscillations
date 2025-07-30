@@ -1,5 +1,5 @@
 function [CleanData, Artefacts] = keep_only_clean_epochs(Data, Slopes, Intercepts, RSquared, Errors, ...
-    RangeSlopes, RangeIntercepts, MinRSquared, MaxError, Frequencies, MaxArtefacts, Artefacts)
+    Artefacts, RangeSlopes, RangeIntercepts, MinRSquared, MaxError, Frequencies, MaxArtefacts)
 % sets to nan all data points which would have other factors outside of
 % physiological ranges. Takes as input:
 % - Data: a channel x epoch x something matrix. The output will be this
@@ -22,13 +22,13 @@ arguments
     Intercepts
     RSquared
     Errors
+    Artefacts = [];
     RangeSlopes = [0 4.5];
     RangeIntercepts = [0 5];
     MinRSquared = .98;
     MaxError = .1;
     Frequencies = [];
     MaxArtefacts = .3;
-    Artefacts = [];
 end
 
 Dims = size(Data);
