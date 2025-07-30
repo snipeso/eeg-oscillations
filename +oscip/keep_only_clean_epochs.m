@@ -15,7 +15,7 @@ function [CleanData, Artefacts] = keep_only_clean_epochs(Data, Slopes, Intercept
 % before the whole epoch is discarded. Should be value between 0 and 1.
 % - Artifacts: optional. If manual scoring of artifacts has already been
 % done, this will start from that information
-% 
+%
 % How to use:
 % 1) Only removed artefacts: PeriodicPower = oscip.keep_only_clean_epochs(PeriodicPower, [], [], [], [], Artefacts);
 % 2) Automatically remove anything not in range: PeriodicPower = oscip.keep_only_clean_epochs(PeriodicPower, Slopes, Intercepts, RSquared, Errors)
@@ -91,7 +91,9 @@ end
 
 % removes either the epoch or the channel, depending on which has more
 % worse data. It's not perfect, but it's decent.
-Artefacts = oscip.utils.remove_channel_or_window(Artefacts, MaxArtefacts);
+if ~isempty(MaxArtefacts)
+    Artefacts = oscip.utils.remove_channel_or_window(Artefacts, MaxArtefacts);
+end
 
 %%% remove artefacts from data
 for ChIdx = 1:Dims(1)
