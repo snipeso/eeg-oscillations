@@ -2,7 +2,7 @@ function Outliers = find_high_frequency_outliers(Spectra, Frequencies, Band, IQ_
 arguments
     Spectra;
     Frequencies;
-    Band = [20 40];
+    Band = [20 45];
     IQ_Factor = 10;
 end
 

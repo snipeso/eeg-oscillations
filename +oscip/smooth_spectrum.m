@@ -37,6 +37,8 @@ end
 function SmoothPower = smooth_single_spectrum(Power, Frequencies, SmoothSpan)
 % Data is a 1 x Freqs matrix
 
+Power = Power(:);
+
 FreqRes = Frequencies(2)-Frequencies(1);
 SmoothPoints = round(SmoothSpan/FreqRes);
 SmoothPower = smooth(Power, SmoothPoints, 'lowess');
