@@ -27,7 +27,7 @@ end
 switch TimeSplitType
     case 'Quantile'
         CountEpochs = cumsum(Scores);
-        Quantiles = quantile(CountEpochs, linspace(0, 1, nSplits+1));
+        Quantiles = quantile(1:nnz(Scores), linspace(0, 1, nSplits+1));
         BinScores = discretize(CountEpochs, Quantiles);
 
     case 'Hour'
@@ -43,7 +43,9 @@ switch TimeSplitType
         error('incorrect split type for oscip average split time')
 end
 
+BinScores(~Scores) = nan;
 Bins = unique(BinScores);
+Bins(isnan(Bins)) = [];
 
 AverageData = nan(size(Data, 1), numel(Bins));
 
