@@ -1,14 +1,14 @@
-function Folder = list_filenames(Folder, Extension)
+function Files = list_filenames(Folder, Extension)
 % little function for getting whatever is inside a folder, ignoring the
 % stupid dots and turning everything into a string
 
-Folder = deblank(string(ls(Folder)));
+Files = deblank(string(ls(Folder)));
 
 if exist("Extension", 'var') && ~isempty(Extension)
-    Folder(~contains(Extension)) = [];
+    Files(~contains(Files, Extension)) = [];
 else
-    Folder(strcmp(Folder, ".")) = [];
-    Folder(strcmp(Folder, "..")) = [];
+    Files(strcmp(Files, ".")) = [];
+    Files(strcmp(Files, "..")) = [];
 
-    Folder(~contains(Folder, '.')) = [];
+    Files(~contains(Files, '.')) = [];
 end
