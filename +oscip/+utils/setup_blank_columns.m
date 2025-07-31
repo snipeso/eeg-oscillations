@@ -1,41 +1,54 @@
-function Table = setup_blank_columns(Table, BandLabels, ScoringLabels)
+function Table = setup_blank_columns(Table, BandLabels, ScoringLabels, Measures)
 % this function adds nan columns to a table. The columns will be named as
 % "{Stage}_{Measure}_{Band}".
 arguments
     Table
     BandLabels = {'Delta', 'Theta', 'Alpha', 'Sigma', 'Beta', 'Iota', 'Gamma'};
     ScoringLabels = {'N3', 'N2', 'N1', 'W', 'R'};
+    Measures = {'Slope', 'Intercept', 'Power', 'PeriodicPower', 'Peak', 'SleepOnset'};
 end
 
 nRows = size(Table, 1);
 BlankColumn = nan(nRows, 1);
 
-for StageCell = ScoringLabels
-    Stage = StageCell{1};
+PeakMeasures = {'PeakFrequency', 'PeakAmplitude', 'PeakBandwidth'};
+SleepOnsetMeasures = {'SleepOnset', 'OnsetSpeed', 'WakeSlope', 'N3Slope'};
 
-    % aperiodic measures
-    Table.([Stage, '_Slope']) = BlankColumn;
-    Table.([Stage, '_Intercept']) = BlankColumn;
+for MeasureIdx = 1:numel(Measures)
+    Measure = Measures{MeasureIdx};
 
-    for BandCell = BandLabels'
+    for StageCell = ScoringLabels % not all measures have a stage or band, so they will be overwritten a few times; doesn't really cost time, and this makes the code cleaner
 
-        % power
-        Band = BandCell{1};
-        Table.([Stage, '_Power_', Band]) = BlankColumn;
-        Table.([Stage, '_PeriodicPower_', Band]) = BlankColumn;
-    end
-end
+        if isempty(StageCell{1})
+            Stage = '';
+        else
+            Stage = [StageCell{1}, '_'];
+        end
 
+        for BandCell = BandLabels'
+            if isempty(BandCell{1})
+                Band = '';
+            else
+                Band = ['_', BandCell{1}];
+            end
 
-for StageCell = ScoringLabels % repeated the loops so that the peak columns are all at the end
-    Stage = StageCell{1};
+            switch Measure
+                case {'Peak'}
+                    for PeakIdx = 1:numel(PeakMeasures)
+                        Band = BandCell{1};
+                        PeakMeasure = PeakMeasures{PeakIdx};
+                        Table.([Stage, '_', PeakMeasure, '_', Band]) = BlankColumn;
+                    end
 
-    for BandCell = BandLabels'
-        Band = BandCell{1};
+                case {'SleepOnset'}
+                    for SOMIdx = 1:numel(SleepOnsetMeasures)
+                        SleepOnsetMeasure = SleepOnsetMeasures{SOMIdx};
+                        Table.(SleepOnsetMeasure) = BlankColumn;
+                    end
 
-        % periodic peaks
-        Table.([Stage, '_PeakFrequency_', Band]) = BlankColumn;
-        Table.([Stage, '_PeakAmplitude_', Band]) = BlankColumn;
-        Table.([Stage, '_PeakBandwidth_', Band]) = BlankColumn;
+                otherwise
+                    Table.([Stage, Measure, Band]) = BlankColumn;
+            end
+        end
     end
 end
