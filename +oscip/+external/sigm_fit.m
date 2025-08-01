@@ -63,7 +63,7 @@ else
 end
 automatic_initial_params(3)=temp(1);
 
-if nargin==2 %simplest valid input
+if nargin==2 %simplest valid input  % TODO make it easier to choose plotting
     fixed_params=NaN(1,4);
     initial_params=automatic_initial_params;
     plot_flag=0;    

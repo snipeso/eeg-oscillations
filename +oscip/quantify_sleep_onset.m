@@ -1,4 +1,4 @@
-function  [SleepOnset, OnsetSpeed, WakeSlope, N3Slope, Trend, Time] = quantify_sleep_onset(Slopes, Time, MinEpochs)
+function  [SleepOnset, OnsetSpeed, WakeSlope, N3Slope, Trend, Time, Slopes] = quantify_sleep_onset(Slopes, Time, MinEpochs)
 % This assumes that the recording starts with wake, and finds the first
 % instance of sleep onset. Ideally, don't provide more data than the first
 % cycle, otherwise it will not be happy
