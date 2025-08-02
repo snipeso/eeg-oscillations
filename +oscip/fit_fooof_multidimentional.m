@@ -1,5 +1,5 @@
 function [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
-    = fit_fooof_multidimentional(Power, Frequencies, FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters)
+    = fit_fooof_multidimentional(Power, Frequencies, FooofFrequencyRange,AdditionalParameters)
 % [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
 %   = fit_fooof_multidimentional(Power, Frequencies, FittingFrequencyRange, MaxError, MinRSquared, AdditionalParameters)
 %
@@ -11,8 +11,6 @@ arguments
     Power
     Frequencies
     FooofFrequencyRange = [3 40];
-    MaxError = .15;
-    MinRSquared = .95;
     AdditionalParameters = struct();
 end
 
@@ -44,7 +42,7 @@ switch numel(Dims)
                 FooofFrequencies, Peaks, PeriodicPower(ChannelIdx, :), ...
                 Errors(ChannelIdx), RSquared(ChannelIdx)] ...
                 = oscip.fit_fooof(squeeze(Power(ChannelIdx, :)), Frequencies, ...
-                FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters);
+                FooofFrequencyRange, AdditionalParameters);
 
             PeriodicPeaks(ChannelIdx, :) = oscip.select_max_peak(Peaks);
             disp(['finished ch', num2str(ChannelIdx)])
@@ -74,7 +72,7 @@ switch numel(Dims)
                         ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
                         Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
                         = oscip.fit_fooof(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
-                        FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters);
+                        FooofFrequencyRange, AdditionalParameters);
 
                     PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
                 end
@@ -89,7 +87,7 @@ switch numel(Dims)
                         ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
                         Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
                         = oscip.fit_fooof(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
-                        FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters);
+                        FooofFrequencyRange, AdditionalParameters);
 
                     PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
                 end
@@ -104,7 +102,7 @@ switch numel(Dims)
                         ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
                         Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
                         = oscip.fit_fooof(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
-                        FooofFrequencyRange, MaxError, MinRSquared, AdditionalParameters);
+                        FooofFrequencyRange, AdditionalParameters);
 
                     PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
                 end

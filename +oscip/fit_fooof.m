@@ -1,5 +1,5 @@
 function [Slope, Intercept, FooofFrequencies, PeriodicPeaks, PeriodicPower, Error, RSquared] ...
-    = fit_fooof(Power, Frequencies, FittingFrequencyRange, MaxError, MinRSquared, AdditionalParameters)
+    = fit_fooof(Power, Frequencies, FittingFrequencyRange, AdditionalParameters)
 % FooofModel = fit_fooof(Power, Frequencies, FittingFrequencyRange, AdditionalParameters)
 % Fits the fooof model to determine spectral parameters. This is script is little
 % more than an error-catcher, and instead of outputing a struct like fooof
@@ -11,8 +11,6 @@ arguments
     Power
     Frequencies
     FittingFrequencyRange = [3 40];
-    MaxError = .15;
-    MinRSquared = .95;
     AdditionalParameters = struct();
 end
 
@@ -40,12 +38,7 @@ try % since it can be finicky, better to use a try/catch statement
     FooofModel = fooof(Frequencies, Power, FittingFrequencyRange, AdditionalParameters, true); % old function that uses python wrapper, maintained for preserving the original code of the iota paper
     Error = FooofModel.error;
     RSquared = FooofModel.r_squared;
-
-    % return blanks if fit was poor
-    if Error > MaxError || RSquared < MinRSquared
-        return
-    end
-
+    
     % set up outputs
     FooofFrequencies = FooofModel.freqs;
     Intercept = FooofModel.aperiodic_params(1);
