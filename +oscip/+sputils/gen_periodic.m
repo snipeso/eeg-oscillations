@@ -19,8 +19,6 @@ function pe_vals = gen_periodic(freqs, gaussian_params)
 % Translated to MATLAB by Claude Sonnet 3.7, NOTcorrectedYET by Sophia Snipes,
 % 2025.
 
-
-
 % Initialize output
 pe_vals = zeros(size(freqs));
 

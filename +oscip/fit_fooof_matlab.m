@@ -52,5 +52,5 @@ try % since it can be finicky, better to use a try/catch statement
     PeriodicPeaks = FooofModel.peak_params;
     PeriodicPower = FooofModel.power_spectrum-FooofModel.ap_fit;
 catch
-    warning('couldnt fit fooof')
+    warning("couldn't fit fooof")
 end
