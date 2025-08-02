@@ -98,8 +98,10 @@ if ~isempty(guess)
 else
     gaussian_params = [];
 end
-
 end
+
+
+
 
 function guess = drop_peak_cf(model, guess)
 % Check whether to drop peaks based on center's proximity to the edge of the spectrum
@@ -119,6 +121,7 @@ keep_peak = abs(cf_params - model.freq_range(1)) > bw_params & ...
 guess = guess(keep_peak, :);
 
 end
+
 
 function guess = drop_peak_overlap(model, guess)
 % Checks whether to drop gaussians based on amount of overlap
@@ -144,18 +147,13 @@ for i = 1:(size(bounds, 1) - 1)
     if bounds(i, 2) > bounds(i+1, 1)
         % If overlap, get the index of the gaussian with the lowest height (to drop)
         if guess(i, 2) < guess(i+1, 2)
-            drop_inds = [drop_inds, i];
+            drop_inds = cat(2, drop_inds, i); 
         else
-            drop_inds = [drop_inds, i+1];
+            drop_inds = cat(2, drop_inds, i+1);
         end
     end
 end
 
-% Remove duplicates and sort
-drop_inds = unique(drop_inds);
-keep_inds = setdiff(1:size(guess, 1), drop_inds);
-
 % Keep only non-overlapping peaks
-guess = guess(keep_inds, :);
-
+guess(drop_inds, :) = [];
 end
