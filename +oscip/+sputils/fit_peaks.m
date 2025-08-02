@@ -46,13 +46,13 @@ while size(guess, 1) < model.max_n_peaks
     half_height = 0.5 * max_height;
     
     % Find index of nearest value to half height on left side
-    le_ind = find(flat_iter(1:max_ind) <= half_height, 1, 'last');
+    le_ind = find(flat_iter(1:max_ind-1) <= half_height, 1, 'last');
     if isempty(le_ind)
         le_ind = NaN;
     end
     
     % Find index of nearest value to half height on right side
-    ri_ind = find(flat_iter(max_ind:end) <= half_height, 1, 'first') + max_ind - 1;
+    ri_ind = find(flat_iter(max_ind+1:end) <= half_height, 1, 'first') + max_ind - 1;
     if isempty(ri_ind)
         ri_ind = NaN;
     end
@@ -64,10 +64,11 @@ while size(guess, 1) < model.max_n_peaks
         
         % Estimate std deviation from FWHM
         fwhm = short_side * 2 * model.freq_res;
-        guess_std = fwhm / (2 * sqrt(2 * log(2))); % Convert FWHM to std
+        % guess_std = fwhm / (2 * sqrt(2 * log(2))); % Convert FWHM to std
+         guess_std = oscip.sputils.compute_gauss_std(fwhm); 
     else
         % Default to the average of the peak width limits if half height not found
-        guess_std = mean(model.gauss_std_limits);
+        guess_std = mean(model.peak_width_limits);
     end
     
     % Limit std to preset boundaries
