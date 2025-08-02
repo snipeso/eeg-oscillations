@@ -51,5 +51,6 @@ else
     % If too few points for robust fit, fall back to simple fit
     aperiodic_params = popt;
 end
-
 end
+
+
