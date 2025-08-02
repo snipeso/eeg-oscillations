@@ -79,7 +79,7 @@ while size(guess, 1) < model.max_n_peaks
     end
     
     % Add guessed parameters to the collection
-    guess = [guess; guess_freq, guess_height, guess_std];
+    guess = cat(1, guess, [guess_freq, guess_height, guess_std]);
     
     % Subtract this guess gaussian from the data
     peak_gauss = oscip.sputils.gaussian_function(freqs, [guess_freq, guess_height, guess_std]);

@@ -16,36 +16,17 @@ function values = gaussian_function(freqs, params)
 % This MATLAB implementation is based on the original FOOOF project:
 % https://github.com/fooof-tools/fooof
 % Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
-% Translated to MATLAB by Claude Sonnet 3.7, NOTcorrectedYET by Sophia Snipes,
+% Translated to MATLAB by Claude Sonnet 3.7, corrected by Sophia Snipes,
 % 2025.
 
 
-% If single peak parameters provided as row vector, reshape
-if size(params, 1) == 1 && length(params) == 3
-    center = params(1);
-    height = params(2);
-    std = params(3);
-    values = height * exp(-(freqs - center).^2 / (2 * std^2));
-    
-% If multiple peaks provided as matrix
-elseif size(params, 2) == 3
-    values = zeros(size(freqs));
-    for i = 1:size(params, 1)
-        center = params(i, 1);
-        height = params(i, 2);
-        std = params(i, 3);
-        values = values + height * exp(-(freqs - center).^2 / (2 * std^2));
-    end
-    
-% If flat array of parameters for multiple peaks
-else
-    values = zeros(size(freqs));
-    for i = 1:3:length(params)
-        center = params(i);
-        height = params(i+1);
-        std = params(i+2);
-        values = values + height * exp(-(freqs - center).^2 / (2 * std^2));
-    end
-end
+center = params(1);
+height = params(2);
+width = params(3);
 
-end
+values = zeros(size(freqs));
+values = values + height * exp(-(freqs - center).^2 ./ (2 * width^2));
+
+% Note: Claude had created a lot of extra options based on the dimentions
+% of params; it's been deleted, but if something goes wrong, maaaybe thats
+% it?
