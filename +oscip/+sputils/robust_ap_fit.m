@@ -15,8 +15,6 @@ function aperiodic_params = robust_ap_fit(model)
 % Translated to MATLAB by Claude Sonnet 3.7, NOTcorrectedYET by Sophia Snipes,
 % 2025.
 
-
-
 freqs = model.freqs;
 power_spectrum = model.power_spectrum;
 

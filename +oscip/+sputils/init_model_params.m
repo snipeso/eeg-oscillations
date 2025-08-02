@@ -68,14 +68,14 @@ end
 
 % Set internal settings that shouldn't come from the user
 model.ap_percentile_thresh = 0.025; % Percentile for selecting points for aperiodic fit
-% model.ap_guess = [nan, 0, nan]; % TODO: see if needed; in fooof not written by claude (see Fit.py)
-% model.ap_bounds = {[-inf, -inf, -inf], [inf inf inf]}; % TODO idem
+model.ap_guess = [nan, 0, nan]; % [offset, knee, exponent]. if Offset guess is nan, the first value of powerspectrum is used as offset guess. If exponent is nan, the abs(log-log slope) of first and last points is used
+model.ap_bounds = [-inf, -inf, -inf; inf, inf, inf]; % bounds for aperiodic fitting (offsetlow, knee low, exp low; offset high, knee high, exp high). By default unbounded
 model.bw_std_edge = 1; % how far a peak needs t obe to be dropped, defined in untis of gaussian standard deviation % TODO: make it a user option
 model.gauss_overlap_thresh = 0.75; % degree of overlap between guassians for one to be dropped, in units of standard deviations  % TODO make user option
 model.cf_bound = 1.5; % Bounds for center frequency when fitting gaussians
 model.error_metric = 'MAE'; % specparam default is MAE, but can also be MSE or RMSE NB: if you change this, error thresholds will have to change!!
-% model.maxfev = 5000; % max times call curve fitting function TODO: implement?
-% model.tol = .00001; % tolerance setting for curve fitting; TODO: implement?
+model.maxfev = 5000; % max times call curve fitting function TODO: implement?
+model.tol = .00001; % tolerance setting for curve fitting; TODO: implement?
 % model.check_freqs = true; % checks if frequencies evenly spaced; TODO: implement?
 % model.check_data = true; % checks power values and raises error if there's NaNs
 model.gauss_std_limits = model.peak_width_limits / 2; % Convert to gaussian std limits % TODO WHY?
