@@ -55,15 +55,13 @@ options = optimoptions('lsqcurvefit', ...
     'Display', 'off');
 
 if strcmp(model.aperiodic_mode, 'fixed')
-    % Fixed mode: offset - exponent * log10(freqs)
-    ap_func = @(params, x) params(1) - params(2) * log10(x);
+ap_func = oscip.sputils.functions('aperiodic', 'fixed');
     guess = [offset_guess, exponent_guess];
     bounds_lower = ap_bounds(1, [1, 3]);  % offset, exponent
     bounds_upper = ap_bounds(2, [1, 3]);
 
 elseif strcmp(model.aperiodic_mode, 'knee')
-    % Knee mode: offset - log10(knee + freqs^exponent)
-    ap_func = @(params, x) params(1) - log10(params(2) + x.^params(3));
+    ap_func = oscip.sputils.functions('aperiodic', 'knee');
     knee_guess = ap_guess(2);
     guess = [offset_guess, knee_guess, exponent_guess];
     bounds_lower = ap_bounds(1, :);  % all parameters
