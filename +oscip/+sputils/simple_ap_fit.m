@@ -14,7 +14,7 @@ function aperiodic_params = simple_ap_fit(model, power_spectrum)
 % This MATLAB implementation is based on the original FOOOF project:
 % https://github.com/fooof-tools/fooof
 % Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
-% Translated to MATLAB by Claude Sonnet 3.7, corrected by Sophia Snipes,
+% Translated to MATLAB by Claude Sonnet 3.7, NOTcorrectedYET by Sophia Snipes,
 % 2025.
 
 

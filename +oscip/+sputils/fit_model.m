@@ -12,7 +12,7 @@ function model = fit_model(model)
 % This MATLAB implementation is based on the original FOOOF project:
 % https://github.com/fooof-tools/fooof
 % Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
-% Translated to MATLAB by Claude Sonnet 3.7, corrected by Sophia Snipes,
+% Translated to MATLAB by Claude Sonnet 3.7, NOTcorrectedYET by Sophia Snipes,
 % 2025.
 
 
@@ -56,15 +56,13 @@ try
     model = oscip.sputils.calc_error(model);
 
 catch ErrorMessage % the rest of this code just handles the error message and default values
-    model = handle_model_not_fitting(model, ErrorMessage);
-
+    model = handle_model_not_fitting_error_messages(model, ErrorMessage);
+end
 end
 
-end
 
 
-
-function model = handle_model_not_fitting(model, ErrorMessage)
+function model = handle_model_not_fitting_error_messages(model, ErrorMessage)
 % provide blanks
 model.aperiodic_params = NaN(1, 2 + strcmp(model.aperiodic_mode, 'knee'));
 model.gaussian_params = [];
