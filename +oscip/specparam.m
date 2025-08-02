@@ -48,11 +48,11 @@ end
 % Initialize model parameters with defaults
 model = oscip.sputils.init_model_params(params);
 
-% Store input data in the model
+% Select frequencies and power, depending on specified frequency range
 if isempty(model.freq_range)
     model.freq_range = [min(freqs), max(freqs)];
 end
-% range = dsearchn(freqs', [model.freq_range(1); model.freq_range(2)]);
+
 range = [find(freqs>=model.freq_range(1), 1, 'first'), find(freqs<=model.freq_range(2), 1, 'last')];
 model.freqs = freqs(range(1):range(2));
 model.power_spectrum = log10(power_spectrum(range(1):range(2)));
@@ -68,9 +68,5 @@ if model.verbose && 1.5 * model.freq_res >= model.peak_width_limits(1)
 end
 
 % Run model fit
-model = oscip.sputils.fit_model(model);
-
-% Return the finished model
-SpecModel = model;
-
+SpecModel = oscip.sputils.fit_model(model);
 end
