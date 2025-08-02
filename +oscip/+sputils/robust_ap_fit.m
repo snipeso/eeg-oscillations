@@ -12,7 +12,7 @@ function aperiodic_params = robust_ap_fit(model)
 % This MATLAB implementation is based on the original FOOOF project:
 % https://github.com/fooof-tools/fooof
 % Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
-% Translated to MATLAB by Claude Sonnet 3.7, NOTcorrectedYET by Sophia Snipes,
+% Translated to MATLAB by Claude Sonnet 3.7, corrected by Sophia Snipes,
 % 2025.
 
 freqs = model.freqs;
@@ -27,9 +27,10 @@ flatspec = power_spectrum - initial_fit;
 
 % Flatten outliers, defined as any points that drop below 0
 flatspec(flatspec < 0) = 0;
+% flatspec(flatspec <= 0) = nan; % TODO: ask fooof people if they are aware most values are 0?
 
 % Use percentile threshold to extract and re-fit
-perc_thresh = prctile(flatspec, model.ap_percentile_thresh * 100);
+perc_thresh = prctile(flatspec, model.ap_percentile_thresh); % NB: FOOOF has it at .025 which is tiiiny; this could be a mistake, and it should be 2.5, as in 2.5%? Either way, results don't change
 perc_mask = flatspec <= perc_thresh;
 freqs_ignore = freqs(perc_mask);
 spectrum_ignore = power_spectrum(perc_mask);
@@ -39,6 +40,12 @@ if length(freqs_ignore) > 2
     % Second aperiodic fit - using results of first fit as guess parameters
     model_ignore = model;
     model_ignore.freqs = freqs_ignore;
+
+    if strcmp(model.aperiodic_mode, 'knee')
+        model_ignore.ap_guess = popt; % feed in the first guess, which is what the python version does when it repeats the code for curve_fit
+    else
+        model_ignore.ap_guess = [popt(1), nan, popt(2)];
+    end
     aperiodic_params = oscip.sputils.simple_ap_fit(model_ignore, spectrum_ignore);
 else
     % If too few points for robust fit, fall back to simple fit

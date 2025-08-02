@@ -67,7 +67,8 @@ if isfield(params, 'freq_range')
 end
 
 % Set internal settings that shouldn't come from the user
-model.ap_percentile_thresh = 0.025; % Percentile for selecting points for aperiodic fit
+model.ap_percentile_thresh = 0.025; % Percentile for selecting points for aperiodic fit (this value is tiiiny, not sure if meant to be 2.5);
+
 model.ap_guess = [nan, 0, nan]; % [offset, knee, exponent]. if Offset guess is nan, the first value of powerspectrum is used as offset guess. If exponent is nan, the abs(log-log slope) of first and last points is used
 model.ap_bounds = [-inf, -inf, -inf; inf, inf, inf]; % bounds for aperiodic fitting (offsetlow, knee low, exp low; offset high, knee high, exp high). By default unbounded
 model.bw_std_edge = 1; % how far a peak needs t obe to be dropped, defined in untis of gaussian standard deviation % TODO: make it a user option
