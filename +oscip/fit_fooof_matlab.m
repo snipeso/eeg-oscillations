@@ -14,6 +14,12 @@ arguments
     AdditionalParameters = struct();
 end
 
+% ensure Power is correct dimensions
+Dims = size(Power);
+if numel(Dims)>2 || ~any(Dims==1)
+    error('power spectrum wrong for specparam')
+end
+
 % default outputs
 Slope = nan;
 Intercept = nan;
