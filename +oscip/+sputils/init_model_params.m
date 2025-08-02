@@ -67,10 +67,21 @@ if isfield(params, 'freq_range')
 end
 
 % Set internal settings
-model.gauss_std_limits = model.peak_width_limits / 2; % Convert to gaussian std limits
 model.ap_percentile_thresh = 0.025; % Percentile for selecting points for aperiodic fit
+% model.ap_guess = [nan, 0, nan]; % TODO: see if needed; in fooof not written by claude (see Fit.py)
+% model.ap_bounds = {[-inf, -inf, -inf], [inf inf inf]}; % TODO idem
+model.bw_std_edge = 1; % how far a peak needs t obe to be dropped, defined in untis of gaussian standard deviation % TODO: implement in examples and code
+model.gauss_overlap_thresh = 0.75; % degree of overlap between guassians for one to be dropped, in units of standard deviations 
 model.cf_bound = 1.5; % Bounds for center frequency when fitting gaussians
-model.bw_std_edge = 1.0; % Threshold for edge detection
-model.gauss_overlap_thresh = 0.75; % Threshold for gaussian overlap
+% model.error_metric = 'MAE'; %TODO: figure out where used in fooof and if needed here
+% model.maxfev = 5000; % max times call curve fitting function TODO: implement?
+% model.tol = .00001; % tolerance setting for curve fitting; TODO: implement?
+% model.check_freqs = true; % checks if frequencies evenly spaced; TODO: implement?
+% model.check_data = true; % checks power values and raises error if there's NaNs
+
+model.gauss_std_limits = model.peak_width_limits / 2; % Convert to gaussian std limits % TODO WHY?
+
+
+
 
 end
