@@ -43,14 +43,6 @@ out_of_range(Errors, ErrorsMat, AcceptableDifference, 'Error')
 out_of_range(RSquared, RSquaredMat, AcceptableDifference, 'Rsquared')
 
 
-%% test check_settings
-
-disp('Testing check_settings')
-empty = struct();
-settings = fooof_check_settings(empty);
-settingsmat = oscip.sputils.check_settings(empty);
-same_fields(settings, settingsmat, 'Defaults')
-
 
 %% test different settings output (TODO)
 

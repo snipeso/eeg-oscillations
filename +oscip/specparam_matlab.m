@@ -14,7 +14,6 @@ end
 % 
 % By Sophia Snipes, 2025, for eeg-oscillations
 
-settings = oscip.sputils.check_settings(AdditionalParameters);
 settings.freq_range = FittingFrequencyRange;
 
 Dims = size(Power);
