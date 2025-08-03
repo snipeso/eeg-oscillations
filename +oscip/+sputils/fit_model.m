@@ -42,7 +42,7 @@ try
     model.spectrum_flat = model.power_spectrum - ap_fit;
 
     % Create full model fit
-    model.modeled_spectrum = peak_fit + ap_fit; % TODO: figure out why peak_fit doesn't look like python version
+    model.modeled_spectrum = peak_fit + ap_fit;
 
     % Store component fits for plotting
     model.ap_fit = ap_fit;

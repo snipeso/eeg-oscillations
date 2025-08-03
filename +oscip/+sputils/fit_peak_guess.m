@@ -106,3 +106,7 @@ for i = 1:n_peaks
     y = y + oscip.sputils.gaussian_function(x, params(idx:idx+2));
 end
 end
+
+
+% Notes:
+% - it's still not perfectly identical
