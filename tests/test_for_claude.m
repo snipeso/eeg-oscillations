@@ -3,6 +3,7 @@ clc
 close all
 load('D:\Data\EPISL\Processed\AutoArti\P207_EPISL_Session1.mat', 'SmoothPower', 'Frequencies')
 
+%%
 
 settings = struct(...
     'peak_width_limits', [0.5, 12], ...
@@ -25,8 +26,8 @@ settings = struct(...
     'fit_error', false, ...
     'error_msg', '');
 
-tic;FooofModelMat = oscip.specparam_matlab(Frequencies, squeeze(SmoothPower(80, 100, :)), [3 40], settings);toc
-tic;FooofModel = fooof(Frequencies, squeeze(SmoothPower(80, 100, :)), [3 40], settings, true);toc
+tic;FooofModelMat = oscip.specparam_matlab(Frequencies, squeeze(SmoothPower(70, 65, :)), [3 40], settings);toc
+tic;FooofModel = fooof(Frequencies, squeeze(SmoothPower(70, 65, :)), [3 40], settings, true);toc
 figure;plot(FooofModel.freqs, FooofModel.fooofed_spectrum)
 hold on
 plot(FooofModelMat.freqs, FooofModelMat.modeled_spectrum)
