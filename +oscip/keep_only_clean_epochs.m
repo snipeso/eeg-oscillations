@@ -41,8 +41,7 @@ CleanData = Data;
 
 %%% identify artifacts, create blanks if data not provided
 
-% remove data based on aperiodic activity %TODO, probably this code
-% "remove_bad_aperiodic" is in some branch somewhere
+% remove data based on aperiodic activity
 % CleanData = oscip.utils.remove_bad_aperiodic(CleanData, Slopes, ...
 %     Intercepts, RangeSlopes, RangeIntercepts, MinCleanChannels);
 
