@@ -46,18 +46,12 @@ while size(guess, 1) < model.max_n_peaks
     half_height = 0.5 * max_height;
 
     % Find index of nearest value to half height on left side
-    % DIFFERENCE: Python uses generator with next() and None default
-    % Python: le_ind = next((val for val in range(max_ind - 1, 0, -1) if flat_iter[val] <= half_height), None)
-    % MATLAB find() with 'last' is equivalent but different implementation approach
     le_ind = find(flat_iter(1:max_ind-1) <= half_height, 1, 'last');
     if isempty(le_ind)
         le_ind = NaN;
     end
 
     % Find index of nearest value to half height on right side
-    % DIFFERENCE: Python uses similar generator approach for right side search
-    % Python: ri_ind = next((val for val in range(max_ind + 1, len(flat_iter), 1) if flat_iter[val] <= half_height), None)
-    % MATLAB find() approach achieves same result but with different indexing logic
     ri_ind = find(flat_iter(max_ind+1:end) <= half_height, 1, 'first') + max_ind - 1;
     if isempty(ri_ind)
         ri_ind = NaN;
@@ -65,21 +59,13 @@ while size(guess, 1) < model.max_n_peaks
 
     % Estimate width of the peak from the shortest side
     if isnan(le_ind) && isnan(ri_ind)
-        % DIFFERENCE: Python uses try/except ValueError to handle when half height not found
-        % Python sets guess_std = mean(self._gauss_std_limits) in the except block
-        % MATLAB uses explicit NaN checks - functionally equivalent but different error handling approach
         guess_std = mean(model.gauss_std_limits); % NB: original fooof uses peak_width_limits, but that doesn't seem right...
-
     else
         % Get the shortest side
-        % DIFFERENCE: Python uses min([abs(ind - max_ind) for ind in [le_ind, ri_ind] if ind is not None])
-        % Python filters out None values first, MATLAB uses NaN checks above
-        % Both achieve same result: use shortest non-missing side
         short_side = min(abs([le_ind, ri_ind] - max_ind));
 
         % Estimate std deviation from FWHM
         fwhm = short_side * 2 * model.freq_res;
-        % guess_std = fwhm / (2 * sqrt(2 * log(2))); % Convert FWHM to std
         guess_std = oscip.sputils.compute_gauss_std(fwhm);
     end
 

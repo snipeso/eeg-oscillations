@@ -14,10 +14,8 @@ switch FunctionType
             otherwise
                 error('incorrect function mode')
         end
-    case 'periodic'
-        % @CLAUDE: implement gaussian function from funcs.py here, and make
-        % rest of code compatible
+    case 'periodic' % this might not actually be used anywhere; don't even know if its correct
+        Function = @oscip.sputils.gaussian_function;
     otherwise
         error("haven't implemented this function type yet")
 end
-% TODO: fill out as needed
