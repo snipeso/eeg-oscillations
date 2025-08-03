@@ -58,7 +58,7 @@ for FileIdx = 1:numel(Files)
     SmoothPower = oscip.smooth_spectrum(EpochPower, Frequencies, SmoothSpan); % better for fooof if the spectra are smooth
 
     % run FOOOF
-    [~, ~, FooofFrequencies, PeriodicPeaks, PeriodicPower, ~, ~] ...
+    [~, ~, FrequenciesPeriodic, PeriodicPeaks, PeriodicPower, ~, ~] ...
         = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange);
 
     % select only NREM

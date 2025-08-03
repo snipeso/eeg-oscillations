@@ -42,7 +42,7 @@ SmoothResampled = oscip.smooth_spectrum(ResampledPower, ResampledFrequencies, Sm
 FittingRange = [3 45];
 MaxError = .15;
 MinRSquared  = .95;
-[Exponents, Offsets, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
+[Exponents, Offsets, FrequenciesPeriodic, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
     = oscip.fit_fooof_multidimentional(SmoothResampled, ResampledFrequencies, FittingRange, MaxError, MinRSquared);
 
 
@@ -85,7 +85,7 @@ plot(Time, squeeze(BandPower))
 legend(fieldnames(Bands))
 
 % periodic power
-BandPeriodicPower = oscip.utils.average_bands(PeriodicPower, Bands, FooofFrequencies);
+BandPeriodicPower = oscip.utils.average_bands(PeriodicPower, Bands, FrequenciesPeriodic);
 Ax3 = subplot(5, 1, 3);
 Data = oscip.smooth_spectrum(permute(BandPeriodicPower, [3 2 1]),Time, 10);
 plot(Time, Data)

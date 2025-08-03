@@ -1,7 +1,7 @@
-function band_timecourse(Power, FooofFrequencies, EpochLength, Bands, SmoothEpochs, Scoring, ScoringIndexes, ScoringLabels)
+function band_timecourse(Power, FrequenciesPeriodic, EpochLength, Bands, SmoothEpochs, Scoring, ScoringIndexes, ScoringLabels)
 arguments
     Power
-    FooofFrequencies
+    FrequenciesPeriodic
     EpochLength
     Bands
     SmoothEpochs = 20;
@@ -46,7 +46,7 @@ for BandIdx = 1:nBands
         Alpha = 1;
     end
 
-    B = dsearchn(FooofFrequencies', Band');
+    B = dsearchn(FrequenciesPeriodic', Band');
     BandPower = squeeze(mean(Power(:, B(1):B(2)), 2, 'omitnan'))';
     if SmoothEpochs >=2
         BandPower = smooth(BandPower, SmoothEpochs);

@@ -44,7 +44,7 @@ run('tests/test_utils.m')
 % Basic workflow (see Example1_iota.m for complete example)
 [Power, Frequencies] = oscip.compute_power_on_epochs(Data, SampleRate, EpochLength);
 SmoothPower = oscip.smooth_spectrum(Power, Frequencies, 2);
-[~, ~, FooofFrequencies, PeriodicPeaks, ~] = oscip.fit_fooof_multidimensional(SmoothPower, Frequencies, [3 40]);
+[~, ~, FrequenciesPeriodic, PeriodicPeaks, ~] = oscip.fit_fooof_multidimensional(SmoothPower, Frequencies, [3 40]);
 [isPeak, MaxPeak] = oscip.check_peak_in_band(PeriodicPeaks, [25 35], 1, oscip.default_settings());
 ```
 

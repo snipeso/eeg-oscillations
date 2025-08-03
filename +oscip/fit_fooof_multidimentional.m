@@ -1,6 +1,6 @@
-function [Exponents, Offsets, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
+function [Exponents, Offsets, FrequenciesPeriodic, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
     = fit_fooof_multidimentional(Power, Frequencies, FooofFrequencyRange,AdditionalParameters)
-% [Exponents, Offsets, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
+% [Exponents, Offsets, FrequenciesPeriodic, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
 %   = fit_fooof_multidimentional(Power, Frequencies, FittingFrequencyRange, MaxError, MinRSquared, AdditionalParameters)
 %
 % Applies fooof fitting to Power that can be either Channel x Frequency or
@@ -18,7 +18,7 @@ end
 Power = oscip.utils.standardize_power_dimentions(Power, Frequencies);
 
 % default frequencies
-FooofFrequencies = oscip.utils.expected_fooof_frequencies(Frequencies, FooofFrequencyRange);
+FrequenciesPeriodic = oscip.utils.expected_fooof_frequencies(Frequencies, FooofFrequencyRange);
 
 Dims = size(Power);
 
@@ -29,7 +29,7 @@ switch numel(Dims)
 
     case 2
         % default outputs
-        PeriodicPower = nan(Dims(1), numel(FooofFrequencies));
+        PeriodicPower = nan(Dims(1), numel(FrequenciesPeriodic));
         Exponents = nan(Dims(1));
         Offsets = Exponents;
         Errors = Exponents;
@@ -39,7 +39,7 @@ switch numel(Dims)
         % run fooof
         for ChannelIdx = 1:Dims(1)
             [Exponents(ChannelIdx), Offsets(ChannelIdx), ...
-                FooofFrequencies, Peaks, PeriodicPower(ChannelIdx, :), ...
+                FrequenciesPeriodic, Peaks, PeriodicPower(ChannelIdx, :), ...
                 Errors(ChannelIdx), RSquared(ChannelIdx)] ...
                 = oscip.fit_fooof(squeeze(Power(ChannelIdx, :)), Frequencies, ...
                 FooofFrequencyRange, AdditionalParameters);
@@ -50,7 +50,7 @@ switch numel(Dims)
 
     case 3
         % default outputs
-        PeriodicPower = nan(Dims(1), Dims(2), numel(FooofFrequencies));
+        PeriodicPower = nan(Dims(1), Dims(2), numel(FrequenciesPeriodic));
         Exponents =  nan(Dims(1), Dims(2));
         Offsets = Exponents;
         Errors = Exponents;

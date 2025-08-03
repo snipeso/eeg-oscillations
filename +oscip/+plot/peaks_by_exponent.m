@@ -49,7 +49,7 @@ set(gca, 'Position', [Ax2.Position([1, 2]), Ax1_new.Position(3), Ax2.Position(4)
 box off
 linkaxes([Ax1, Ax2], 'x')
 
-% function peaks_by_exponent(Exponents, PeriodicPower, FooofFrequencies, ChannelLabels)
+% function peaks_by_exponent(Exponents, PeriodicPower, FrequenciesPeriodic, ChannelLabels)
 %
 % NChannels = size(Exponents, 1);
 % figure('Units','centimeters', 'Position', [0 0 10*NChannels, 10])
@@ -63,7 +63,7 @@ linkaxes([Ax1, Ax2], 'x')
 %     WPSorted = WP((~isnan(SortedExponents)), :);
 %
 %     subplot(1, NChannels, ChannelIdx)
-%     contourf(SortedExponents(~isnan(SortedExponents)), FooofFrequencies, ...
+%     contourf(SortedExponents(~isnan(SortedExponents)), FrequenciesPeriodic, ...
 %         WPSorted', 100, 'linecolor', 'none')
 %     clim(quantile(WP(:), [.01 .99]))
 %     title(ChannelLabels{ChannelIdx})

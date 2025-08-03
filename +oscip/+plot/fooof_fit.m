@@ -1,8 +1,8 @@
-function fooof_fit(PeriodicPower, PeriodicPeaks, FooofFrequencies)
+function fooof_fit(PeriodicPower, PeriodicPeaks, FrequenciesPeriodic)
 
 figure
 hold on
-plot(FooofFrequencies, PeriodicPower, 'LineWidth',1.5, 'Color','k')
+plot(FrequenciesPeriodic, PeriodicPower, 'LineWidth',1.5, 'Color','k')
 for PPIdx = 1:size(PeriodicPeaks, 1)
     plot([PeriodicPeaks(PPIdx, 1), PeriodicPeaks(PPIdx, 1)], [0 PeriodicPeaks(PPIdx, 2)], 'Color', [1, 0 0], 'LineWidth',2)
     
