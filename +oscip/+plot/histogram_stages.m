@@ -8,7 +8,7 @@ arguments
 end
 % histogram_stages(Data, Scoring, ScoringLabels, ScoringIndexes, Normalization)
 % plots a histogram of all the values, by stage. Especially useful for
-% seeing how slope changes with each sleep stage.
+% seeing how Exponent changes with each sleep stage.
 % Part of eeg-oscillations, by Sophia Snipes, 2024.
 
 Colors = oscip.plot.get_stage_colors(ScoringIndexes);

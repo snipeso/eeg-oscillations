@@ -1,6 +1,6 @@
-function [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
+function [Exponents, Offsets, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
     = fit_fooof_multidimentional_matlab(Power, Frequencies, FooofFrequencyRange, AdditionalParameters)
-% [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
+% [Exponents, Offsets, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
 %   = fit_fooof_multidimentional(Power, Frequencies, FittingFrequencyRange, MaxError, MinRSquared, AdditionalParameters)
 %
 % Applies fooof fitting to Power that can be either Channel x Frequency or
@@ -30,15 +30,15 @@ switch numel(Dims)
     case 2
         % default outputs
         PeriodicPower = nan(Dims(1), numel(FooofFrequencies));
-        Slopes = nan(Dims(1));
-        Intercepts = Slopes;
-        Errors = Slopes;
-        RSquared = Slopes;
+        Exponents = nan(Dims(1));
+        Offsets = Exponents;
+        Errors = Exponents;
+        RSquared = Exponents;
         PeriodicPeaks = nan(Dims(1), 3);
 
         % run fooof
         for ChannelIdx = 1:Dims(1)
-            [Slopes(ChannelIdx), Intercepts(ChannelIdx), ...
+            [Exponents(ChannelIdx), Offsets(ChannelIdx), ...
                 FooofFrequencies, Peaks, PeriodicPower(ChannelIdx, :), ...
                 Errors(ChannelIdx), RSquared(ChannelIdx)] ...
                 = oscip.fit_fooof_matlab(squeeze(Power(ChannelIdx, :)), Frequencies, ...
@@ -51,10 +51,10 @@ switch numel(Dims)
     case 3
         % default outputs
         PeriodicPower = nan(Dims(1), Dims(2), numel(FooofFrequencies));
-        Slopes =  nan(Dims(1), Dims(2));
-        Intercepts = Slopes;
-        Errors = Slopes;
-        RSquared = Slopes;
+        Exponents =  nan(Dims(1), Dims(2));
+        Offsets = Exponents;
+        Errors = Exponents;
+        RSquared = Exponents;
         PeriodicPeaks = nan(Dims(1), Dims(2), 3);
 
         % check if there's parallel processing available
@@ -68,7 +68,7 @@ switch numel(Dims)
                 parfor EpochIdx = 1:nEpochs
                   % for EpochIdx = 1:nEpochs
                   %     disp('debug')
-                    [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
+                    [Exponents(ChannelIdx, EpochIdx), Offsets(ChannelIdx, EpochIdx), ...
                         ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
                         Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
                         = oscip.fit_fooof_matlab(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
@@ -83,7 +83,7 @@ switch numel(Dims)
             % if channels more than epochs
             for EpochIdx = 1:nEpochs
                 parfor ChannelIdx = 1:nChannels
-                    [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
+                    [Exponents(ChannelIdx, EpochIdx), Offsets(ChannelIdx, EpochIdx), ...
                         ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
                         Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
                         = oscip.fit_fooof_matlab(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
@@ -98,7 +98,7 @@ switch numel(Dims)
 
             for ChannelIdx = 1:nChannels
                 for EpochIdx = 1:nEpochs
-                    [Slopes(ChannelIdx, EpochIdx), Intercepts(ChannelIdx, EpochIdx), ...
+                    [Exponents(ChannelIdx, EpochIdx), Offsets(ChannelIdx, EpochIdx), ...
                         ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
                         Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
                         = oscip.fit_fooof_matlab(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
@@ -114,10 +114,10 @@ switch numel(Dims)
     otherwise
         % default outputs
         PeriodicPower = [];
-        Slopes =  [];
-        Intercepts = Slopes;
-        Errors = Slopes;
-        RSquared = Slopes;
+        Exponents =  [];
+        Offsets = Exponents;
+        Errors = Exponents;
+        RSquared = Exponents;
         PeriodicPeaks = [];
 
         warning('Power is empty')

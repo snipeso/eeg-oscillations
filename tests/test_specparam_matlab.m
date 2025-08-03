@@ -24,16 +24,16 @@ Data = EEG.data(1, 70000:90000);
 [Power, Frequencies] = oscip.compute_power(Data, EEG.srate, 5, 0.5);
 SmoothPower = oscip.smooth_spectrum(Power, Frequencies, 2);
 
-[SlopesMat, InterceptsMat, FooofFrequenciesMat, PeriodicPeaksMat, PeriodicPowerMat, ErrorsMat, RSquaredMat] ...
+[ExponentsMat, OffsetsMat, FooofFrequenciesMat, PeriodicPeaksMat, PeriodicPowerMat, ErrorsMat, RSquaredMat] ...
     = oscip.fit_fooof_matlab(Power, Frequencies, FittingFrequencyRange, AdditionalParameters);
 
-[Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
+[Exponents, Offsets, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
     = oscip.fit_fooof(Power, Frequencies, FittingFrequencyRange, AdditionalParameters);
 
 disp('Testing fit_fooof')
 
-out_of_range(Slopes, SlopesMat, AcceptableDifference, 'Slope')
-out_of_range(Intercepts, InterceptsMat, AcceptableDifference, 'Intercept')
+out_of_range(Exponents, ExponentsMat, AcceptableDifference, 'Exponent')
+out_of_range(Offsets, OffsetsMat, AcceptableDifference, 'Offset')
 out_of_range(FooofFrequencies, FooofFrequenciesMat, AcceptableDifference, 'Frequencies')
 
 %%

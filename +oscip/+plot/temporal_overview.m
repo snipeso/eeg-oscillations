@@ -1,4 +1,4 @@
-function temporal_overview(Power, Frequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Slopes, CLims, YLims, Title)
+function temporal_overview(Power, Frequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Exponents, CLims, YLims, Title)
 % creates a figure with two plots: a time x frequency spectrogram and a
 % hypnogram below indicating the scoring.
 % Power should be Epoch x Frequency matrix.
@@ -7,7 +7,7 @@ function temporal_overview(Power, Frequencies, EpochLength, Scoring, ScoringInde
 % be inside Scoring. e.g. [-3 -2 -1 0 1];
 % ScoringLabels should be strings that correspond to each possible scoring
 % index. e.g. {"N3", "N2", "N1", "W", "R"};
-% Slopes is optional; it will plot in the hypnogram the actual slopes for
+% Exponents is optional; it will plot in the hypnogram the actual Exponents for
 % each epoch. should be a Channel x time matrix.
 % CLims are the ranges of the colormap, but its also optional.
 % YLims is the frequency range to display on the y axis.
@@ -20,7 +20,7 @@ arguments
     Scoring = nan(1, size(Power, 1));
     ScoringIndexes = 0;
     ScoringLabels = 'w';
-    Slopes = [];
+    Exponents = [];
     CLims = [];
     YLims = [min(Frequencies), max(Frequencies)];
     Title = [];
@@ -57,11 +57,11 @@ if size(Scoring, 1)==2 % if a second vector is provided with day/night info
 end
 
 
-% plot slopes
-if ~isempty(Slopes)
-    Alpha = 1/size(Slopes, 1);
-    plot(Time, -Slopes, 'Color', [.2 .2 .2 Alpha])
-    ylabel('Slope (a.u.)')
+% plot Exponents
+if ~isempty(Exponents)
+    Alpha = 1/size(Exponents, 1);
+    plot(Time, -Exponents, 'Color', [.2 .2 .2 Alpha])
+    ylabel('Exponent (a.u.)')
 end
 
 % plot scoring

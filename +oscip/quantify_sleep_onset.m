@@ -1,33 +1,33 @@
-function  [SleepOnset, OnsetSpeed, WakeSlope, N3Slope, Trend, Time, Slopes] = quantify_sleep_onset(Slopes, Time, MinEpochs)
+function  [SleepOnset, OnsetSpeed, WakeExponent, N3Exponent, Trend, Time, Exponents] = quantify_sleep_onset(Exponents, Time, MinEpochs)
 % This assumes that the recording starts with wake, and finds the first
 % instance of sleep onset. Ideally, don't provide more data than the first
 % cycle, otherwise it will not be happy
 arguments
-    Slopes
+    Exponents
     Time
     MinEpochs = 5;
 end
 
-isNan = isnan(Slopes);
-Slopes(isNan) = [];
+isNan = isnan(Exponents);
+Exponents(isNan) = [];
 Time(isNan) = [];
 
-if numel(Slopes) < MinEpochs
-    WakeSlope = nan;
-    N3Slope = nan;
+if numel(Exponents) < MinEpochs
+    WakeExponent = nan;
+    N3Exponent = nan;
     SleepOnset = nan;
     OnsetSpeed = nan;
 
-    Trend = nan(size(Slopes));
+    Trend = nan(size(Exponents));
     warning('not enough data for sleep onset properties')
     return
 end
 
 % fit sigmoid function
-[param,stat]= oscip.external.sigm_fit(Time, Slopes);
+[param,stat]= oscip.external.sigm_fit(Time, Exponents);
 
-WakeSlope = param(1);
-N3Slope = param(2);
+WakeExponent = param(1);
+N3Exponent = param(2);
 SleepOnset = param(3);
 OnsetSpeed = param(4);
 

@@ -61,7 +61,7 @@ SmoothPower = oscip.smooth_spectrum(EpochPower, Frequencies, SmoothSpan); % bett
 
 %%
 % run FOOOF
-[Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
+[Exponents, Offsets, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
     = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
 
 %% plot
@@ -73,7 +73,7 @@ ScoringIndexes = -3:1:1;
 ScoringLabels = {'N3', 'N2', 'N1', 'W', 'R'};
 
 oscip.plot.temporal_overview(squeeze(mean(PeriodicPower,1, 'omitnan')), ...
-    FooofFrequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Slopes, [], [])
+    FooofFrequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Exponents, [], [])
 
 oscip.plot.frequency_overview(PeriodicPower, FooofFrequencies, PeriodicPeaks, ...
     Scoring, ScoringIndexes, ScoringLabels, 2, .1, false, false)
@@ -81,8 +81,8 @@ oscip.plot.frequency_overview(PeriodicPower, FooofFrequencies, PeriodicPeaks, ..
 %%
 figure('Units','centimeters', 'Position',[0 0 10 15], 'Color','w')
 
-oscip.plot.histogram_stages(Slopes(1, :), Scoring, ScoringLabels, ScoringIndexes);
-% oscip.plot.histogram_stages(Slopes(:)', reshape(repmat(Scoring, size(Slopes, 1), 1), [], 1)', ScoringLabels, ScoringIndexes);
+oscip.plot.histogram_stages(Exponents(1, :), Scoring, ScoringLabels, ScoringIndexes);
+% oscip.plot.histogram_stages(Exponents(:)', reshape(repmat(Scoring, size(Exponents, 1), 1), [], 1)', ScoringLabels, ScoringIndexes);
 xlim([.5 4.5])
 
 %% detect spindles
@@ -159,7 +159,7 @@ colorbar
 StageEpochs = ismember(Scoring, [-2 -3]);
 % StageEpochs = ismember(Scoring, [0]);
 figure
-TopoData = mean(Slopes(:, StageEpochs), 2, 'omitnan');
+TopoData = mean(Exponents(:, StageEpochs), 2, 'omitnan');
 chART.plot.eeglab_topoplot(TopoData, Chanlocs)
 
 

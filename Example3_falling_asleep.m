@@ -76,11 +76,11 @@ for FileIdx = 1:numel(Files)
         SmoothPower = oscip.smooth_spectrum(EpochPower, Frequencies, SmoothSpan); % better for fooof if the spectra are smooth
 
         % run FOOOF
-        [Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
+        [Exponents, Offsets, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
             = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
 
         save(fullfile(Destination, File), 'EEG',  'ScoringInTime', 'ScoringIndexes', 'ScoringLabels', ...
-            'SmoothPower', 'Frequencies', 'Slopes', 'Intercepts', ...
+            'SmoothPower', 'Frequencies', 'Exponents', 'Offsets', ...
             'FooofFrequencies', 'PeriodicPeaks', 'PeriodicPower', 'Errors','RSquared')
     end
 
@@ -90,12 +90,12 @@ for FileIdx = 1:numel(Files)
         Title = replace(replace(File, '.mat', ''), '_', ' ');
         FigureTitle = char(extractBefore(File, '.mat'));
         oscip.plot.temporal_overview(squeeze(mean(PeriodicPower,1)), ...
-            FooofFrequencies, NewEpochLength, zeros(size(PeriodicPower, 2)), ScoringIndexes, ScoringLabels, Slopes, [], [], Title)
+            FooofFrequencies, NewEpochLength, zeros(size(PeriodicPower, 2)), ScoringIndexes, ScoringLabels, Exponents, [], [], Title)
         set(gcf, 'InvertHardcopy', 'off', 'Color', 'w')
         print(fullfile(Destination, [FigureTitle, '_time']), '-dtiff', '-r1000')
       
-        oscip.plot.peaks_by_slopes(PeriodicPeaks, Slopes, NewEpochLength, Title, 50, .1, flip(chART.external.colorcet('I3')))
+        oscip.plot.peaks_by_exponent(PeriodicPeaks, Exponents, NewEpochLength, Title, 50, .1, flip(chART.external.colorcet('I3')))
         set(gcf, 'InvertHardcopy', 'off', 'Color', 'w')
-        print(fullfile(Destination, [FigureTitle, '_slopes']), '-dtiff', '-r1000')
+        print(fullfile(Destination, [FigureTitle, '_Exponents']), '-dtiff', '-r1000')
     end
 end

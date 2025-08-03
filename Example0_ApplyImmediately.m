@@ -48,7 +48,7 @@ SmoothPower = oscip.smooth_spectrum(EpochPower, Frequencies, SmoothSpan); % bett
 
 
 % run FOOOF
-[Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
+[Exponents, Offsets, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
     = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
 
 
@@ -57,16 +57,16 @@ SmoothPower = oscip.smooth_spectrum(EpochPower, Frequencies, SmoothSpan); % bett
 %%% Plot
 
 
-%% plot periodic activity and slopes in time
+%% plot periodic activity and Exponents in time
 
 if isempty (Scoring)
-Scoring = zeros(1, size(Slopes, 2));
+Scoring = zeros(1, size(Exponents, 2));
 ScoringIndexes = -3:1:1;
 ScoringLabels = {'N3', 'N2', 'N1', 'W', 'R'};
 end
 
 oscip.plot.temporal_overview(squeeze(mean(PeriodicPower,1, 'omitnan')), ...
-    FooofFrequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Slopes, [], [])
+    FooofFrequencies, EpochLength, Scoring, ScoringIndexes, ScoringLabels, Exponents, [], [])
 
 %% plot all periodic peak frequencies by sleep stage
 
@@ -82,8 +82,8 @@ oscip.plot.frequency_overview(PeriodicPower, FooofFrequencies, PeriodicPeaks, ..
 
 figure('Units','centimeters', 'Position',[0 0 10 10], 'Color','w')
 
-oscip.plot.histogram_stages(Slopes(1, :), Scoring, ScoringLabels, ScoringIndexes);
-xlabel('Slope')
+oscip.plot.histogram_stages(Exponents(1, :), Scoring, ScoringLabels, ScoringIndexes);
+xlabel('Exponent')
 xlim([.5 4.5])
 
 
@@ -102,7 +102,7 @@ oscip.plot.band_timecourse(PeriodicPower, FooofFrequencies, EpochLength, Bands,1
 
 A = tic;
 
-[Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
+[Exponents, Offsets, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
     = oscip.fit_fooof_multidimentional(SmoothPower, Frequencies, FooofFrequencyRange, MaxError, MinRSquared);
 
 disp(['time to analyze: ', num2str(toc(A)/60)])

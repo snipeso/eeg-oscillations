@@ -87,7 +87,7 @@ Critical parameters in `default_settings()`:
 ## Testing Strategy
 
 Tests validate MATLAB implementation against Python FOOOF results with configurable tolerance (`AcceptableDifference = 0.01`). Key test areas:
-- Spectral parameter accuracy (slopes, intercepts, peak parameters)
+- Spectral parameter accuracy (Exponents, Offsets, peak parameters)
 - Settings compatibility between Python and MATLAB versions
 - Utility function correctness (scoring alignment, data processing)
 

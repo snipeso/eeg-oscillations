@@ -42,19 +42,19 @@ SmoothResampled = oscip.smooth_spectrum(ResampledPower, ResampledFrequencies, Sm
 FittingRange = [3 45];
 MaxError = .15;
 MinRSquared  = .95;
-[Slopes, Intercepts, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
+[Exponents, Offsets, FooofFrequencies, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
     = oscip.fit_fooof_multidimentional(SmoothResampled, ResampledFrequencies, FittingRange, MaxError, MinRSquared);
 
 
 %%
 MaxArtefacts = 1;
-RangeSlopes = [0 4];
-RangeIntercepts = [0 5];
+RangeExponents = [0 4];
+RangeOffsets = [0 5];
 
- PeriodicPower = oscip.keep_only_clean_epochs(PeriodicPower, Slopes, Intercepts, RSquared, Errors, ...
-            RangeSlopes, RangeIntercepts, MinRSquared, MaxError, [], MaxArtefacts);
-  Slopes = oscip.keep_only_clean_epochs(Slopes, Slopes, Intercepts, RSquared, Errors, ...
-            RangeSlopes, RangeIntercepts, MinRSquared, MaxError, [], MaxArtefacts);
+ PeriodicPower = oscip.keep_only_clean_epochs(PeriodicPower, Exponents, Offsets, RSquared, Errors, ...
+            RangeExponents, RangeOffsets, MinRSquared, MaxError, [], MaxArtefacts);
+  Exponents = oscip.keep_only_clean_epochs(Exponents, Exponents, Offsets, RSquared, Errors, ...
+            RangeExponents, RangeOffsets, MinRSquared, MaxError, [], MaxArtefacts);
 
 
 %%
@@ -91,11 +91,11 @@ Data = oscip.smooth_spectrum(permute(BandPeriodicPower, [3 2 1]),Time, 10);
 plot(Time, Data)
 legend(fieldnames(Bands))
 
-% slope
+% Exponent
 Ax4 = subplot(5, 1, 4);
-Data = squeeze(oscip.smooth_spectrum(Slopes,Time, 10));
+Data = squeeze(oscip.smooth_spectrum(Exponents,Time, 10));
 plot(Time, Data)
-legend({'Slopes'})
+legend({'Exponents'})
 
 % scoring
 Ax5 = subplot(5, 1, 5);

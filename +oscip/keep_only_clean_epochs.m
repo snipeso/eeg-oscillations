@@ -1,13 +1,13 @@
-function [CleanData, Artefacts] = keep_only_clean_epochs(Data, Slopes, Intercepts, RSquared, Errors, ...
-    Artefacts, RangeSlopes, RangeIntercepts, MinRSquared, MaxError, Frequencies, MaxArtefacts)
+function [CleanData, Artefacts] = keep_only_clean_epochs(Data, Exponents, Offsets, RSquared, Errors, ...
+    Artefacts, RangeExponents, RangeOffsets, MinRSquared, MaxError, Frequencies, MaxArtefacts)
 % sets to nan all data points which would have other factors outside of
 % physiological ranges. Takes as input:
 % - Data: a channel x epoch x something matrix. The output will be this
 % data, but artifacts will be replaced with NaNs
-% - Slopes/Intercepts/RSquared/Errors: a channel x epoch matrix. Could be left empty.
-% - RangeSlopes: a 1 x 2 array of the min/max slope considered
+% - Exponents/Offsets/RSquared/Errors: a channel x epoch matrix. Could be left empty.
+% - RangeExponents: a 1 x 2 array of the min/max Exponent considered
 % physiological. Defaults are [0 4].
-% - RangeIntercepts: Defaults are [0 5];
+% - RangeOffsets: Defaults are [0 5];
 % - Frequencies: optional (only if providing power). Used to detect epochs
 % that have too high frequency relative to the standard deviations of the
 % whole channel
@@ -18,17 +18,17 @@ function [CleanData, Artefacts] = keep_only_clean_epochs(Data, Slopes, Intercept
 %
 % How to use:
 % 1) Only removed artefacts: PeriodicPower = oscip.keep_only_clean_epochs(PeriodicPower, [], [], [], [], Artefacts);
-% 2) Automatically remove anything not in range: PeriodicPower = oscip.keep_only_clean_epochs(PeriodicPower, Slopes, Intercepts, RSquared, Errors)
-% 3) Apply to Slopes: Slopes = oscip.keep_only_clean_epochs(Slopes, Slopes, Intercepts, RSquared, Errors)
+% 2) Automatically remove anything not in range: PeriodicPower = oscip.keep_only_clean_epochs(PeriodicPower, Exponents, Offsets, RSquared, Errors)
+% 3) Apply to Exponents: Exponents = oscip.keep_only_clean_epochs(Exponents, Exponents, Offsets, RSquared, Errors)
 arguments
     Data
-    Slopes = [];
-    Intercepts = [];
+    Exponents = [];
+    Offsets = [];
     RSquared = [];
     Errors = [];
     Artefacts = [];
-    RangeSlopes = [0 4.5];
-    RangeIntercepts = [0 5];
+    RangeExponents = [0 4.5];
+    RangeOffsets = [0 5];
     MinRSquared = .98;
     MaxError = .1;
     Frequencies = [];
@@ -42,20 +42,20 @@ CleanData = Data;
 %%% identify artifacts, create blanks if data not provided
 
 % remove data based on aperiodic activity
-% CleanData = oscip.utils.remove_bad_aperiodic(CleanData, Slopes, ...
-%     Intercepts, RangeSlopes, RangeIntercepts, MinCleanChannels);
+% CleanData = oscip.utils.remove_bad_aperiodic(CleanData, Exponents, ...
+%     Offsets, RangeExponents, RangeOffsets, MinCleanChannels);
 
 
-if ~isempty(Slopes)
-    BadSlopes = oscip.utils.exclude_range(Slopes, RangeSlopes);
+if ~isempty(Exponents)
+    BadExponents = oscip.utils.exclude_range(Exponents, RangeExponents);
 else
-    BadSlopes = false(Dims(1:2));
+    BadExponents = false(Dims(1:2));
 end
 
-if ~isempty(Intercepts)
-    BadIntercepts = oscip.utils.exclude_range(Intercepts, RangeIntercepts);
+if ~isempty(Offsets)
+    BadOffsets = oscip.utils.exclude_range(Offsets, RangeOffsets);
 else
-    BadIntercepts = false(Dims(1:2));
+    BadOffsets = false(Dims(1:2));
 end
 
 if ~isempty(RSquared)
@@ -75,13 +75,13 @@ if isempty(Artefacts)
 end
 
 %%% join all artefact types together
-Artefacts = Artefacts | BadSlopes | BadIntercepts | BadR | BadError;
+Artefacts = Artefacts | BadExponents | BadOffsets | BadR | BadError;
 
 if ~isempty(Frequencies)
     for ChIdx = 1:Dims(1)
         % remove epochs that have too high frequencies (this handles edge-cases
-        % that slope-intercept thresholds don't cover, where the slope and
-        % intercept are within physiological ranges, but their combination is
+        % that Exponent-Offset thresholds don't cover, where the Exponent and
+        % Offset are within physiological ranges, but their combination is
         % such that there is still a lot of high-frequency noise)
         Outliers = oscip.utils.find_high_frequency_outliers(squeeze(Data(ChIdx, :, :)), Frequencies);
         Artefacts(ChIdx, :) = Artefacts(ChIdx, :) | Outliers';

@@ -1,6 +1,6 @@
 function Table = fill_table_row(Table, BandLabels, ScoringLabels, Data, MeasureLabel)
 % Data is a Stage x Band matrix or a Stage x Band x 3 (for periodic peaks).
-% MeasureLabel is either "Power", "PeriodicPower", or "Peak", "Slope" or "Intercept"
+% MeasureLabel is either "Power", "PeriodicPower", or "Peak", "Exponent" or "Offset"
 
 
 

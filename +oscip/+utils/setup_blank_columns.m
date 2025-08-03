@@ -5,14 +5,14 @@ arguments
     Table
     BandLabels = {'Delta', 'Theta', 'Alpha', 'Sigma', 'Beta', 'Iota', 'Gamma'};
     ScoringLabels = {'N3', 'N2', 'N1', 'W', 'R'};
-    Measures = {'Slope', 'Intercept', 'Power', 'PeriodicPower', 'Peak', 'SleepOnset'};
+    Measures = {'Exponent', 'Offset', 'Power', 'PeriodicPower', 'Peak', 'SleepOnset'};
 end
 
 nRows = size(Table, 1);
 BlankColumn = nan(nRows, 1);
 
 PeakMeasures = {'PeakFrequency', 'PeakAmplitude', 'PeakBandwidth'};
-SleepOnsetMeasures = {'SleepOnset', 'OnsetSpeed', 'WakeSlope', 'N3Slope'};
+SleepOnsetMeasures = {'SleepOnset', 'OnsetSpeed', 'WakeExponent', 'N3Exponent'};
 
 for MeasureIdx = 1:numel(Measures)
     Measure = Measures{MeasureIdx};
