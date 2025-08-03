@@ -16,7 +16,7 @@ function pe_vals = gen_periodic(freqs, gaussian_params)
 % This MATLAB implementation is based on the original FOOOF project:
 % https://github.com/fooof-tools/fooof
 % Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
-% Translated to MATLAB by Claude Sonnet 3.7, NOTcorrectedYET by Sophia Snipes,
+% Translated to MATLAB by Claude Sonnet 3.7, corrected by Sophia Snipes,
 % 2025.
 
 % Initialize output
@@ -28,21 +28,14 @@ if isempty(gaussian_params)
 end
 
 % Reshape parameters if needed
-if size(gaussian_params, 2) == 3
-    params_mat = gaussian_params;
-else
-    % Reshape flat parameters to [n_peaks x 3]
-    n_peaks = length(gaussian_params) / 3;
-    params_mat = reshape(gaussian_params, 3, n_peaks)';
+if size(gaussian_params, 2) ~= 3
+    error('somehow wrong dimentions of gaussian parameters in gen_periodic')
+    % % Reshape flat parameters to [n_peaks x 3]
+    % n_peaks = length(gaussian_params) / 3;
+    % params_mat = reshape(gaussian_params, 3, n_peaks)';
 end
 
 % Generate periodic component for each peak
-for i = 1:size(params_mat, 1)
-    center = params_mat(i, 1);
-    height = params_mat(i, 2);
-    std = params_mat(i, 3);
-    
-    pe_vals = pe_vals + height * exp(-(freqs - center).^2 / (2 * std^2));
-end
-
+for i = 1:size(gaussian_params, 1)
+    pe_vals = pe_vals + oscip.sputils.gaussian_function(freqs, gaussian_params(i, :));
 end
