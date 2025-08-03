@@ -26,6 +26,9 @@ initial_fit = oscip.sputils.gen_aperiodic(freqs, popt, model.aperiodic_mode);
 flatspec = power_spectrum - initial_fit;
 
 % Flatten outliers, defined as any points that drop below 0
+% DIFFERENCE: Python uses strict inequality: flatspec[flatspec < 0] = 0
+% MATLAB currently uses same, but commented line suggests <= was considered
+% Python version only zeros values strictly less than 0, not equal to 0
 flatspec(flatspec < 0) = 0;
 % flatspec(flatspec <= 0) = nan; % TODO: ask fooof people if they are aware most values are 0?
 

@@ -78,7 +78,7 @@ model.error_metric = 'MAE'; % specparam default is MAE, but can also be MSE or R
 model.maxfev = 5000; % max times call curve fitting function TODO: implement?
 model.tol = .00001; % tolerance setting for curve fitting; TODO: implement?
 % model.check_freqs = true; % checks if frequencies evenly spaced; TODO: implement?
-% model.check_data = true; % checks power values and raises error if there's NaNs
+model.check_data = true; % checks power values and raises error if there's NaNs
 model.gauss_std_limits = model.peak_width_limits / 2; % Convert to gaussian std limits
 
 

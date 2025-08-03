@@ -15,6 +15,9 @@ function model = fit_model(model)
 % Translated to MATLAB by Claude Sonnet 3.7, NOTcorrectedYET by Sophia Snipes,
 % 2025.
 
+if ~model.check_data && (any(isinf(model.power_spectrum)) || any(isnan(model.power_spectrum)))
+    return
+end
 
 try
     % Fit initial aperiodic component
@@ -28,7 +31,7 @@ try
     model.gaussian_params = oscip.sputils.fit_peaks(model);
 
     % Calculate the peak fit
-    peak_fit = oscip.sputils.gen_periodic(model.freqs, model.gaussian_params);
+    peak_fit = oscip.sputils.gen_periodic(model.freqs, model.gaussian_params); % for some reason specparam flattens this array; no need here
 
     % Create peak-removed (but not flattened) power spectrum
     spectrum_peak_rm = model.power_spectrum - peak_fit;

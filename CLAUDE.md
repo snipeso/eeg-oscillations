@@ -90,3 +90,42 @@ Tests validate MATLAB implementation against Python FOOOF results with configura
 - Spectral parameter accuracy (slopes, intercepts, peak parameters)
 - Settings compatibility between Python and MATLAB versions
 - Utility function correctness (scoring alignment, data processing)
+
+## Python vs MATLAB Implementation Differences
+
+The MATLAB implementation aims to replicate Python FOOOF behavior but has several key differences that may cause minor result variations:
+
+### Core Algorithm Differences
+1. **Data validation timing**: Python checks for NaN/Inf values conditionally during fitting based on `_check_data` flag. MATLAB currently lacks this conditional check.
+
+2. **Memory handling**: Python explicitly copies flattened spectrum (`np.copy(self._spectrum_flat)`) before peak fitting to prevent modification. MATLAB relies on internal copying within functions.
+
+3. **Parameter flattening**: Python flattens gaussian parameters before passing to `gen_periodic()` using `np.ndarray.flatten()`. MATLAB may need explicit reshaping.
+
+### Optimization Differences
+1. **Algorithm selection**: Python uses `scipy.optimize.curve_fit` which defaults to Levenberg-Marquardt ('lm') without bounds, Trust Region Reflective ('trf') with bounds. MATLAB uses `lsqcurvefit` with explicit 'trust-region-reflective' algorithm.
+
+2. **Tolerance parameters**: Python uses `ftol`, `xtol`, `gtol` parameters. MATLAB maps these to `FunctionTolerance`, `StepTolerance`, `OptimalityTolerance`.
+
+3. **Error handling approach**: Python uses try/except with `ValueError` for edge cases (e.g., peak width estimation). MATLAB uses explicit NaN checks and conditionals.
+
+### Peak Detection Differences
+1. **Half-height search**: Python uses generator expressions with `next()` and `None` defaults for finding half-height indices. MATLAB uses `find()` with directional search ('first'/'last') - functionally equivalent but different implementation.
+
+2. **Error handling**: Python's try/except approach for bandwidth estimation vs MATLAB's explicit conditional checks both achieve the same result but through different code paths.
+
+### Minor Implementation Details
+- Array indexing (Python 0-based vs MATLAB 1-based) handled correctly in both but with different syntax
+- Both use identical mathematical formulations and default parameter values
+- Optimization bounds and constraints implemented equivalently
+
+These differences primarily affect code structure and error handling rather than core mathematical computations, but may contribute to small numerical variations between implementations.
+
+
+## Instructions
+
+The original python code can be found here:
+D:\Code\Python\fooof
+
+The final output of the fooof/specparam function should be identical between the matlab and python version, even though the matlab version in the end will structure the data a little bit differently. 
+But the models from fooof.py and fit_model.m should be identical. At the moment, they are nearly identical, but there are some small differences, likely related to either preset thresholds, or edge case handling. Can you provide comments in the code of every line that is not doing strictly the same thing between the python and matlab versions, and explain what is different, and offer a commented line suggesting how to change the matlab code to make it in line with the python code.

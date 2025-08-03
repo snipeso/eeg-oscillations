@@ -107,6 +107,5 @@ for i = 1:n_peaks
 end
 end
 
-
 % Notes:
 % - it's still not perfectly identical

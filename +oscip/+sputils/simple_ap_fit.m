@@ -28,6 +28,9 @@ ap_bounds = model.ap_bounds;
 
 % Calculate guess parameters
 if isnan(ap_guess(1)) % offset
+    % DIFFERENCE: Python uses power_spectrum[0], MATLAB uses power_spectrum(1)
+    % Both get first element, but Python's 0-indexing vs MATLAB's 1-indexing
+    % Functionally identical behavior
     offset_guess = power_spectrum(1);  % just uses first value
 else
     offset_guess = ap_guess(1);
@@ -45,6 +48,10 @@ end
 
 
 % Set up optimization options
+% DIFFERENCE: Python uses scipy.optimize.curve_fit with different default algorithm
+% Python defaults to 'lm' (Levenberg-Marquardt) when no bounds, 'trf' (trust-region-reflective) with bounds
+% MATLAB lsqcurvefit defaults to 'trust-region-reflective' when bounds provided
+% Python also uses different tolerance names: ftol, xtol, gtol vs MATLAB's Function/Step/OptimalityTolerance
 options = optimoptions('lsqcurvefit', ...
     'Algorithm','trust-region-reflective', ... % NB: fooof uses curvefit in python, and provide bounds as an input, even if infinite; this means that it defaults to the trf algorithm
     'MaxFunctionEvaluations', model.maxfev, ...
