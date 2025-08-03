@@ -101,8 +101,6 @@ y = zeros(size(x));
 
 for i = 1:n_peaks
     idx = (i-1)*3 + 1;
-
-    % Gaussian: height * exp(-0.5 * ((x - cf) / std_dev)^2)
     y = y + oscip.sputils.gaussian_function(x, params(idx:idx+2));
 end
 end
