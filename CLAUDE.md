@@ -125,7 +125,19 @@ These differences primarily affect code structure and error handling rather than
 ## Instructions
 
 The original python code can be found here:
-D:\Code\Python\fooof
+C:\Users\colas\Code\Lapse-Causes\.env\Lib\site-packages\fooof
 
-The final output of the fooof/specparam function should be identical between the matlab and python version, even though the matlab version in the end will structure the data a little bit differently. 
-But the models from fooof.py and fit_model.m should be identical. At the moment, they are nearly identical, but there are some small differences, likely related to either preset thresholds, or edge case handling. Can you provide comments in the code of every line that is not doing strictly the same thing between the python and matlab versions, and explain what is different, and offer a commented line suggesting how to change the matlab code to make it in line with the python code.
+
+In test_for_claude.m there's code running both the python version of fooof and the current matlab version. figure out why they give different results. provide a summary of all the lines responsible.
+
+of course, ignore anything that isn't strictly functional relevant, such as variable names.
+
+The most likely culprit is some change in default parameters, or different handling of exception or edge cases. 
+
+When running test_for_claude, I am strictly feeding both algorithms the same settings, so they should be the same unless they are changed somewhere downstream. catch that if you can.
+
+be THOROUGH, look through all the little sub scripts and functions. consider defaults that python and matlab may have and that aren't necessarily explicit in the code. 
+
+you should finish by providing changes that I can make to the matlab code that will yield identical plots. 
+
+When you've got your answer, double check it that it's correct

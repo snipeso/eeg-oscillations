@@ -14,12 +14,11 @@ end
 % 
 % By Sophia Snipes, 2025, for eeg-oscillations
 
-settings.freq_range = FittingFrequencyRange;
+AdditionalParameters.freq_range = FittingFrequencyRange;
 
 Dims = size(Power);
 if numel(Dims)>2 || ~any(Dims==1)
     error('power spectrum wrong for specparam')
 end
 
-
-FooofModel = oscip.specparam(double(Power(:))', double(Frequencies), settings);
+FooofModel = oscip.specparam(double(Power(:))', double(Frequencies), AdditionalParameters);
