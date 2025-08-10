@@ -1,12 +1,12 @@
-function Table = periodic_peaks_by_stage(PeriodicPower, FrequenciesPeriodic, Scoring, ScoringIndexes, MetadataTableRow, MinEpochs, SmoothSpectrum)
+function Table = periodic_peaks_by_stage(PeriodicPower, Frequencies, Scoring, ScoringIndexes, MetadataTableRow, MinEpochs, SmoothSpan)
 arguments
     PeriodicPower % a time x frequency matrix
-    FrequenciesPeriodic
+    Frequencies
     Scoring
     ScoringIndexes
     MetadataTableRow = table(); % optional, contains participant information and any other metadata for easy indexing
     MinEpochs = 3;
-    SmoothSpectrum = []; % if power was from average of lots of channels,this can be small; if it was from only a few channels, this should be big, like 5
+    SmoothSpan = []; % if power was from average of lots of channels,this can be small; if it was from only a few channels, this should be big, like 5
 end
 
 % get a Stage x frequency matrix
@@ -24,7 +24,7 @@ Table = table();
 for StageIdx = 1:numel(ScoringIndexes)
 
     % from average spectra of each stage, find all the peaks
-    AllPeriodicPeaks = oscip.utils.findpeaks_matlab(StagedPeriodicPower(StageIdx, :), FrequenciesPeriodic, SmoothSpectrum);
+    AllPeriodicPeaks = oscip.utils.findpeaks_matlab(StagedPeriodicPower(StageIdx, :), Frequencies, SmoothSpan);
 
     % set up as table
     MetadataTableRow.Stage = ScoringIndexes(StageIdx);
