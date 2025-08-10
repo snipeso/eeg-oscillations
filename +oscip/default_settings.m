@@ -7,8 +7,7 @@ Settings.Mode = 'analysis'; % options are 'analysis', or 'debug'. if debug, it w
 
 % To detect the peak frequency within a given band, it's best to only use a
 % subset of the detected peaks that have the narrowest bands for example.
-Settings.PeakBandwidthMin = 0;  % select periodic peaks that have at least this bandwidth. Good for beta and gamma broad signals
-Settings.PeakBandwidthMax = 2; % select periodic peaks that had at most this bandwidth (good for spindle and iota detection)
+Settings.BandwidthLimits = [0.5 12];
 Settings.PeakAmplitudeMin = 0;
 
 % All the periodic peaks in the signal are assembled, and the peak

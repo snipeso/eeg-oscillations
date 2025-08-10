@@ -8,7 +8,7 @@ arguments
 end
 
 if ~isempty(SmoothSpan)
-SmoothPower = oscip.smooth_spectrum(PeriodicPower, Frequencies, SmoothSpan);
+    SmoothPower = oscip.smooth_spectrum(PeriodicPower, Frequencies, SmoothSpan);
 else
     SmoothPower = PeriodicPower;
 end
