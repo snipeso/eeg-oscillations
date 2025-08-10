@@ -37,7 +37,7 @@ for MeasureIdx = 1:numel(Measures)
                     for PeakIdx = 1:numel(PeakMeasures)
                         Band = BandCell{1};
                         PeakMeasure = PeakMeasures{PeakIdx};
-                        Table.([Stage, '_', PeakMeasure, '_', Band]) = BlankColumn;
+                        Table.([Stage, PeakMeasure, '_', Band]) = BlankColumn;
                     end
 
                 case {'SleepOnset'}
