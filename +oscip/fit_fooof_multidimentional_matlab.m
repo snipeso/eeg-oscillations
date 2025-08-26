@@ -1,5 +1,5 @@
 function [Exponents, Offsets, FrequenciesPeriodic, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
-    = fit_fooof_multidimentional_matlab(Power, Frequencies, FooofFrequencyRange, AdditionalParameters)
+    = fit_fooof_multidimentional_matlab(Power, Frequencies, FooofFrequencyRange, AdditionalParameters, RunParallel)
 % [Exponents, Offsets, FrequenciesPeriodic, PeriodicPeaks, PeriodicPower, Errors, RSquared] ...
 %   = fit_fooof_multidimentional(Power, Frequencies, FittingFrequencyRange, MaxError, MinRSquared, AdditionalParameters)
 %
@@ -12,6 +12,7 @@ arguments
     Frequencies
     FooofFrequencyRange = [3 40];
     AdditionalParameters = struct();
+    RunParallel = true;
 end
 
 % make sure frequency is last dimention
@@ -61,7 +62,7 @@ switch numel(Dims)
         installedParallelToolbox = license('test','distrib_computing_toolbox');
 
         % run fooof
-        if installedParallelToolbox && Dims(2) > 50 && Dims(2) > Dims(1)
+        if RunParallel && installedParallelToolbox && Dims(2) > 50 && Dims(2) > Dims(1)
 
             % if epochs more than channels
             for ChannelIdx = 1:nChannels
@@ -78,7 +79,7 @@ switch numel(Dims)
                 end
                 disp(['Finished ', num2str(ChannelIdx)])
             end
-        elseif installedParallelToolbox && Dims(1) > 50 && Dims(1) >= Dims(2)
+        elseif RunParallel && installedParallelToolbox && Dims(1) > 50 && Dims(1) >= Dims(2)
 
             % if channels more than epochs
             for EpochIdx = 1:nEpochs
