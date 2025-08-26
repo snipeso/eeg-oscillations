@@ -1,4 +1,6 @@
 function BandData = average_bands(Data, Bands, Frequencies)
+% BandData = average_bands(Data, Bands, Frequencies)
+%
 % Data is Channel x Epoch x Frequency matrix
 
 Dims = size(Data);

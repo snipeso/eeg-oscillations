@@ -1,4 +1,5 @@
-function band_timecourse(Power, FrequenciesPeriodic, EpochLength, Bands, SmoothEpochs, Scoring, ScoringIndexes, ScoringLabels)
+function band_timecourse(Power, FrequenciesPeriodic, EpochLength, Bands, ...
+    SmoothEpochs, Scoring, ScoringIndexes, ScoringLabels)
 arguments
     Power
     FrequenciesPeriodic
