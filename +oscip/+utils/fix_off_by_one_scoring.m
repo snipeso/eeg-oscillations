@@ -19,8 +19,9 @@ end
 nScoringEpochs = numel(Scoring);
 
 ResizedScoring = nan(1, nDataEpochs);
+nExtra = numel(ResizedScoring)-nScoringEpochs;
 if nScoringEpochs > nDataEpochs + MinimumDiscrepancy || nScoringEpochs < nDataEpochs - MinimumDiscrepancy
-    warning(['Mismatch of scoring and epochs greater than ', num2str(MinimumDiscrepancy) '; returning NaN scoring'])
+    warning(['Mismatch of scoring and epochs greater than ', num2str(MinimumDiscrepancy) '; returning NaN scoring']) 
     return
 end
 
@@ -30,6 +31,4 @@ if nDataEpochs<nScoringEpochs
 else
     ResizedScoring(1:nScoringEpochs) = Scoring;
 end
-
-nExtra = numel(ResizedScoring)-nScoringEpochs;
 
