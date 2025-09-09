@@ -1,6 +1,10 @@
 function AverageData = average_stages(Data, Scoring, ScoringIndexes, MinEpochs)
 % Data is a Channel x Epoch x Something matrix. MinEpochs is the minimum
-% number of epochs needed, otherwise the stage gets skipped.
+% number of epochs needed, otherwise the stage gets skipped. This gets
+% applied to each channel seperately also considering NaNs, hwoever it
+% assumes (for now) that the NANs that apply to the first element of the
+% 3rd dimention applies to all the other elements of that dimention.
+
 
 Dims = size(Data);
 nStages = numel(ScoringIndexes);
@@ -17,5 +21,8 @@ for StageIdx = 1:nStages
         continue
     end
 
-    AverageData(:, StageIdx, :) = mean(Data(:, Epochs, :), 2, 'omitnan');
+    Subset = Data(:, Epochs, :);
+    nNans = sum(isnan(Subset(:, :, 1)), 2);
+    Subset(nNans>=MinEpochs, :, :) = nan;
+    AverageData(:, StageIdx, :) = mean(Subset, 2, 'omitnan');
 end
