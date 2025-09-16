@@ -22,7 +22,7 @@ for StageIdx = 1:nStages
     end
 
     Subset = Data(:, Epochs, :);
-    nNans = sum(isnan(Subset(:, :, 1)), 2);
-    Subset(nNans>=MinEpochs, :, :) = nan;
+    NotNans = sum(~isnan(Subset(:, :, 1)), 2);
+    Subset(NotNans<MinEpochs, :, :) = nan;
     AverageData(:, StageIdx, :) = mean(Subset, 2, 'omitnan');
 end
