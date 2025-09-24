@@ -13,6 +13,15 @@ else
     SmoothPower = PeriodicPower;
 end
 
+Dims = size(SmoothPower);
+if Dims(1)>1 && Dims(2)>1
+    error('findpeaks needs only 1 spectrum')
+end
+
+if Dims(2)==1
+    SmoothPower = SmoothPower';
+end
+
 [pks, locs, w, p] = findpeaks(SmoothPower, Frequencies, 'Annotate','extents', 'WidthReference','halfheight');
 
 PeriodicPeaks = [locs', pks', w', p'];
