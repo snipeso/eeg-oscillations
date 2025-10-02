@@ -14,7 +14,10 @@ xLog = false;
 yLog = true;
 end
 
-
+if isempty(Scoring)
+    warning('no scoring')
+    return
+end
 
 if numel(size(Power)) == 2
     Power = permute(Power, [1 3 2]);
