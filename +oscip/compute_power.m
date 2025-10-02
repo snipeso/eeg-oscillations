@@ -1,4 +1,4 @@
-function [Power, Frequencies] = compute_power(Data, SampleRate, WindowLength, OverlapPoints)
+function [Power, Frequencies] = compute_power(Data, SampleRate, WindowLength, OverlapPoints, RoundToPower2)
 % [Power, Frequencies] = compute_power(Data, SampleRate, WindowLength, Overlap)
 % Runs pwelch on data.
 % Data is a channel x time marix matrix. SampleRate is a single value in
@@ -15,12 +15,19 @@ arguments
     SampleRate (1, 1) {mustBePositive}
     WindowLength (1, 1) {mustBePositive} = 4;
     OverlapPoints (1, 1) {mustBeLessThanOrEqual(OverlapPoints, 1)} = .5;
+    RoundToPower2 = false;
 end
 
 % set up defaults if calculation doesn't work
-[Frequencies, nFrequencies, WindowPoints] = oscip.utils.expected_frequencies(WindowLength, SampleRate);
-BlankPower = nan(size(Data, 1), nFrequencies);
-
+if RoundToPower2
+    [Frequencies, nFrequencies, WindowPoints] = oscip.utils.expected_frequencies(WindowLength, SampleRate);
+    BlankPower = nan(size(Data, 1), nFrequencies);
+else
+    WindowPoints = SampleRate*WindowLength;
+    nFrequencies = floor(WindowPoints/2) + 1;
+    Frequencies = linspace(0, SampleRate/2, nFrequencies);
+    BlankPower = nan(size(Data, 1), nFrequencies);
+end
 
 % remove any NaN values in time
 Data(:, isnan(sum(Data, 1))) = [];
@@ -30,6 +37,8 @@ if size(Data, 2) < WindowLength*SampleRate
     warning('not enough data')
     Power = BlankPower;
     return
+elseif size(Data,2)<WindowPoints
+    WindowPoints = size(Data, 2);
 end
 
 % FFT
