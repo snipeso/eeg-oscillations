@@ -1,4 +1,4 @@
-function [EpochPower, Frequencies] = compute_power_on_epochs(Data, SampleRate, EpochLength, WelchWindowLength, WelchOverlap)
+function [EpochPower, Frequencies] = compute_power_on_epochs(Data, SampleRate, EpochLength, WelchWindowLength, WelchOverlap, RoundToPower2)
 %  [Power, Frequencies] = compute_power_on_epochs(Data, SampleRate, EpochLength, WelchWindowLength, Overlap)
 % Data is a channel x time matrix.
 % SampleRate is a single value in Hz.
@@ -17,6 +17,7 @@ arguments
     EpochLength = 30;
     WelchWindowLength (1, 1) {mustBePositive} = 4;
     WelchOverlap (1, 1) {mustBeLessThanOrEqual(WelchOverlap, 1)} = .5;
+    RoundToPower2 (1,1) = false;
 end
 
 disp('Computing power on all epochs')
@@ -28,8 +29,7 @@ Starts = ScoringTime(1:end-1);
 Ends = ScoringTime(2:end)-1;
 nEpochs = numel(Starts);
 
-[Frequencies, nFrequencies] = oscip.utils.expected_frequencies(WelchWindowLength, SampleRate);
-
+[Frequencies, nFrequencies] = oscip.utils.expected_frequencies(WelchWindowLength, SampleRate, RoundToPower2);
 
 EpochPower = nan(nChannels, nEpochs, nFrequencies);
 for EpochIdx = 1:nEpochs
@@ -51,7 +51,7 @@ for EpochIdx = 1:nEpochs
             if any(isnan(Epoch))
                 continue
             end
-            [Power, ~] = oscip.compute_power(Epoch, SampleRate, WelchWindowLength, WelchOverlap);
+            [Power, ~] = oscip.compute_power(Epoch, SampleRate, WelchWindowLength, WelchOverlap, RoundToPower2);
             EpochPower(ChannelIdx, EpochIdx, :) = Power;
         end
         disp(['Power epoch ', num2str(EpochIdx) '/', num2str(nEpochs)])

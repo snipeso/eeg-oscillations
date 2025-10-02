@@ -19,15 +19,11 @@ arguments
 end
 
 % set up defaults if calculation doesn't work
-if RoundToPower2
-    [Frequencies, nFrequencies, WindowPoints] = oscip.utils.expected_frequencies(WindowLength, SampleRate);
-    BlankPower = nan(size(Data, 1), nFrequencies);
-else
-    WindowPoints = SampleRate*WindowLength;
-    nFrequencies = floor(WindowPoints/2) + 1;
-    Frequencies = linspace(0, SampleRate/2, nFrequencies);
-    BlankPower = nan(size(Data, 1), nFrequencies);
-end
+
+[Frequencies, nFrequencies, WindowPoints] = oscip.utils.expected_frequencies(WindowLength, SampleRate, RoundToPower2);
+
+BlankPower = nan(size(Data, 1), nFrequencies);
+
 
 % remove any NaN values in time
 Data(:, isnan(sum(Data, 1))) = [];
