@@ -37,28 +37,25 @@ for EpochIdx = 1:nEpochs
     % select epoch of data
     EpochData = Data(:, Starts(EpochIdx):Ends(EpochIdx));
 
+    Nans = isnan(EpochData);
     % compute power
-    if all(all(isnan(EpochData), 2)) % if there's a nan in every channel
+    if all(Nans(:)) % if there's a nan in every channel
         continue
+    elseif any(Nans(:))
 
-    elseif any(isnan(EpochData(:)))
-        % go channel by channel to skip channels with any nans
-        for ChannelIdx = 1:nChannels
-            D = Data;
-            S = Starts;
-            E = Ends;
-            Epoch = D(ChannelIdx, S(EpochIdx):E(EpochIdx));
-            if any(isnan(Epoch))
-                continue
-            end
-            [Power, ~] = oscip.compute_power(Epoch, SampleRate, WelchWindowLength, WelchOverlap, RoundToPower2);
-            EpochPower(ChannelIdx, EpochIdx, :) = Power;
-        end
+        % temporarly set all nan values to 0 so that power computation
+        % doesn't choke
+        EpochData(Nans) = 0;
+
+        [Power, Frequencies] = oscip.compute_power(EpochData, SampleRate, WelchWindowLength, WelchOverlap, RoundToPower2);
+        Power(any(Nans, 2), :) = nan;
+        EpochPower(:, EpochIdx, :) = Power;
         disp(['Power epoch ', num2str(EpochIdx) '/', num2str(nEpochs)])
     else
+
         % doing all the channels together is much faster, so do it
         % when possible
-        [Power, Frequencies] = oscip.compute_power(EpochData, SampleRate, WelchWindowLength, WelchOverlap);
+        [Power, Frequencies] = oscip.compute_power(EpochData, SampleRate, WelchWindowLength, WelchOverlap, RoundToPower2);
         EpochPower(:, EpochIdx, :) = Power;
     end
 end

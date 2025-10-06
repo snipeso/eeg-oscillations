@@ -26,7 +26,11 @@ BlankPower = nan(size(Data, 1), nFrequencies);
 
 
 % remove any NaN values in time
-Data(:, isnan(sum(Data, 1))) = [];
+Nans = isnan(sum(Data, 1));
+if any(Nans)
+Data(:, Nans) = [];
+warning('some nans in EEG')
+end
 
 % check if there's enough data
 if size(Data, 2) < WindowLength*SampleRate
