@@ -50,7 +50,6 @@ for EpochIdx = 1:nEpochs
         [Power, Frequencies] = oscip.compute_power(EpochData, SampleRate, WelchWindowLength, WelchOverlap, RoundToPower2);
         Power(any(Nans, 2), :) = nan;
         EpochPower(:, EpochIdx, :) = Power;
-        disp(['Power epoch ', num2str(EpochIdx) '/', num2str(nEpochs)])
     else
 
         % doing all the channels together is much faster, so do it
