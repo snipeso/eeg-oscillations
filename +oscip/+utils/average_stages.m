@@ -12,7 +12,13 @@ nStages = numel(ScoringIndexes);
 if numel(Dims)==3
     AverageData = nan(Dims(1), nStages, Dims(3));
 elseif numel(Dims)== 2
-    AverageData = nan(Dims(1), nStages);
+
+    if Dims(1)==1
+        AverageData = nan(1, nStages, 1);
+    else
+        AverageData = nan(1, nStages, Dims(2));
+        Data = permute(Data, [3 1 2]);
+    end
 end
 
 for StageIdx = 1:nStages
@@ -22,7 +28,12 @@ for StageIdx = 1:nStages
     end
 
     Subset = Data(:, Epochs, :);
-    NotNans = sum(~isnan(Subset(:, :, 1)), 2);
+    NotNans = sum(~isnan(Subset(:, :, 1)), 2); % clever code that applies selectively min epoch to each channel
     Subset(NotNans<MinEpochs, :, :) = nan;
+
     AverageData(:, StageIdx, :) = mean(Subset, 2, 'omitnan');
+end
+
+if numel(Dims)== 2
+    AverageData = permute(AverageData, [2 3 1]);
 end

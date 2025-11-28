@@ -25,6 +25,7 @@ for StageIdx = 1:numel(ScoringLabels)
             Table.([Stage, MeasureLabel, 'Frequency', Band]) = Data(StageIdx, BandIdx, 1);
             Table.([Stage, MeasureLabel, 'Amplitude', Band]) = Data(StageIdx, BandIdx, 2);
             Table.([Stage, MeasureLabel, 'Bandwidth', Band]) = Data(StageIdx, BandIdx, 3);
+            Table.([Stage, MeasureLabel, 'Prominance', Band]) = Data(StageIdx, BandIdx, 4); 
         else
             Table.([Stage, MeasureLabel, Band]) = Data(StageIdx, BandIdx);
         end

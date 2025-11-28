@@ -10,7 +10,7 @@ arguments
 end
 
 if isempty(Peaks)
-    MaxPeak = nan(1, 3);
+    MaxPeak = nan(1, 4);
     return
 end
 
@@ -18,12 +18,13 @@ end
 if isempty(Range)
    Range = [min(Peaks(:, 1)), max(Peaks(:, 1))];
 end
+
 inRange = Peaks(:, 1)>=Range(1) & Peaks(:, 1)<=Range(2);
 Peaks = Peaks(inRange, :);
 
 % handle not enough options to chose from
 if isempty(Peaks)
-    MaxPeak = nan(1, 3);
+    MaxPeak = nan(1, 4);
     return
 elseif size(Peaks, 1) <= N
     MaxPeak = Peaks;
