@@ -1,4 +1,4 @@
-function [PeaksByStageByBand, PeaksTable, PeriodicStagePower, FrequenciesPeriodic] = peaks_by_band_by_stage_rawpower(EpochPower, Frequencies, Scoring, ScoringIndexes, Bands, MinEpochs, FittingFrequencyRange, MinPeakProminance, AdditionalParameters)
+function [PeaksByStageByBand, PeaksTable, PeriodicStagePower, FrequenciesPeriodic] = peaks_by_band_by_stage_rawpower(EpochPower, Frequencies, Scoring, ScoringIndexes, Bands, MinEpochs, FittingFrequencyRange, MinPeakProminance, MinPeakDistance, AdditionalParameters)
 arguments
     EpochPower % should be channel x epoch x frequency or epoch x frequency
     Frequencies
@@ -8,6 +8,7 @@ arguments
     MinEpochs = 10;
     FittingFrequencyRange = [2 45];
     MinPeakProminance = .001;
+    MinPeakDistance = 1;
     AdditionalParameters = [];
 end
 
@@ -37,9 +38,12 @@ for ChannelIdx = 1:Dims(1)
         % just for finding the peak frequency, adjust so that all values are
         % above 0
         AdjustedPower = PeriodicPower- min(quantile(PeriodicPower, .1), 0);
-        [~, locs, ~, p] = findpeaks(AdjustedPower, FrequenciesPeriodic, 'MinPeakProminence', MinPeakProminance, 'WidthReference','halfheight');
-        pks = PeriodicPower(ismember(FrequenciesPeriodic, locs));
+        [~, locs, ~, p] = findpeaks(AdjustedPower, FrequenciesPeriodic, 'MinPeakProminence', MinPeakProminance, 'WidthReference','halfheight', 'MinPeakDistance', MinPeakDistance);
         
+        % re-calculate amplitudes and bandwidths
+        pks = PeriodicPower(ismember(FrequenciesPeriodic, locs)); % no longer uses adjusted spectra, so that values are more comparable across channels later
+        w  =  oscip.detect.fwhm(FrequenciesPeriodic,  AdjustedPower, locs);
+
         % figure
         % findpeaks(AdjustedPower, FrequenciesPeriodic, 'MinPeakProminence', MinPeakProminance, 'WidthReference','halfheight', 'Annotate','extents')
         T = table();

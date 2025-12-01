@@ -20,16 +20,17 @@ halfMax = peakVal / 2;
 
 % --- Find left crossing -----------------------------------------------
 % Find first index to the left that falls below half-max
-leftIdx = find(y(1:idx) < halfMax, 1, 'last');
+leftIdx = max([find(y(1:idx) < halfMax, 1, 'last'), 1]);
 % Linear interpolation for exact x
-x_l = interp1(y(leftIdx:leftIdx+1), x(leftIdx:leftIdx+1), halfMax);
+x_l = x(leftIdx);
 
 % --- Find right crossing ----------------------------------------------
-rightIdx = idx - 1 + find(y(idx:end) < halfMax, 1, 'first');
-x_r = interp1(y(rightIdx-1:rightIdx), x(rightIdx-1:rightIdx), halfMax);
+rightIdx = min([idx - 1 + find(y(idx:end) < halfMax, 1, 'first'), numel(x)]);
+x_r = x(rightIdx);
 
 % --- Full width --------------------------------------------------------
-FWHM(PeakIdx) = 2*min(x_l, x_r);
+FWHM(PeakIdx) = 2*min(peakloc(PeakIdx)-x_l, x_r-peakloc(PeakIdx));
+
 x_right(PeakIdx) = x_r;
 x_left(PeakIdx) = x_l;
 end
