@@ -7,7 +7,7 @@ arguments
     Bands
     MinEpochs = 10;
     FittingFrequencyRange = [2 45];
-    MinPeakProminance = .001;
+    MinPeakProminance = .01;
     MinPeakDistance = 1;
     AdditionalParameters = [];
 end
@@ -15,7 +15,7 @@ end
 if isempty(AdditionalParameters)
     AdditionalParameters = struct();
     % AdditionalParameters.peak_width_limits = [0.5 20]; % not needed since specparam peaks not used?
-    AdditionalParameters.min_peak_height = .01;
+    AdditionalParameters.min_peak_height = MinPeakProminance; % not strictly needed, but at least consistent
 end
 
 Dims = size(EpochPower);
@@ -31,21 +31,23 @@ StagePower = oscip.utils.average_stages(EpochPower, Scoring, ScoringIndexes, Min
 PeriodicStagePower = nan(Dims(1), numel(ScoringIndexes));
 PeaksTable = table();
 for ChannelIdx = 1:Dims(1)
-    for StageIdx = 1:numel(ScoringIndexes)
+    for StageIdx = 5 %1:numel(ScoringIndexes)
         [~, ~, FrequenciesPeriodic, ~, PeriodicPower]  = oscip.fit_fooof_matlab(...
             squeeze(StagePower(ChannelIdx, StageIdx, :)), Frequencies, FittingFrequencyRange, AdditionalParameters);
 
         % just for finding the peak frequency, adjust so that all values are
         % above 0
         AdjustedPower = PeriodicPower- min(quantile(PeriodicPower, .1), 0);
-        [~, locs, ~, p] = findpeaks(AdjustedPower, FrequenciesPeriodic, 'MinPeakProminence', MinPeakProminance, 'WidthReference','halfheight', 'MinPeakDistance', MinPeakDistance);
-        
-        % re-calculate amplitudes and bandwidths
+        % [~, locs, ~, p] = findpeaks(AdjustedPower, FrequenciesPeriodic, 'MinPeakProminence', MinPeakProminance, 'MinPeakDistance', MinPeakDistance);
+        %
+        % w  =  oscip.detect.fwhm(FrequenciesPeriodic,  AdjustedPower, locs);
+        [~, locs, w, p] = oscip.detect.peaks(AdjustedPower, FrequenciesPeriodic, MinPeakProminance, MinPeakDistance);
+
+        % % re-calculate amplitudes and bandwidths
         pks = PeriodicPower(ismember(FrequenciesPeriodic, locs)); % no longer uses adjusted spectra, so that values are more comparable across channels later
-        w  =  oscip.detect.fwhm(FrequenciesPeriodic,  AdjustedPower, locs);
 
         % figure
-        % findpeaks(AdjustedPower, FrequenciesPeriodic, 'MinPeakProminence', MinPeakProminance, 'WidthReference','halfheight', 'Annotate','extents')
+        % findpeaks(AdjustedPower, FrequenciesPeriodic, 'MinPeakProminence', MinPeakProminance, 'MinPeakDistance', MinPeakDistance, 'Annotate','extents');
         T = table();
         T.Frequency = locs';
         T.Amplitude = pks';
@@ -67,10 +69,13 @@ PeaksByStageByBand = nan(numel(ScoringIndexes), numel(BandLabels), 5);
 for StageIdx = 1:numel(ScoringIndexes)
     for BandIdx = 1:numel(BandLabels)
         Range = Bands.(BandLabels{BandIdx});
+
         Peaks = sortrows(PeaksTable(PeaksTable.Stage==ScoringIndexes(StageIdx) & ...
-            PeaksTable.Frequency >= Range(1) & PeaksTable.Frequency < Range(2), :), 'Amplitude', 'descend');
+            PeaksTable.Frequency >= Range(1) & PeaksTable.Frequency < Range(2), :), ...
+            {'Amplitude', 'Prominance', 'Channel'}, {'descend','descend', 'descend'});
+
         if ~isempty(Peaks)
-        PeaksByStageByBand(StageIdx, BandIdx, :) = Peaks{1, 1:5};
+            PeaksByStageByBand(StageIdx, BandIdx, :) = Peaks{1, 1:5};
         end
     end
 end
