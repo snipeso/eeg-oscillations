@@ -67,15 +67,16 @@ switch numel(Dims)
             % if epochs more than channels
             for ChannelIdx = 1:nChannels
                 parfor EpochIdx = 1:nEpochs
-                  % for EpochIdx = 1:nEpochs
-                  %     disp('debug')
+                    % for EpochIdx = 1:nEpochs
+                    %     disp('debug')
                     [Exponents(ChannelIdx, EpochIdx), Offsets(ChannelIdx, EpochIdx), ...
                         ~, Peaks, PeriodicPower(ChannelIdx, EpochIdx, :), ...
                         Errors(ChannelIdx, EpochIdx), RSquared(ChannelIdx, EpochIdx)] ...
                         = oscip.fit_fooof_matlab(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
                         FooofFrequencyRange, AdditionalParameters);
 
-                    PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
+                    MaxPeak = oscip.select_max_peak(Peaks);
+                    PeriodicPeaks(ChannelIdx, EpochIdx, :) = MaxPeak(1, 1:3); % skips prominance if thats the default
                 end
                 disp(['Finished ', num2str(ChannelIdx)])
             end
@@ -90,7 +91,8 @@ switch numel(Dims)
                         = oscip.fit_fooof_matlab(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
                         FooofFrequencyRange, AdditionalParameters);
 
-                    PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
+                    MaxPeak = oscip.select_max_peak(Peaks);
+                    PeriodicPeaks(ChannelIdx, EpochIdx, :) = MaxPeak(1, 1:3); % skips prominance if thats the default
                 end
             end
 
@@ -105,7 +107,8 @@ switch numel(Dims)
                         = oscip.fit_fooof_matlab(squeeze(Power(ChannelIdx, EpochIdx, :)), Frequencies, ...
                         FooofFrequencyRange, AdditionalParameters);
 
-                    PeriodicPeaks(ChannelIdx, EpochIdx, :) = oscip.select_max_peak(Peaks);
+                       MaxPeak = oscip.select_max_peak(Peaks);
+                    PeriodicPeaks(ChannelIdx, EpochIdx, :) = MaxPeak(1, 1:3); % skips prominance if thats the default
                 end
                 disp(['finished ch', num2str(ChannelIdx)])
             end

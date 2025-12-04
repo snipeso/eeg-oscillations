@@ -4,7 +4,7 @@ function spectral_hypnogram(Power, Frequencies, Time, CLims, YLims)
 arguments
     Power
     Frequencies
-    Time
+    Time = 1:size(Power, 1);
     CLims = [];
     YLims = [min(Frequencies), max(Frequencies)];
 end

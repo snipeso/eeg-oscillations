@@ -3,7 +3,7 @@ function Table = fill_table_row(Table, BandLabels, ScoringLabels, Data, MeasureL
 % MeasureLabel is either "Power", "PeriodicPower", or "Peak", "Exponent" or "Offset"
 
 
-
+Dims = size(Data);
 for StageIdx = 1:numel(ScoringLabels)
 
 
@@ -25,7 +25,15 @@ for StageIdx = 1:numel(ScoringLabels)
             Table.([Stage, MeasureLabel, 'Frequency', Band]) = Data(StageIdx, BandIdx, 1);
             Table.([Stage, MeasureLabel, 'Amplitude', Band]) = Data(StageIdx, BandIdx, 2);
             Table.([Stage, MeasureLabel, 'Bandwidth', Band]) = Data(StageIdx, BandIdx, 3);
-            Table.([Stage, MeasureLabel, 'Prominance', Band]) = Data(StageIdx, BandIdx, 4); 
+
+            if Dims(3)>3
+                Table.([Stage, MeasureLabel, 'Prominance', Band]) = Data(StageIdx, BandIdx, 4);
+            end
+
+            if Dims(3)>4
+                Table.([Stage, MeasureLabel, 'Channel', Band]) = Data(StageIdx, BandIdx, 5);
+            end
+
         else
             Table.([Stage, MeasureLabel, Band]) = Data(StageIdx, BandIdx);
         end

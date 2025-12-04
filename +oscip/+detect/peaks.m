@@ -1,7 +1,7 @@
 function [pks, locs, w, p] = peaks(Signal, X, MinPeakProminance, MinPeakDistance)
 
 % find peaks using matlab's function
-[pks, locs, ~, p] = findpeaks(Signal, X, ...
+[pks, locs, ~, p] = findpeaks(Signal(:)', X(:)', ...
     'MinPeakProminence', MinPeakProminance, 'MinPeakDistance', MinPeakDistance);
 
 % find each peaks' full width to half maximum
