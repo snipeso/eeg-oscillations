@@ -4,6 +4,7 @@ function [Starts, Ends] = data2windows(Array, Threshold)
 % provided, then it will take all positive values as above threshold. If
 % you want everything below a threshold, just provide both values as
 % negative
+% oscip.
 
 Array = reshape(Array, 1, []); % make sure its a 1 x n array
 

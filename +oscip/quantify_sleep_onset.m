@@ -18,14 +18,31 @@ if numel(Exponents) < MinEpochs
     N3Exponent = nan;
     SleepOnset = nan;
     OnsetSpeed = nan;
-
+    RMSE = nan;
     Trend = nan(size(Exponents));
+    Exponents = nan(size(Time));
     warning('not enough data for sleep onset properties')
     return
 end
 
+Npad = numel(Time);
+dt = Time(2) - Time(1);
+
+Time_pad = [Time(1)-dt*(Npad:-1:1)'; Time(:); Time(end)+dt*(1:Npad)'];
+
+% MinPad = min(Exponents(1:MinEpochs));
+% MaxPad = max(Exponents(end-MinEpochs:end));
+
+MinPad = quantile(Exponents, .01);
+MaxPad = quantile(Exponents, .99);
+
+
+Exponents_pad = [repmat(MinPad,Npad,1);
+                  Exponents(:);
+                  repmat(MaxPad,Npad,1)];
+
 % fit sigmoid function
-[param,stat]= oscip.external.sigm_fit(Time, Exponents);
+[param,stat]= oscip.external.sigm_fit(Time_pad, Exponents_pad);
 
 WakeExponent = param(1);
 N3Exponent = param(2);
@@ -33,13 +50,15 @@ SleepOnset = param(3);
 OnsetSpeed = param(4);
 
 
-Trend = stat.ypred;
+% Remove padding from predicted trend
+Trend = stat.ypred(Npad+1 : Npad+numel(Exponents));
 
 if SleepOnset < Time(1)
-    error('too early an onset')
+    warning('too early an onset')
     SleepOnset = nan;
     OnsetSpeed = nan;
     RMSE= nan;
+    return
 end
 
 residuals = Exponents(:) - Trend(:);
