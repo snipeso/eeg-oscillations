@@ -1,4 +1,5 @@
-function  [SleepOnset, OnsetSpeed, WakeExponent, N3Exponent, Trend, Time, Exponents] = quantify_sleep_onset(Exponents, Time, MinEpochs)
+function  [SleepOnset, OnsetSpeed, WakeExponent, N3Exponent, RMSE, Trend, Time, Exponents] = ...
+    quantify_sleep_onset(Exponents, Time, MinEpochs)
 % This assumes that the recording starts with wake, and finds the first
 % instance of sleep onset. Ideally, don't provide more data than the first
 % cycle, otherwise it will not be happy
@@ -32,3 +33,6 @@ SleepOnset = param(3);
 OnsetSpeed = param(4);
 
 Trend = stat.ypred;
+
+residuals = Exponents - Trend;
+RMSE = sqrt(mean(residuals.^2));
