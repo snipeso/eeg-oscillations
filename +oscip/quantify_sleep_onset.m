@@ -32,7 +32,15 @@ N3Exponent = param(2);
 SleepOnset = param(3);
 OnsetSpeed = param(4);
 
+
 Trend = stat.ypred;
 
-residuals = Exponents - Trend;
+if SleepOnset < Time(1)
+    error('too early an onset')
+    SleepOnset = nan;
+    OnsetSpeed = nan;
+    RMSE= nan;
+end
+
+residuals = Exponents(:) - Trend(:);
 RMSE = sqrt(mean(residuals.^2));
