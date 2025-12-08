@@ -53,12 +53,12 @@ if ~any(Scoring<-1)
 end
 
 % find approximately sleep onset
-[EndDeepestSleep, DeepestStage] = end_deepest_sleep(Scoring, MinEpochs);
+[EndDeepestSleep, DeepestStage] = end_deepest_sleep(Scoring, Exponents, MinEpochs);
 StartLastWake = closest_wake(Scoring, EndDeepestSleep, MinEpochs);
 
 OnsetExponents = Exponents(StartLastWake:EndDeepestSleep);
 OnsetScores = Scoring(StartLastWake:EndDeepestSleep);
-if all(isnan(OnsetExponents(OnsetScores==0))) || all(isnan(OnsetExponents(OnsetScores==DeepestStage))) 
+if all(isnan(OnsetExponents(OnsetScores==0))) || all(isnan(OnsetExponents(OnsetScores==DeepestStage)))
     warning('Not enough clean data')
     return
 end
@@ -105,12 +105,12 @@ WakeDurations  = Ends-Starts;
 Start = Starts(find(WakeDurations>MinWake, 1, 'last'));
 end
 
-function [End, DeepestStage] = end_deepest_sleep(Scoring, MinEpochs)
+function [End, DeepestStage] = end_deepest_sleep(Scoring, Exponents, MinEpochs)
 
 % find time of first N3
-    EpochIndexes = 1:numel(Scoring);
+EpochIndexes = 1:numel(Scoring);
 OverallDeepestStage = min(Scoring);
-[~, Ends] = oscip.utils.data2windows(Scoring==OverallDeepestStage);
+[Starts, Ends] = oscip.utils.data2windows(Scoring==OverallDeepestStage);
 EndN3 = Ends(1);
 
 % identify window of first sleep cycle
@@ -128,7 +128,7 @@ end
 
 [Starts, Ends] = oscip.utils.data2windows(FirstCycle==DeepestStage);
 N3Durations = Ends-Starts;
-if any(N3Durations) >= MinEpochs
+if any(N3Durations >= MinEpochs)
     End = Ends(find(N3Durations>=MinEpochs, 1, 'first'));
     return
 end
