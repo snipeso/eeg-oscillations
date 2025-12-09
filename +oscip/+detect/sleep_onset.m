@@ -1,5 +1,5 @@
-function [TradSleepOnset, SleepOnset, OnsetSpeed, WakeExponent, N3Exponent, RMSE, Trend, TimeOnset, ExponentsOnset] = ...
-    sleep_onset(Scoring, Exponents, Time, MinEpochs, SmoothExponents)
+function [TradSleepOnset, SleepOnset, OnsetSpeed, WakeExponent, N3Exponent, RMSE, PreSleepSD, Trend, TimeOnset, ExponentsOnset] = ...
+    sleep_onset(Scoring, Exponents, Time, MinEpochs)
 % Calculates detailed measures of sleep onset. Uses traditional scoring to
 % first identify the window of sleep onset, then characterizes it with
 % aperiodic exponents (or any measure you pass it). It fits a sigmoid,
@@ -33,7 +33,6 @@ arguments
     Exponents
     Time
     MinEpochs = 10;
-    SmoothExponents = 10;
 end
 
 % defaults
@@ -46,19 +45,28 @@ Trend = nan;
 RMSE = nan;
 TimeOnset = nan;
 ExponentsOnset = nan;
+PreSleepSD = nan;
 
 if ~any(Scoring<-1)
     warning("This poor person didn't sleep at all")
     return
 end
 
+if all(isnan(Exponents))
+    warning('no data')
+    return
+end
+
 % find approximately sleep onset
-[EndDeepestSleep, DeepestStage] = end_deepest_sleep(Scoring, Exponents, MinEpochs);
-StartLastWake = closest_wake(Scoring, EndDeepestSleep, MinEpochs);
+
+[EndDeepestSleep, DeepestEpoch] = end_deepest_sleep2(Exponents, Scoring, MinEpochs);
+DeepestStage = Scoring(DeepestEpoch);
+StartLastWake = closest_wake2(Exponents, EndDeepestSleep, MinEpochs);
+% StartLastWake = 1;
 
 OnsetExponents = Exponents(StartLastWake:EndDeepestSleep);
 OnsetScores = Scoring(StartLastWake:EndDeepestSleep);
-if all(isnan(OnsetExponents(OnsetScores==0))) || all(isnan(OnsetExponents(OnsetScores==DeepestStage)))
+if nnz(~isnan(OnsetExponents)) < MinEpochs
     warning('Not enough clean data')
     return
 end
@@ -66,44 +74,57 @@ end
 [SleepOnset, OnsetSpeed, WakeExponent, N3Exponent, RMSE, Trend, TimeOnset, ExponentsOnset] = ...
     oscip.quantify_sleep_onset(OnsetExponents, Time(StartLastWake:EndDeepestSleep), MinEpochs);
 
-TradSleepOnset = Time(find(Scoring==-2,1, 'first'));
+% PreSleepSD = std(Exponents(1:dsearchn(Time', SleepOnset)), 1, 'omitnan');
+
+EndWindow = dsearchn(Time', TimeOnset(end));
+TrendAll = Trend(1)*ones(1, EndWindow);
+TrendAll(dsearchn(Time', TimeOnset')) = Trend;
+TrendAll(isnan(Exponents(1:EndWindow))) = nan;
+
+residuals = Exponents(1:EndWindow) - TrendAll;
+PreSleepSD = sqrt(mean(residuals.^2, 'omitnan'));
+
+TradSleepOnset = Time(find(Scoring==-2, 1, 'first'));
 end
 
 
+function  [End, DeepestEpoch] = end_deepest_sleep2(Exponents, Scoring, MinEpochs)
 
-function Start = closest_wake(Scoring, End, MinWake)
+N3Thresholds = quantile(Exponents, [.8 .99]);
 
-FirstCycle = Scoring(1:End);
+Exponents = Exponents(1:find(Scoring==1, 1, 'first')); % only up until the first REM bout
+EpochIndexes = 1:numel(Exponents);
 
-if ~any(FirstCycle==0)
+DeepestEpoch = find(Exponents>N3Thresholds(2), 1, 'first'); % use quantile instead of absolute minimum in case of noise outliers
+
+if isempty(DeepestEpoch)
+    [~, DeepestEpoch] = max(Exponents);
+end
+
+EnoughDeepEpoch = DeepestEpoch+MinEpochs;
+End = min(find(Exponents<N3Thresholds(1) & EpochIndexes>DeepestEpoch, 1, 'first')-1, EnoughDeepEpoch);
+end
+
+function Start = closest_wake2(Exponents, End, MinEpochs)
+
+
+ExponentsFirstCycle = Exponents(1:End);
+WakeThresholds = quantile(ExponentsFirstCycle, [.05 .3]);
+ExponentIndexes = 1:numel(ExponentsFirstCycle);
+
+MaxWake = find(ExponentsFirstCycle < WakeThresholds(1), 1, 'last');
+
+if isempty(MaxWake)
+    [~, MaxWake] = min(ExponentsFirstCycle);
+end
+
+EnoughWake = MaxWake-MinEpochs;
+Start = max(find(ExponentsFirstCycle > WakeThresholds(2) & ExponentIndexes < MaxWake, 1, 'last')+1, EnoughWake);
+if isempty(Start)
     Start = 1;
-    return
+end
 end
 
-% ignore really short flickers of N1
-[Starts, Ends] = oscip.utils.data2windows(FirstCycle==-1);
-
-Ends(Starts==1) = [];
-Starts(Starts==1) = []; % skip if edge
-
-for StartIdx = 1:numel(Starts)
-    if Ends(StartIdx)-Starts(StartIdx) <2 && FirstCycle(Starts(StartIdx)-1) == 0 && FirstCycle(Ends(StartIdx)+1) == 0
-        FirstCycle(Starts(StartIdx):Ends(StartIdx)) = 0;
-    end
-end
-
-if ~any(FirstCycle==0)
-    warning('no wake?!')
-    WakeStage = max(Scoring);
-else
-    WakeStage = 0;
-end
-
-[Starts, Ends] = oscip.utils.data2windows(FirstCycle==WakeStage);
-WakeDurations  = Ends-Starts;
-
-Start = Starts(find(WakeDurations>MinWake, 1, 'last'));
-end
 
 function [End, DeepestStage] = end_deepest_sleep(Scoring, Exponents, MinEpochs)
 
