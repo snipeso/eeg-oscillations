@@ -60,7 +60,14 @@ if SleepOnset < Time(1)
     OnsetSpeed = nan;
     RMSE= nan;
     return
+elseif SleepOnset>Time(end)
+    warning('too late an onset')
+    SleepOnset = nan;
+    OnsetSpeed = nan;
+    RMSE= nan;
+    return
 end
 
 residuals = Exponents(:) - Trend(:);
-RMSE = sqrt(mean(residuals.^2));
+RMSE = sqrt(mean(residuals.^2, 'omitnan'));
+% RMSE = median(abs(residuals), 'omitnan');

@@ -1,4 +1,4 @@
-function [TradSleepOnset, SleepOnset, OnsetSpeed, WakeExponent, N3Exponent, RMSE, PreSleepSD, Trend, TimeOnset, ExponentsOnset] = ...
+function [TradSleepOnset, SleepOnset, OnsetSpeed, WakeExponent, N3Exponent, RMSE, TransitionExponent, Trend, TimeOnset, ExponentsOnset] = ...
     sleep_onset(Scoring, Exponents, Time, MinEpochs)
 % Calculates detailed measures of sleep onset. Uses traditional scoring to
 % first identify the window of sleep onset, then characterizes it with
@@ -45,7 +45,7 @@ Trend = nan;
 RMSE = nan;
 TimeOnset = nan;
 ExponentsOnset = nan;
-PreSleepSD = nan;
+TransitionExponent = nan;
 
 if ~any(Scoring<-1)
     warning("This poor person didn't sleep at all")
@@ -59,10 +59,9 @@ end
 
 % find approximately sleep onset
 
-[EndDeepestSleep, DeepestEpoch] = end_deepest_sleep2(Exponents, Scoring, MinEpochs);
-DeepestStage = Scoring(DeepestEpoch);
-StartLastWake = closest_wake2(Exponents, EndDeepestSleep, MinEpochs);
-% StartLastWake = 1;
+EndDeepestSleep = end_deepest_sleep3(Exponents, Scoring, MinEpochs);
+% StartLastWake = closest_wake2(Exponents, EndDeepestSleep, MinEpochs);
+StartLastWake = 1;
 
 OnsetExponents = Exponents(StartLastWake:EndDeepestSleep);
 OnsetScores = Scoring(StartLastWake:EndDeepestSleep);
@@ -82,7 +81,7 @@ TrendAll(dsearchn(Time', TimeOnset')) = Trend;
 TrendAll(isnan(Exponents(1:EndWindow))) = nan;
 
 residuals = Exponents(1:EndWindow) - TrendAll;
-PreSleepSD = sqrt(mean(residuals.^2, 'omitnan'));
+TransitionExponent = Trend(dsearchn(TimeOnset', SleepOnset));
 
 TradSleepOnset = Time(find(Scoring==-2, 1, 'first'));
 end
@@ -126,33 +125,33 @@ end
 end
 
 
-function [End, DeepestStage] = end_deepest_sleep(Scoring, Exponents, MinEpochs)
-
-% find time of first N3
-EpochIndexes = 1:numel(Scoring);
-OverallDeepestStage = min(Scoring);
-[Starts, Ends] = oscip.utils.data2windows(Scoring==OverallDeepestStage);
-EndN3 = Ends(1);
-
-% identify window of first sleep cycle
-
-FirstREM = find((Scoring==1 | Scoring==0) & EpochIndexes>EndN3, 1, 'first'); % also wake, because first REM bout can be skipped
-
-FirstCycle = Scoring(1:FirstREM);
+function [End, DeepestEpoch] = end_deepest_sleep3(Exponents, Scoring, MinEpochs)
 
 
-% find end of longest deepest bout
-DeepestStage = min(FirstCycle);
-if OverallDeepestStage < DeepestStage
-    warning('Patient has narcolepsy!')
+Extremes = quantile(Exponents(~isnan(Exponents)), [.01 .99]);
+N3Point = Extremes(1) + diff(Extremes)*.8;
+Midpoint = mean(Extremes);
+
+Exponents = movmean(Exponents, MinEpochs, 'omitnan');
+
+ApproxSleepEpochs = Exponents > Midpoint;
+[Starts, Ends] = oscip.utils.data2windows(ApproxSleepEpochs);
+SleepBoutDurations = Ends-Starts;
+
+MaxExponent = nan(1, numel(Starts));
+for BoutIdx = 1:numel(Starts)
+    MaxExponent(BoutIdx) = max(Exponents(Starts(BoutIdx):Ends(BoutIdx)));
 end
+SleepBoutDurations(MaxExponent<N3Point) = [];
+Starts(MaxExponent<N3Point) = [];
+Ends(MaxExponent<N3Point) = [];
 
-[Starts, Ends] = oscip.utils.data2windows(FirstCycle==DeepestStage);
-N3Durations = Ends-Starts;
-if any(N3Durations >= MinEpochs)
-    End = Ends(find(N3Durations>=MinEpochs, 1, 'first'));
-    return
-end
-[~, LargestBoutIdx] = max(N3Durations);
-End = Ends(LargestBoutIdx);
+ApproxSleepOnsetWindow = find(SleepBoutDurations>=MinEpochs, 1, 'first');
+
+EpochIndexes = 1:numel(Exponents); % because I'm dumb right now, there's better ways to do this
+EpochIndexes = EpochIndexes(Starts(ApproxSleepOnsetWindow):Ends(ApproxSleepOnsetWindow)); 
+[~, LowestExponentIdx] = max(Exponents(Starts(ApproxSleepOnsetWindow):Ends(ApproxSleepOnsetWindow)));
+
+End = EpochIndexes(LowestExponentIdx);
+DeepestEpoch = End;
 end
