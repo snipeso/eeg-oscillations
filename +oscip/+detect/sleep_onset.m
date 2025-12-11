@@ -60,10 +60,10 @@ end
 
 % find approximately sleep onset
 
-EndDeepestSleep = end_deepest_sleep(Exponents, MinEpochs);
-StartLastWake = 1;
+[StartWake, DeepestSleep] = sleep_onset_window(Exponents, MinEpochs);
 
-OnsetExponents = Exponents(StartLastWake:EndDeepestSleep);
+
+OnsetExponents = Exponents(StartWake:DeepestSleep);
 if nnz(~isnan(OnsetExponents)) < MinEpochs
     warning('Not enough clean data')
     return
@@ -75,14 +75,14 @@ if ~isempty(MaxWakeExponent) & quantile(OnsetExponents, .01) > MaxWakeExponent
 end
 
 [SleepOnset, OnsetSpeed, WakeExponent, N3Exponent, RMSE, Trend, TimeOnset, ExponentsOnset] = ...
-    oscip.quantify_sleep_onset(OnsetExponents, Time(StartLastWake:EndDeepestSleep), MinEpochs);
+    oscip.quantify_sleep_onset(OnsetExponents, Time(StartWake:DeepestSleep), MinEpochs);
 
 TransitionExponent = Trend(dsearchn(TimeOnset', SleepOnset));
 TradSleepOnset = Time(find(Scoring==-2, 1, 'first'));
 end
 
 
-function [End, DeepestEpoch] = end_deepest_sleep(Exponents, MinEpochs)
+function [Start, End] = sleep_onset_window(Exponents, MinEpochs)
 
 
 Extremes = quantile(Exponents(~isnan(Exponents)), [.01 .99]);
@@ -110,5 +110,7 @@ EpochIndexes = EpochIndexes(Starts(ApproxSleepOnsetWindow):Ends(ApproxSleepOnset
 [~, LowestExponentIdx] = max(Exponents(Starts(ApproxSleepOnsetWindow):Ends(ApproxSleepOnsetWindow)));
 
 End = EpochIndexes(LowestExponentIdx);
-DeepestEpoch = End;
+
+[~, Start] = min(Exponents(1:End));
+
 end
