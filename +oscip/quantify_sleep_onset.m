@@ -30,11 +30,12 @@ dt = Time(2) - Time(1);
 
 Time_pad = [Time(1)-dt*(Npad:-1:1)'; Time(:); Time(end)+dt*(1:Npad)'];
 
-MinPad = min(Exponents(1:MinEpochs));
-MaxPad = max(Exponents(end-MinEpochs+1:end));
+ExponentsSmooth = movmean(Exponents, MinEpochs, 'omitnan');
 
-MinPad = quantile(Exponents, .01);
-MaxPad = quantile(Exponents, .99);
+MinPad = min(ExponentsSmooth);
+MaxPad = max(ExponentsSmooth);
+% MinPad = quantile(Exponents, .01);
+% MaxPad = quantile(Exponents, .99);
 
 % 
 Exponents_pad = [repmat(MinPad,Npad,1);

@@ -84,8 +84,9 @@ end
 
 function [Start, End] = sleep_onset_window(Exponents, MinEpochs)
 
+NanExponents = isnan(Exponents);
 
-Extremes = quantile(Exponents(~isnan(Exponents)), [.01 .99]);
+Extremes = quantile(Exponents(~NanExponents), [.01 .99]);
 N3Point = Extremes(1) + diff(Extremes)*.8;
 Midpoint = mean(Extremes);
 
@@ -94,6 +95,8 @@ Exponents = movmean(Exponents, MinEpochs, 'omitnan');
 ApproxSleepEpochs = Exponents > Midpoint;
 [Starts, Ends] = oscip.utils.data2windows(ApproxSleepEpochs);
 SleepBoutDurations = Ends-Starts;
+
+Exponents(NanExponents) = nan;
 
 MaxExponent = nan(1, numel(Starts));
 for BoutIdx = 1:numel(Starts)
@@ -106,11 +109,21 @@ Ends(MaxExponent<N3Point) = [];
 ApproxSleepOnsetWindow = find(SleepBoutDurations>=MinEpochs, 1, 'first');
 
 EpochIndexes = 1:numel(Exponents); % because I'm dumb right now, there's better ways to do this
-EpochIndexes = EpochIndexes(Starts(ApproxSleepOnsetWindow):Ends(ApproxSleepOnsetWindow)); 
+EpochIndexes = EpochIndexes(Starts(ApproxSleepOnsetWindow):Ends(ApproxSleepOnsetWindow));
 [~, LowestExponentIdx] = max(Exponents(Starts(ApproxSleepOnsetWindow):Ends(ApproxSleepOnsetWindow)));
 
 End = EpochIndexes(LowestExponentIdx);
 
 [~, Start] = min(Exponents(1:End));
 
+% adjust edges because smoothing is done with min epoch length
+End = End + MinEpochs/2;
+if End>numel(Exponents)
+    End = numel(Exponents);
+end
+
+Start = Start - MinEpochs/2;
+if Start < 1
+    Start = 1;
+end
 end
