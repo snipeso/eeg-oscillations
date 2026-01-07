@@ -34,14 +34,11 @@ ExponentsSmooth = movmean(Exponents, MinEpochs, 'omitnan');
 
 MinPad = min(ExponentsSmooth);
 MaxPad = max(ExponentsSmooth);
-% MinPad = quantile(Exponents, .01);
-% MaxPad = quantile(Exponents, .99);
 
-% 
+
 Exponents_pad = [repmat(MinPad,Npad,1);
                   Exponents(:);
                   repmat(MaxPad,Npad,1)];
-
 
 % fit sigmoid function
 [param,stat]= oscip.external.sigm_fit(Time_pad, Exponents_pad);

@@ -41,7 +41,7 @@ function [FWHM, x_left, x_right] = fwhm(x, y, peakloc)
 %   FWHM      = classical full-width at half maximum
 %   x_left    = left half-max crossing
 %   x_right   = right half-max crossing#
-% modified from chatGPT, checked by Sophia Snipes
+% from chatGPT, checked by Sophia Snipes
 
 FWHM = nan(1, numel(peakloc));
 x_left = FWHM;
