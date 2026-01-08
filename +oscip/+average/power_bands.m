@@ -11,6 +11,9 @@ BandData = nan(Dims(1), Dims(2), nBands);
 
 for BandIdx = 1:nBands
     Band = Bands.(BandLabels{BandIdx});
+    if any(isnan(Band))
+        continue
+    end
     Band = dsearchn(Frequencies', Band');
     BandData(:, :, BandIdx) = mean(Data(:, :, Band(1):Band(2)), 3, 'omitnan');
 end
