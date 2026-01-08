@@ -9,7 +9,7 @@ arguments
     ScoringLabels = {};
 end
 
-    CustomBands = struct();
+CustomBands = struct();
 
 if isempty(Bands)
 
