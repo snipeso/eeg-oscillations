@@ -23,6 +23,6 @@ nBands = numel(BandLabels);
 AverageData = nan(size(AverageStages, 1), size(AverageStages, 2), nBands);
 
 for StageIdx = 1:nStages
-AverageData(:, StageIdx, :) = oscip.average.bands(AverageStages(:, StageIdx, :), Bands(1, StageIdx), Frequencies);
+    AverageData(:, StageIdx, :) = oscip.average.power_bands(AverageStages(:, StageIdx, :), Bands(1, StageIdx), Frequencies);
 end
 
