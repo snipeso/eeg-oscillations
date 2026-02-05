@@ -5,8 +5,7 @@ arguments
     Frequencies   
     Bands 
     MinPeakProminance = .01;
-    MinPeakDistance = 1;
-   
+    MinPeakDistance = 1;   
 end
 
 % make sure dimentions are all ok
@@ -21,7 +20,7 @@ PeaksTable = table();
 for ChannelIdx = 1:Dims(1)
     for StageIdx = 1:Dims(2)
 
-        PeakRow = detect_peaks(squeeze(StagePower(ChannelIdx, StageIdx, :))', ...
+        PeakRow = detected_peaks_row(squeeze(StagePower(ChannelIdx, StageIdx, :))', ...
             Frequencies, MinPeakProminance, MinPeakDistance, ChannelIdx, StageIdx);
         PeaksTable = cat(1, PeaksTable, PeakRow);
     end
@@ -43,7 +42,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% functions
 
-function PeakRow = detect_peaks(PeriodicPower, FrequenciesPeriodic, MinPeakProminance, MinPeakDistance, ChannelIdx, ScoringIdx)
+function PeakRow = detected_peaks_row(PeriodicPower, FrequenciesPeriodic, MinPeakProminance, MinPeakDistance, ChannelIdx, ScoringIdx)
 % just for finding the peak frequency, adjust so that all values are
 % above 0
 AdjustedPower = PeriodicPower- min(quantile(PeriodicPower, .1), 0);

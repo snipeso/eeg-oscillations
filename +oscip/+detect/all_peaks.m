@@ -1,32 +1,33 @@
-function AllPeaks = all_peaks(Power, Frequencies, SmoothFactor, ColInfo, ExcludeHarmonics, HarmonicsRange)
+function AllPeaks = all_peaks(Power, Frequencies, ColInfo, MinPeakProminance, MinPeakDistance, HarmonicsRange)
 % Power is a Ch (or P or S) x F matrix
 % SmoothFactor is how much to smooth the spectrum to improve peak
 % detection. Recommendation 2-5 Hz. If power spectrum is already smooth,
 % leave this empty.
 % ColInfo can either be a string or a row of a table, which will get
 % repeated for each entry encoding the first dimention of the power matrix
-% ExcludeHarmonics is true/false, and if true will remove smaller peaks
-% that are multiples of higher amplitude lower frequency peaks
 % HarmonicsRange is the frequency around the multiple of the lwoer
-% frequency in which to consider a higher frequency peak a harmonic.
+% frequency in which to consider a higher frequency peak a harmonic. If
+% this is empty, false, or 0, this will not be done
 % Peaks is a N x 4 matrix of center frequency, amplitude, bandwidth, and
 % prominance
 arguments
     Power
     Frequencies
-    SmoothFactor = [];
     ColInfo = 'Row';
-    ExcludeHarmonics = true;
-    HarmonicsRange = 1; % Hz
+    MinPeakProminance = .02;
+    MinPeakDistance = 0.5;
+    HarmonicsRange = 1; % Recommended 1 Hz, but if left empty, will also keep harmonics peak
 end
 
 AllPeaks = table();
 
 for ChIdx = 1:size(Power, 1)
 
-    Peaks = oscip.utils.findpeaks_matlab(Power(ChIdx, :), Frequencies, SmoothFactor);
+    [pks, locs, w, p] = oscip.detect.peaks(Power(ChIdx, :), Frequencies, MinPeakProminance, MinPeakDistance);
 
-    if ExcludeHarmonics
+    Peaks = [locs', pks', w', p'];
+
+    if ~isempty(HarmonicsRange) && ~isnan(HarmonicsRange) && isnumeric(HarmonicsRange)
         Peaks = exclude_harmonics(Peaks, HarmonicsRange);
     end
 
@@ -69,15 +70,19 @@ function Table = peaks_to_table(Peaks, ColInfo, ChIdx)
 if isstring(ColInfo) || ischar(ColInfo)
     Table = table();
     Table.(ColInfo) = ChIdx*ones(size(Peaks, 1), 1);
-else
-    ColInfoWithChannel = ColInfo;
-    ColInfoWithChannel.Row = ChIdx;
+elseif istable(ColInfo)
     Table = repmat(ColInfo, size(Peaks, 1), 1);
+    Table.Index = ChIdx*ones(size(Peaks, 1), 1);
+else
+    error('dont know what this was supposed to do')
+    % ColInfoWithChannel = ColInfo;
+    % ColInfoWithChannel.Row = ChIdx;
+    % Table = repmat(ColInfo, size(Peaks, 1), 1);
 end
 
 Table.Frequency = Peaks(:, 1);
-Table.Power = Peaks(:, 2);
-Table.BandWidth = Peaks(:, 3);
+Table.Amplitude = Peaks(:, 2);
+Table.Bandwidth = Peaks(:, 3);
 Table.Prominance = Peaks(:, 4);
 
 end
