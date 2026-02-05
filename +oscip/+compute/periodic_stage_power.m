@@ -34,6 +34,8 @@ if ~isempty(MeanSmoother)
     StagePower = oscip.smooth_spectrum(StagePower, Frequencies, MeanSmoother);
 end
 
+StagePower = oscip.utils.adjust_negatives_smoothed_power(StagePower);
+
 %%% get periodic power
 PeriodicStagePower = nan(Dims(1), numel(ScoringIndexes));
 for ChannelIdx = 1:Dims(1)
