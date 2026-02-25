@@ -15,7 +15,7 @@ end
 OutlierArtefacts = false(size(Exponents));
 
 % first do single channels
-for ChIdx = 1:size(Exponents)
+for ChIdx = 1:size(Exponents, 1)
     OutlierArtefacts(ChIdx, :) = oscip.utils.linear_outlier_detector(Offsets(ChIdx, :), Exponents(ChIdx, :), Threshold);
 end
 
