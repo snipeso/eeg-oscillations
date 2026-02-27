@@ -3,7 +3,7 @@ function Files = list_filenames(Folder, Extension)
 % stupid dots and turning everything into a string. Provide '' to extension
 % if you want folders
 arguments
-    Folder
+    Folder 
     Extension = '.'
 end
 
