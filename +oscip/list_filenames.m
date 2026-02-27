@@ -3,11 +3,12 @@ function Files = list_filenames(Folder, Extension)
 % stupid dots and turning everything into a string. Provide '' to extension
 % if you want folders
 arguments
-    Folder
+    Folder 
     Extension = '.'
 end
 
-Files = deblank(string(ls(Folder)));
+% Files = deblank(string(ls(Folder)));
+Files = deblank(string(split(ls(Folder))));
 
 if exist("Extension", 'var') && ~strcmp(Extension, '.')
     Files(~contains(Files, Extension)) = [];
