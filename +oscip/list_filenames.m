@@ -7,8 +7,11 @@ arguments
     Extension = '.'
 end
 
-% Files = deblank(string(ls(Folder)));
+try
+Files = deblank(string(ls(Folder)));
+catch
 Files = deblank(string(split(ls(Folder))));
+end
 
 if exist("Extension", 'var') && ~strcmp(Extension, '.')
     Files(~contains(Files, Extension)) = [];
