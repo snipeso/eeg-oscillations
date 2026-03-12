@@ -7,9 +7,9 @@ arguments
     Extension = '.'
 end
 
-try
+if ispc
 Files = deblank(string(ls(Folder)));
-catch
+elseif ismac
 Files = deblank(string(split(ls(Folder))));
 end
 
