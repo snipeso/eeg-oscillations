@@ -44,7 +44,7 @@ for StageIdx = 1:numel(ScoringLabels)
     BW = BW(:);
     F = F(:);
     P = P(:);
-    P = mat2gray(P)+.00001;
+    P = oscip.plot.mat2gray(P)+.00001;
 
 
     scatter(F, BW, P*ScatterSizeScaling, 'filled', 'MarkerFaceAlpha', Alpha, ...
