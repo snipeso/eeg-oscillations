@@ -10,7 +10,7 @@ end
 % Files = deblank(string(ls(Folder)));
 Files = deblank(string(split(ls(Folder))));
 
-if exist("Extension", 'var') && ~strcmp(Extension, '.')
+if exist("Extension", 'var') && ~strcmp(Extension, '')
     Files(~contains(Files, Extension)) = [];
 elseif isempty(Extension) % folder
  Files(contains(Files, '.')) = [];
