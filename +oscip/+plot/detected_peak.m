@@ -1,7 +1,7 @@
 function detected_peak(PeriodicStagePower, FrequenciesPeriodic, PeaksByStageByBand, StageIdx, BandIdx)
 
 hold on
-plot(FrequenciesPeriodic, squeeze(PeriodicStagePower(:, 5, :)), 'Color', [.2 .2 .2 .3], 'HandleVisibility', 'off')
+plot(FrequenciesPeriodic, squeeze(PeriodicStagePower(:, StageIdx, :)), 'Color', [.5 .5 .5 .1], 'HandleVisibility', 'off')
 plot(FrequenciesPeriodic, squeeze(mean(PeriodicStagePower(:, StageIdx, :), 1, 'omitnan')), 'Color', oscip.plot.color_picker(1, '', 'blue'), 'LineWidth', 2)
 Peak = PeaksByStageByBand(StageIdx, BandIdx, 1);
 Amp = PeaksByStageByBand(StageIdx, BandIdx, 2);
