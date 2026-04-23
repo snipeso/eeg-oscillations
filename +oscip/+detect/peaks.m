@@ -7,9 +7,14 @@ function [pks, locs, w, p] = peaks(Signal, X, MinPeakProminance, MinPeakDistance
 % find each peaks' full width to half maximum
 w = fwhm(X, Signal, locs);
 
+% remove negative peaks (doesn't work with bandwidth)
+remove_negative = pks <= 0;
+
 % remove any peaks that have another peak within its' FWHM of higher
 % amplitude
-remove = has_larger_peaks_in_fwhm(Signal, X, locs, w, pks);
+remove_overlapping = has_larger_peaks_in_fwhm(Signal, X, locs, w, pks);
+
+remove = remove_negative | remove_overlapping;
 pks(remove) = [];
 locs(remove) = [];
 w(remove) = [];
