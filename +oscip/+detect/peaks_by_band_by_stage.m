@@ -74,7 +74,7 @@ end
 function Peak = select_largest_peak(PeaksTable)
 MinChannels = 4;
 MaxDiffFrequency = 0.5; % Hz
-MaxDiffAmplitude = 1/2; % percent
+MaxDiffAmplitude = 1/2; % percent % CLAUDETODO: pass these through the functions, with these as the defaults
 Peak = nan(1, 5);
 PeaksTable = sortrows(PeaksTable, 'Amplitude', 'descend');
 
