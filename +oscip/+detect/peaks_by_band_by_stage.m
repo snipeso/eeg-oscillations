@@ -1,11 +1,14 @@
 function [PeaksByStageByBand, StagePower, Frequencies] = ...
-    peaks_by_band_by_stage(StagePower, Frequencies, Bands, MinPeakProminance, MinPeakDistance)
+    peaks_by_band_by_stage(StagePower, Frequencies, Bands, MinPeakProminance, MinPeakDistance, MinChannels, MaxDiffFrequency, MaxDiffAmplitude)
 arguments
     StagePower % should be channel x stage x frequency
     Frequencies
     Bands
     MinPeakProminance = .01;
     MinPeakDistance = 1;
+    MinChannels = 4;
+    MaxDiffFrequency = 0.5; % Hz
+    MaxDiffAmplitude = 1/2;
 end
 
 % make sure dimentions are all ok
@@ -34,13 +37,11 @@ for StageIdx = 1:Dims(2)
 
         Peaks = select_peaks_in_stage_band(PeaksTable, Bands.(BandLabels{BandIdx}), StageIdx);
 
-       
-       
-        if StageIdx==5 && BandIdx==5
-            A=1;
-        end
+        % if StageIdx==5 && BandIdx==5
+        %     A=1;
+        % end
 
-                PeaksByStageByBand(StageIdx, BandIdx, :) = select_largest_peak(Peaks);
+        PeaksByStageByBand(StageIdx, BandIdx, :) = select_largest_peak(Peaks, MinChannels, MaxDiffFrequency, MaxDiffAmplitude);
 
 
     end
@@ -77,10 +78,8 @@ Peaks = PeaksTable(PeaksTable.Stage== ScoringIndex & ...
 end
 
 
-function Peak = select_largest_peak(PeaksTable)
-MinChannels = 4;
-MaxDiffFrequency = 0.5; % Hz
-MaxDiffAmplitude = 1/2; % percent % CLAUDETODO: pass these through the functions, with these as the defaults
+function Peak = select_largest_peak(PeaksTable, MinChannels, MaxDiffFrequency, MaxDiffAmplitude)
+
 Peak = nan(1, 5);
 PeaksTable = sortrows(PeaksTable, 'Amplitude', 'descend');
 
