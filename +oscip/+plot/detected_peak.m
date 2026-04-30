@@ -15,3 +15,5 @@ axis tight
 
 plot([Peak-BW/2, Peak+BW/2], [Amp, Amp], 'Color', oscip.plot.color_picker(1, '', 'red'))
 scatter(PeaksByStageByBand(StageIdx, BandIdx, 1), PeaksByStageByBand(StageIdx, BandIdx, 2), 30, 'filled', 'MarkerFaceColor',oscip.plot.color_picker(1, '', 'red'))
+xlabel('Frequency (Hz)')
+ylabel('Power')

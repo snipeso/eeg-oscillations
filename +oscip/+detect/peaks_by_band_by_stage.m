@@ -34,8 +34,14 @@ for StageIdx = 1:Dims(2)
 
         Peaks = select_peaks_in_stage_band(PeaksTable, Bands.(BandLabels{BandIdx}), StageIdx);
 
-        
-        PeaksByStageByBand(StageIdx, BandIdx, :) = select_largest_peak(Peaks);
+       
+       
+        if StageIdx==5 && BandIdx==5
+            A=1;
+        end
+
+                PeaksByStageByBand(StageIdx, BandIdx, :) = select_largest_peak(Peaks);
+
 
     end
 end
