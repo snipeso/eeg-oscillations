@@ -1,11 +1,14 @@
 function [PeaksByStageByBand, StagePower, Frequencies] = ...
-    peaks_by_band_by_stage(StagePower, Frequencies, Bands, MinPeakProminance, MinPeakDistance)
+    peaks_by_band_by_stage(StagePower, Frequencies, Bands, MinPeakProminance, MinPeakDistance, MinChannels, MaxDiffFrequency, MaxDiffAmplitude)
 arguments
     StagePower % should be channel x stage x frequency
-    Frequencies   
-    Bands 
+    Frequencies
+    Bands
     MinPeakProminance = .01;
-    MinPeakDistance = 1;   
+    MinPeakDistance = 1;
+    MinChannels = 4;
+    MaxDiffFrequency = 0.5; % Hz
+    MaxDiffAmplitude = 1/2;
 end
 
 % make sure dimentions are all ok
@@ -33,7 +36,14 @@ for StageIdx = 1:Dims(2)
     for BandIdx = 1:numel(BandLabels)
 
         Peaks = select_peaks_in_stage_band(PeaksTable, Bands.(BandLabels{BandIdx}), StageIdx);
-        PeaksByStageByBand(StageIdx, BandIdx, :) = select_largest_peak(Peaks);
+
+        % if StageIdx==5 && BandIdx==5
+        %     A=1;
+        % end
+
+        PeaksByStageByBand(StageIdx, BandIdx, :) = select_largest_peak(Peaks, MinChannels, MaxDiffFrequency, MaxDiffAmplitude);
+
+
     end
 end
 end
@@ -45,12 +55,12 @@ end
 function PeakRow = detected_peaks_row(PeriodicPower, FrequenciesPeriodic, MinPeakProminance, MinPeakDistance, ChannelIdx, ScoringIdx)
 % just for finding the peak frequency, adjust so that all values are
 % above 0
-AdjustedPower = PeriodicPower- min(quantile(PeriodicPower, .1), 0);
+% AdjustedPower = PeriodicPower- min(quantile(PeriodicPower, .1), 0); % Legacy approach to shift power
 
-[~, locs, w, p] = oscip.detect.peaks(AdjustedPower, FrequenciesPeriodic, MinPeakProminance, MinPeakDistance);
+[pks, locs, w, p] = oscip.detect.peaks(PeriodicPower, FrequenciesPeriodic, MinPeakProminance, MinPeakDistance);
 
-% % re-calculate amplitudes
-pks = PeriodicPower(ismember(FrequenciesPeriodic, locs)); % no longer uses adjusted spectra, so that values are more comparable across channels later
+% % re-calculate amplitudes (LEGACY)
+% pks = PeriodicPower(ismember(FrequenciesPeriodic, locs)); % no longer uses adjusted spectra, so that values are more comparable across channels later
 
 PeakRow = table();
 PeakRow.Frequency = locs';
@@ -68,15 +78,23 @@ Peaks = PeaksTable(PeaksTable.Stage== ScoringIndex & ...
 end
 
 
-function Peak = select_largest_peak(PeaksTable)
+function Peak = select_largest_peak(PeaksTable, MinChannels, MaxDiffFrequency, MaxDiffAmplitude)
 
+Peak = nan(1, 5);
+PeaksTable = sortrows(PeaksTable, 'Amplitude', 'descend');
 
-if ~isempty(PeaksTable)
-    Peaks = sortrows(PeaksTable, 'Amplitude', 'descend');
+while isnan(Peak(1)) && size(PeaksTable, 1) > MinChannels
+    PeakCandidate = table2array(PeaksTable(1, {'Frequency', 'Amplitude', 'Bandwidth', 'Prominance', 'Channel'}));
+    PeaksTable(1, :) = []; % remove highest peak from pool
 
-    Peak = table2array(Peaks(1, {'Frequency', 'Amplitude', 'Bandwidth', 'Prominance', 'Channel'}));
-else
-    Peak = nan(1, 5);
+    % check that there's peaks with the same frequency and close enough
+    % amplitude
+    PTClose = abs(PeaksTable.Frequency-PeakCandidate(1))<=MaxDiffFrequency & ...
+        (PeakCandidate(2)-PeaksTable.Amplitude)./PeakCandidate(2) <= MaxDiffAmplitude;
+
+    if nnz(PTClose) >= MinChannels
+        Peak = PeakCandidate;
+    end
 end
 end
 

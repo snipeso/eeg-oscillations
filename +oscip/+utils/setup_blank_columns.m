@@ -25,7 +25,7 @@ for MeasureIdx = 1:numel(Measures)
             Stage = [StageCell{1}, '_'];
         end
 
-        for BandCell = BandLabels'
+        for BandCell = BandLabels(:)'
             if isempty(BandCell{1})
                 Band = '';
             else

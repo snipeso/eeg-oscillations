@@ -1,12 +1,12 @@
-function CustomBands = bandtable2struct(Metadata, Range, Bands, ScoringLabels)
+function CustomBands = bandtable2struct(Metadata, Bands, ScoringLabels,Bandwidth)
 % this function assumes you've run some version of the peak detection, and
 % there's columns in a metadata table called "W_PeakAmplitude_Delta" or
 % similar.
 arguments
     Metadata
-    Range = 0.5;
     Bands = [];
     ScoringLabels = {};
+    Bandwidth = []; % either provide fixed number, or if empty will use peaks' bandwdith
 end
 
 CustomBands = struct();
@@ -33,7 +33,12 @@ for RowIdx = 1:size(Metadata, 1)
         for ScoringIdx = 1:numel(ScoringLabels)
 
             PeakFrequency = Metadata.([ScoringLabels{ScoringIdx}, '_PeakFrequency_', BandLabels{BandIdx}])(RowIdx);
-            CustomBands(RowIdx, ScoringIdx).(BandLabels{BandIdx}) = PeakFrequency + [-Range, Range];
+
+            if isempty(Bandwidth)
+                BW =  Metadata.([ScoringLabels{ScoringIdx}, '_PeakBandwidth_', BandLabels{BandIdx}])(RowIdx)/2;
+            end
+
+            CustomBands(RowIdx, ScoringIdx).(BandLabels{BandIdx}) = PeakFrequency + [-BW, BW];
         end
     end
 end
