@@ -7,13 +7,13 @@ arguments
     Extension = '.'
 end
 
-try
+if ispc
 Files = deblank(string(ls(Folder)));
-catch
+elseif ismac
 Files = deblank(string(split(ls(Folder))));
 end
 
-if exist("Extension", 'var') && ~strcmp(Extension, '.')
+if exist("Extension", 'var') && ~strcmp(Extension, '')
     Files(~contains(Files, Extension)) = [];
 elseif isempty(Extension) % folder
  Files(contains(Files, '.')) = [];
