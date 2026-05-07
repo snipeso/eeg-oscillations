@@ -31,16 +31,17 @@ end
 
 % find largest peak in each band
 BandLabels = fieldnames(Bands);
-PeaksByStageByBand = nan(Dims(2), numel(BandLabels), 5);
+PeaksByStageByBand = nan(Dims(2), numel(BandLabels), 6);
 for StageIdx = 1:Dims(2)
     for BandIdx = 1:numel(BandLabels)
 
         Peaks = select_peaks_in_stage_band(PeaksTable, Bands.(BandLabels{BandIdx}), StageIdx);
-
+        % 
         % if StageIdx==5 && BandIdx==5
-        %     A=1;
+        %      A=1;
         % end
 
+       
         PeaksByStageByBand(StageIdx, BandIdx, :) = select_largest_peak(Peaks, MinChannels, MaxDiffFrequency, MaxDiffAmplitude);
 
 
@@ -80,7 +81,7 @@ end
 
 function Peak = select_largest_peak(PeaksTable, MinChannels, MaxDiffFrequency, MaxDiffAmplitude)
 
-Peak = nan(1, 5);
+Peak = nan(1, 6);
 PeaksTable = sortrows(PeaksTable, 'Amplitude', 'descend');
 
 while isnan(Peak(1)) && size(PeaksTable, 1) > MinChannels
@@ -92,8 +93,9 @@ while isnan(Peak(1)) && size(PeaksTable, 1) > MinChannels
     PTClose = abs(PeaksTable.Frequency-PeakCandidate(1))<=MaxDiffFrequency & ...
         (PeakCandidate(2)-PeaksTable.Amplitude)./PeakCandidate(2) <= MaxDiffAmplitude;
 
+    Globality = nnz(PTClose);
     if nnz(PTClose) >= MinChannels
-        Peak = PeakCandidate;
+        Peak = [PeakCandidate, Globality];
     end
 end
 end

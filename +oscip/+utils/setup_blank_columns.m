@@ -11,7 +11,7 @@ end
 nRows = size(Table, 1);
 BlankColumn = nan(nRows, 1);
 
-PeakMeasures = {'PeakFrequency', 'PeakAmplitude', 'PeakBandwidth', 'PeakProminance', 'PeakChannel'};
+PeakMeasures = {'PeakFrequency', 'PeakAmplitude', 'PeakBandwidth', 'PeakProminance', 'PeakChannel', 'PeakGlobality'};
 SleepOnsetMeasures = {'SleepOnset', 'OnsetSpeed', 'WakeExponent', 'N3Exponent', 'OnsetRMSE', 'TransitionExponent'};
 
 for MeasureIdx = 1:numel(Measures)

@@ -34,6 +34,10 @@ for StageIdx = 1:numel(ScoringLabels)
                 Table.([Stage, MeasureLabel, 'Channel', Band]) = Data(StageIdx, BandIdx, 5);
             end
 
+            if Dims(3)>5
+                Table.([Stage, MeasureLabel, 'Globality', Band]) = Data(StageIdx, BandIdx, 6);
+            end
+
         else
             Table.([Stage, MeasureLabel, Band]) = Data(StageIdx, BandIdx);
         end
